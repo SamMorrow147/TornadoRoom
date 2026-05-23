@@ -81,6 +81,26 @@
 
 ---
 
+## Roof / Wall Framing (planned)
+| Item | Value | Notes |
+|---|---|---|
+| Roof type | Shed (mono-pitch) | High on the EAST, slopes down to the WEST |
+| Pitch | 4:12 | Good for MN snow + asphalt shingles |
+| Low (W) wall height | 8'-0" (96") | Bottom plate to top of double top plate |
+| High (E) wall height | ≈ 11'-4⅜" (136⅜") | Low + 4:12 rise over the ~10' width |
+| Studs | 2×6 @ 16" OC | Single bottom plate, double top plate, 3-stud corners |
+| N & S walls | Rake walls | Sloped top plate + gable studs |
+| Rafters | 2×10 @ 16" OC | **Verify for snow load / truss engineering** |
+| Eave overhang (N/S/W) | 18" | Fascia + vented soffit; gutter at low (W) eave |
+| Eave overhang (E, high) | 0" (flush) | To be extended later |
+| Roof over porch | Yes | Carried on a beam + 6×6 post each side of the 10×10 porch |
+| Connections | H2.5 hurricane ties | Every rafter to top plate (wind uplift) |
+| Roofing | ½" sheathing + I&W/underlayment + shingles | — |
+
+> ⚠ A rated tornado shelter (ICC 500 / FEMA P-361) and the rafter/connection sizing for snow + wind need an engineer's stamp. The sizes shown are a buildable starting point, not a certified design.
+
+---
+
 ## Corner Heights
 | Corner | Height | Notes |
 |---|---|---|
