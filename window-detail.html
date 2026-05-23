@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Window Installation Detail — Tornado Room</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0d1b2a; color: #cdd9e5; font-family: 'Courier New', monospace; line-height: 1.7; }
+
+    header {
+      padding: 18px 36px;
+      border-bottom: 1px solid #1e3a5f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { font-size: 1.2rem; color: #79b8ff; letter-spacing: 2px; text-transform: uppercase; }
+    header p  { font-size: 0.75rem; color: #6a8fa8; margin-top: 3px; }
+    .back-link {
+      font-size: 0.75rem; color: #6a8fa8; text-decoration: none;
+      border: 1px solid #1e3a5f; padding: 4px 12px; border-radius: 3px;
+    }
+    .back-link:hover { color: #79b8ff; border-color: #79b8ff; }
+
+    .page { max-width: 1100px; margin: 0 auto; padding: 30px 24px 60px; }
+
+    h2 {
+      font-size: 0.85rem; color: #79b8ff; text-transform: uppercase;
+      letter-spacing: 2px; margin: 36px 0 14px;
+      border-bottom: 1px solid #1e3a5f; padding-bottom: 6px;
+    }
+    h3 { font-size: 0.85rem; color: #e3b341; margin: 18px 0 8px; }
+
+    p { font-size: 0.82rem; color: #aabbc8; margin-bottom: 10px; }
+    ul, ol { font-size: 0.82rem; color: #aabbc8; padding-left: 20px; }
+    li { margin-bottom: 6px; }
+    strong { color: #cdd9e5; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+    .card {
+      background: #111f2e; border: 1px solid #1e3a5f;
+      border-radius: 4px; padding: 18px;
+    }
+    .card.warn  { border-color: #7a4f00; background: #1a1400; }
+    .card.good  { border-color: #1e5f3a; background: #0e1a12; }
+    .card.step  { border-color: #1e3a5f; position: relative; padding-left: 52px; }
+
+    .step-num {
+      position: absolute; left: 14px; top: 14px;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: #0d47a1; color: #fff; font-size: 0.8rem; font-weight: bold;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .material-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 5px 0; border-bottom: 1px solid #1a2e40; font-size: 0.8rem;
+    }
+    .material-row:last-child { border-bottom: none; }
+    .mat-name { color: #cdd9e5; }
+    .mat-spec { color: #6a8fa8; font-size: 0.72rem; }
+    .mat-note { color: #e3b341; font-size: 0.72rem; }
+
+    .flag { color: #f0ad4e; font-size: 0.8rem; margin: 4px 0; }
+    .ok   { color: #5cb85c; font-size: 0.8rem; margin: 4px 0; }
+
+    /* ── CROSS-SECTION DIAGRAM ─────────── */
+    .diagram-wrap {
+      background: #060f1a; border: 1px solid #1e3a5f;
+      border-radius: 4px; padding: 20px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .diagram-title { font-size: 0.7rem; color: #6a8fa8; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase; }
+
+    /* ── PHOTO GRID ───────────────────── */
+    .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .photo-slot {
+      background: #111f2e; border: 1px dashed #1e3a5f;
+      border-radius: 4px; padding: 14px; text-align: center;
+      font-size: 0.72rem; color: #6a8fa8; aspect-ratio: 4/3;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    }
+    .photo-slot .icon { font-size: 1.6rem; opacity: 0.4; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    table th { background: #0d2a4a; color: #79b8ff; padding: 7px 10px; text-align: left; font-weight: normal; letter-spacing: 0.5px; }
+    table td { padding: 6px 10px; border-bottom: 1px solid #1a2e40; color: #aabbc8; }
+    table tr:hover td { background: #111f2e; }
+
+    .tag {
+      display: inline-block; font-size: 0.65rem; padding: 1px 7px;
+      border-radius: 10px; margin-left: 6px; vertical-align: middle;
+    }
+    .tag-pt  { background: #1e5f3a; color: #5cb85c; }
+    .tag-req { background: #7a1a1a; color: #f97583; }
+    .tag-tip { background: #0d2a4a; color: #79b8ff; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Window Installation Detail</h1>
+    <p>CMU Block Foundation · North Wall (34½") &amp; South Wall (34¼") · Tornado Room</p>
+  </div>
+  <a href="foundation-blueprint.html" class="back-link">← Back to Blueprint</a>
+</header>
+
+<div class="page">
+
+  <!-- ══ OVERVIEW ══════════════════════════════════════════════════ -->
+  <h2>Overview</h2>
+  <p>Your CMU openings are already built into the wall — no cutting needed. The process is: frame the opening with a <strong>pressure-treated wood buck</strong>, flash and waterproof it, then set and seal the window unit. The biggest risk in a below-grade or near-grade basement application is water infiltration, so flashing and sealant done right is the most critical part.</p>
+
+  <div class="grid-2" style="margin-top:14px;">
+    <div class="card good">
+      <h3>✓ What You Have</h3>
+      <ul>
+        <li>CMU openings already sized in the wall</li>
+        <li>North wall opening: <strong>~34½" wide</strong></li>
+        <li>South wall opening: <strong>~34¼" wide</strong></li>
+        <li>No cutting required — openings are built in</li>
+      </ul>
+    </div>
+    <div class="card warn">
+      <h3>⚠ Critical Notes Before You Start</h3>
+      <ul>
+        <li>Confirm a <strong>lintel or bond beam</strong> exists above each opening — critical for structural load</li>
+        <li>All lumber touching masonry <strong>must be pressure treated</strong> (PT) — no exceptions</li>
+        <li>This is a near-grade basement wall — waterproofing is not optional</li>
+        <li>Measure rough opening precisely before ordering windows</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- ══ CROSS-SECTION DIAGRAMS ════════════════════════════════════ -->
+  <h2>Cross-Section Diagrams</h2>
+  <div class="grid-2">
+
+    <!-- PLAN (TOP) VIEW -->
+    <div class="diagram-wrap">
+      <p class="diagram-title">Plan View — Top Down (Jamb Detail)</p>
+      <svg viewBox="0 0 400 220" width="380" height="209" xmlns="http://www.w3.org/2000/svg">
+        <!-- CMU wall sections -->
+        <rect x="10"  y="10" width="100" height="200" fill="#1e2e3e" stroke="#4a7fc1" stroke-width="1.5"/>
+        <rect x="290" y="10" width="100" height="200" fill="#1e2e3e" stroke="#4a7fc1" stroke-width="1.5"/>
+        <!-- CMU texture blocks -->
+        <g stroke="#2d5080" stroke-width="0.5" fill="none">
+          <line x1="10" y1="50"  x2="110" y2="50"/><line x1="10" y1="90"  x2="110" y2="90"/>
+          <line x1="10" y1="130" x2="110" y2="130"/><line x1="10" y1="170" x2="110" y2="170"/>
+          <line x1="60" y1="10"  x2="60"  y2="210"/>
+          <line x1="290" y1="50"  x2="390" y2="50"/><line x1="290" y1="90"  x2="390" y2="90"/>
+          <line x1="290" y1="130" x2="390" y2="130"/><line x1="290" y1="170" x2="390" y2="170"/>
+          <line x1="340" y1="10"  x2="340" y2="210"/>
+        </g>
+        <!-- PT Buck - jambs -->
+        <rect x="110" y="10" width="20" height="200" fill="#4a2e0a" stroke="#e3b341" stroke-width="1"/>
+        <rect x="270" y="10" width="20" height="200" fill="#4a2e0a" stroke="#e3b341" stroke-width="1"/>
+        <!-- Sealant bead (exterior) -->
+        <ellipse cx="110" cy="110" rx="5" ry="100" fill="#c0392b" opacity="0.6"/>
+        <ellipse cx="290" cy="110" rx="5" ry="100" fill="#c0392b" opacity="0.6"/>
+        <!-- Spray foam -->
+        <rect x="130" y="10" width="16" height="200" fill="#2ecc71" opacity="0.3"/>
+        <rect x="254" y="10" width="16" height="200" fill="#2ecc71" opacity="0.3"/>
+        <!-- Window frame -->
+        <rect x="146" y="10" width="108" height="200" fill="none" stroke="#79b8ff" stroke-width="2"/>
+        <rect x="150" y="14" width="100" height="192" fill="#060f1a" stroke="#388bfd" stroke-width="1" stroke-dasharray="4,3"/>
+        <!-- Interior -->
+        <rect x="10" y="0" width="380" height="10" fill="#0e1a0e"/>
+        <rect x="10" y="210" width="380" height="10" fill="#0e1a0e"/>
+
+        <!-- Labels -->
+        <text x="60"  y="7"  text-anchor="middle" fill="#4a7fc1" font-size="8" font-family="Courier New">CMU WALL</text>
+        <text x="120" y="7"  text-anchor="middle" fill="#e3b341" font-size="7" font-family="Courier New">PT BUCK</text>
+        <text x="200" y="7"  text-anchor="middle" fill="#79b8ff" font-size="8" font-family="Courier New">WINDOW UNIT</text>
+        <text x="138" y="120" text-anchor="middle" fill="#2ecc71" font-size="6" font-family="Courier New" transform="rotate(-90,138,120)">FOAM</text>
+        <text x="262" y="120" text-anchor="middle" fill="#2ecc71" font-size="6" font-family="Courier New" transform="rotate(90,262,120)">FOAM</text>
+        <!-- Sealant labels -->
+        <text x="60" y="218" text-anchor="middle" fill="#c0392b" font-size="7" font-family="Courier New">SEALANT</text>
+        <text x="340" y="218" text-anchor="middle" fill="#c0392b" font-size="7" font-family="Courier New">SEALANT</text>
+
+        <!-- Dimension: opening -->
+        <line x1="130" y1="195" x2="270" y2="195" stroke="#cdd9e5" stroke-width="0.7"/>
+        <line x1="130" y1="190" x2="130" y2="200" stroke="#cdd9e5" stroke-width="0.7"/>
+        <line x1="270" y1="190" x2="270" y2="200" stroke="#cdd9e5" stroke-width="0.7"/>
+        <text x="200" y="207" text-anchor="middle" fill="#cdd9e5" font-size="7" font-family="Courier New">ROUGH OPENING</text>
+      </svg>
+    </div>
+
+    <!-- SECTION (SIDE) VIEW — HEAD & SILL -->
+    <div class="diagram-wrap">
+      <p class="diagram-title">Section View — Head &amp; Sill Detail</p>
+      <svg viewBox="0 0 400 220" width="380" height="209" xmlns="http://www.w3.org/2000/svg">
+        <!-- CMU wall (exterior face left) -->
+        <!-- Head section (top) -->
+        <rect x="10" y="10" width="380" height="55" fill="#1e2e3e" stroke="#4a7fc1" stroke-width="1.5"/>
+        <!-- Bond beam / lintel indicator at head -->
+        <rect x="10" y="10" width="380" height="20" fill="#2c3f55" stroke="#4a7fc1" stroke-width="1"/>
+        <text x="200" y="24" text-anchor="middle" fill="#f97583" font-size="8" font-family="Courier New">BOND BEAM / LINTEL (verify exists!)</text>
+        <!-- CMU texture head -->
+        <line x1="10" y1="40" x2="390" y2="40" stroke="#2d5080" stroke-width="0.5"/>
+        <line x1="200" y1="30" x2="200" y2="65" stroke="#2d5080" stroke-width="0.5"/>
+        <line x1="100" y1="30" x2="100" y2="65" stroke="#2d5080" stroke-width="0.5"/>
+        <line x1="300" y1="30" x2="300" y2="65" stroke="#2d5080" stroke-width="0.5"/>
+
+        <!-- PT Buck - head -->
+        <rect x="10" y="65" width="380" height="18" fill="#4a2e0a" stroke="#e3b341" stroke-width="1"/>
+        <text x="200" y="78" text-anchor="middle" fill="#e3b341" font-size="8" font-family="Courier New">PT BUCK — HEAD (2×6 or 2×8)</text>
+
+        <!-- Drip cap -->
+        <polygon points="10,65 390,65 390,60 10,60" fill="#888" opacity="0.6"/>
+        <text x="200" y="58" text-anchor="middle" fill="#888" font-size="7" font-family="Courier New">DRIP CAP (metal)</text>
+
+        <!-- Spray foam head -->
+        <rect x="10" y="83" width="380" height="8" fill="#2ecc71" opacity="0.4"/>
+
+        <!-- Window unit -->
+        <rect x="10" y="91" width="380" height="60" fill="#060f1a" stroke="#388bfd" stroke-width="2"/>
+        <text x="200" y="126" text-anchor="middle" fill="#388bfd" font-size="9" font-family="Courier New">WINDOW UNIT</text>
+
+        <!-- Spray foam sill -->
+        <rect x="10" y="151" width="380" height="8" fill="#2ecc71" opacity="0.4"/>
+
+        <!-- PT Buck - sill -->
+        <rect x="10" y="159" width="380" height="18" fill="#4a2e0a" stroke="#e3b341" stroke-width="1"/>
+        <text x="200" y="172" text-anchor="middle" fill="#e3b341" font-size="8" font-family="Courier New">PT BUCK — SILL  +  FLASHING TAPE</text>
+
+        <!-- Sill flashing (blue tape) -->
+        <rect x="10" y="175" width="380" height="5" fill="#388bfd" opacity="0.7"/>
+        <text x="200" y="187" text-anchor="middle" fill="#388bfd" font-size="7" font-family="Courier New">SELF-ADHERED FLASHING (Vycor / peel &amp; stick)</text>
+
+        <!-- CMU sill section -->
+        <rect x="10" y="190" width="380" height="20" fill="#1e2e3e" stroke="#4a7fc1" stroke-width="1.5"/>
+        <text x="200" y="204" text-anchor="middle" fill="#4a7fc1" font-size="8" font-family="Courier New">CMU WALL — SILL COURSE</text>
+
+        <!-- Exterior / interior labels -->
+        <text x="6" y="115" fill="#6a8fa8" font-size="7" font-family="Courier New" transform="rotate(-90,6,115)">EXTERIOR →</text>
+        <text x="394" y="115" fill="#6a8fa8" font-size="7" font-family="Courier New" transform="rotate(90,394,115)">← INTERIOR</text>
+      </svg>
+    </div>
+  </div>
+
+
+  <!-- ══ MATERIALS LIST ════════════════════════════════════════════ -->
+  <h2>Materials List</h2>
+  <div class="card">
+    <div class="material-row">
+      <span class="mat-name">Pressure-Treated Lumber <span class="tag tag-pt">PT REQUIRED</span></span>
+      <span>
+        <span class="mat-spec">2×6 or 2×8 · #2 or better · Ground Contact rated (UC4B)</span>
+      </span>
+    </div>
+    <div class="material-row">
+      <span class="mat-name">Masonry Screws (Tapcons)</span>
+      <span class="mat-spec">3/16" × 2¾" minimum · Space every 12" around buck perimeter</span>
+    </div>
+    <div class="material-row">
+      <span class="mat-name">Hammer Drill + Masonry Bit</span>
+      <span class="mat-spec">To pre-drill CMU for Tapcons</span>
+    </div>
+    <div class="material-row">
+      <span class="mat-name">Construction Adhesive / Sealant <span class="tag tag-req">ASTM C920</span></span>
+      <span class="mat-spec">OSI Quad or Sikaflex 1A · behind and around buck</span>
+    </div>
+    <div class="material-row">
+      <span class="mat-name">Self-Adhered Flashing Tape</span>
+      <span class="mat-spec">Vycor Plus, Grace Ice &amp; Water, or ZIP System tape · sill &amp; jambs</span>
+    </div>
+    <div class="material-row">
+      <span class="mat-name">Low-Expansion Window &amp; Door Foam</span>
+      <span class="mat-spec">Great Stuff Gaps &amp; Cracks or Window &amp; Door formula · NOT regular expanding foam</span>
+    </div>
+    <div class="material-row">
+      <span class="mat-name">Metal Drip Cap / Head Flashing</span>
+      <span class="mat-spec">Aluminum or galvanized · goes above window head buck</span>
+    </div>
+    <div class="material-row">
+      <span class="mat-name">Backer Rod</span>
+      <span class="mat-spec">Closed-cell foam · stuff into gaps before final exterior caulk bead</span>
+    </div>
+    <div class="material-row">
+      <span class="mat-name">Exterior Caulk</span>
+      <span class="mat-spec">Paintable polyurethane · exterior perimeter seal around window flange</span>
+    </div>
+    <div class="material-row">
+      <span class="mat-name">Shims</span>
+      <span class="mat-spec">Composite (not wood) — cedar or composite shims at sill &amp; jambs to level/plumb window</span>
+    </div>
+    <div class="material-row">
+      <span class="mat-name">Window Unit <span class="tag tag-tip">ORDER LAST</span></span>
+      <span class="mat-spec">Measure rough opening after buck installed · vinyl or aluminum recommended for basement moisture</span>
+    </div>
+  </div>
+
+  <div class="card warn" style="margin-top:12px;">
+    <h3>⚠ Lumber: What "Pressure Treated" Means Here</h3>
+    <p>Any wood that touches masonry (CMU, concrete, mortar) must be pressure-treated lumber rated for <strong>ground contact (UC4B)</strong>. This is the green-tinted lumber at the lumber yard. Regular untreated lumber will rot within a few years in a basement application. Do not use standard kiln-dried 2× material for the buck.</p>
+    <p>Also: <strong>use stainless steel or hot-dipped galvanized fasteners</strong> with PT lumber — regular bright nails/screws will corrode rapidly from the preservative chemicals in the wood.</p>
+  </div>
+
+
+  <!-- ══ STEP BY STEP ══════════════════════════════════════════════ -->
+  <h2>Step-by-Step Installation</h2>
+  <div style="display:flex; flex-direction:column; gap:12px;">
+
+    <div class="card step">
+      <div class="step-num">1</div>
+      <h3>Verify the Lintel / Bond Beam</h3>
+      <p>Before anything else, confirm that a <strong>lintel or bond beam</strong> exists above the opening. This is the horizontal structural element that carries the wall load above. In your CMU walls, it's typically a U-block (bond beam block) filled with grout and rebar. If it's not there, stop — you'll need a mason to install one before any window work.</p>
+      <p class="flag">⚠ For a ~34" opening, the bond beam should be 8" deep minimum and bear at least 8" on solid CMU at each end.</p>
+    </div>
+
+    <div class="card step">
+      <div class="step-num">2</div>
+      <h3>Measure the Rough Opening Precisely</h3>
+      <p>Measure the CMU opening at <strong>three points</strong>: top, middle, and bottom of the width, and left, center, and right of the height. Use the smallest dimension for ordering your window. The rough opening should be the window size + ½" on each side (1" total) for shimming and leveling.</p>
+      <p><strong>Your openings:</strong> North wall ~34½" wide · South wall ~34¼" wide</p>
+      <p class="flag">⚠ Measure the actual opening before ordering — these are initial tape measurements. CMU openings can be slightly out of square.</p>
+    </div>
+
+    <div class="card step">
+      <div class="step-num">3</div>
+      <h3>Cut and Assemble the PT Buck Frame</h3>
+      <p>Build a rectangular frame (box) from <strong>2×6 pressure-treated lumber</strong> (use 2×8 if your CMU wall is 8" wide). Cut pieces for:</p>
+      <ul>
+        <li><strong>Sill</strong> (bottom): full width of the opening</li>
+        <li><strong>Head</strong> (top): full width of the opening</li>
+        <li><strong>Two jambs</strong> (sides): height of opening minus top/bottom buck thickness</li>
+      </ul>
+      <p>Assemble with 3" galvanized structural screws. The frame should slide snugly into the CMU opening with ¼"–½" of play on all sides for adjustment.</p>
+    </div>
+
+    <div class="card step">
+      <div class="step-num">4</div>
+      <h3>Apply Sealant Behind the Buck</h3>
+      <p>Run a <strong>zigzag bead of ASTM C920 sealant</strong> (Sikaflex 1A or OSI Quad) on the back face of all four buck pieces before setting them in the opening. This seals the wood-to-CMU joint from behind — the part you can never access again once the window is installed. Use a ⅜"–½" bead over the irregular block surface.</p>
+    </div>
+
+    <div class="card step">
+      <div class="step-num">5</div>
+      <h3>Set, Level, and Anchor the Buck</h3>
+      <p>Set the buck frame into the opening. <strong>Check for level on the sill</strong> (critical — window won't operate correctly if sill is out of level). Check plumb on both jambs. Shim as needed with composite shims.</p>
+      <p>Once level and plumb, drill through the buck and into the CMU with a hammer drill and masonry bit. Drive <strong>Tapcon screws every 12"</strong> around the entire perimeter. Countersink the heads slightly. Minimum 2 screws per side on these opening sizes.</p>
+    </div>
+
+    <div class="card step">
+      <div class="step-num">6</div>
+      <h3>Flash the Sill and Jambs</h3>
+      <p>Apply <strong>self-adhered flashing tape</strong> (Vycor Plus or equivalent) starting at the sill:</p>
+      <ol>
+        <li>Sill first — run it across the full sill, lapping up the jambs 6" each side</li>
+        <li>Jambs next — run up each side, overlapping the sill flashing</li>
+        <li>Head last — run across the top, overlapping the jamb flashing</li>
+      </ol>
+      <p>This "shingle lapping" sequence means water always sheds over, not under, the layers. Press all edges firmly — no bubbles or gaps.</p>
+      <p class="ok">✓ Do NOT flash the head before the jambs. Water sheds downward — always lap in that order.</p>
+    </div>
+
+    <div class="card step">
+      <div class="step-num">7</div>
+      <h3>Install the Metal Drip Cap at the Head</h3>
+      <p>Before installing the window, slide a <strong>metal drip cap (head flashing)</strong> behind the siding or exterior wall coating above the head buck. This diverts any water running down the wall away from the window. Aluminum or galvanized steel. Overlap flashing tape by 2".</p>
+    </div>
+
+    <div class="card step">
+      <div class="step-num">8</div>
+      <h3>Set and Shim the Window Unit</h3>
+      <p>Set the window into the framed opening. Shim the sill to level, then shim the jambs to plumb. Check that the window opens and closes smoothly — this is your plumb/level check. Most basement windows for this size will be <strong>vinyl single-hung or hopper-style</strong> (hinged at bottom, opens inward at top — good for basement ventilation).</p>
+      <p>Drive screws through the window frame into the PT buck per the manufacturer's spec. Do not overtighten — you can warp the frame.</p>
+    </div>
+
+    <div class="card step">
+      <div class="step-num">9</div>
+      <h3>Foam the Gap</h3>
+      <p>Fill the gap between the window frame and the PT buck with <strong>low-expansion window &amp; door foam</strong> (Great Stuff Window &amp; Door, or equivalent). Do NOT use regular Great Stuff or big-gap foam — it expands too aggressively and will bow the window frame and prevent it from opening.</p>
+      <p>Fill in passes, let cure, trim flush.</p>
+    </div>
+
+    <div class="card step">
+      <div class="step-num">10</div>
+      <h3>Exterior Seal</h3>
+      <p>Run a bead of <strong>backer rod</strong> in any remaining gap between the window flange and the CMU/buck exterior face, then caulk over it with paintable polyurethane exterior caulk. Smooth with a wet finger. This is the final weatherseal.</p>
+      <p>Also run a bead of sealant at the exterior joint between the buck and the CMU face on all four sides.</p>
+    </div>
+
+    <div class="card step">
+      <div class="step-num">11</div>
+      <h3>Interior Finish (Optional at This Stage)</h3>
+      <p>On the interior, you can wrap the window jambs with PT lumber trim, or leave open until interior framing is done. Seal the interior perimeter with a bead of acoustical sealant or paintable caulk for the air seal. This is especially important if the basement will be conditioned space.</p>
+    </div>
+
+  </div>
+
+
+  <!-- ══ BOND BEAM RESEARCH ══════════════════════════════════════════ -->
+  <h2>⚠ Bond Beam — What It Is, How to Find It, What to Do</h2>
+
+  <div class="card warn" style="margin-bottom:16px;">
+    <h3>Why This Matters for Your Windows</h3>
+    <p>A bond beam (or lintel) above each window opening is what keeps the CMU wall above the opening from collapsing down into it. Without one, the wall loads transfer directly to the window frame — which is not designed to carry that. <strong>This is the #1 thing to confirm before any window work begins.</strong></p>
+    <p>The good news: because your openings were built intentionally into a professionally rebuilt CMU wall, there is a very good chance the bond beam is already there. You just need to identify it visually.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>What a Bond Beam Is</h3>
+      <p>A bond beam is a <strong>horizontal reinforced concrete element</strong> built into a CMU wall using special "U-shaped" or "channel" blocks. The cross-webs of the blocks are knocked out or the blocks are pre-formed with a channel running the full length. Steel rebar is laid inside that channel, then the whole channel is filled with grout (liquid concrete).</p>
+      <p>The result is essentially a hidden concrete beam running horizontally through the wall — it spans the opening and carries the load of the wall above it to the solid masonry on either side.</p>
+    </div>
+    <div class="card">
+      <h3>Bond Beam vs. Lintel Block — The Difference</h3>
+      <p><strong>Bond beam block:</strong> U-shaped channel, open top, can accept both horizontal AND vertical rebar. Most flexible, used throughout the wall height for seismic/structural continuity.</p>
+      <p><strong>Lintel block:</strong> Solid bottom, channel only at top. Used specifically above openings. Cannot accept vertical rebar through it — only horizontal.</p>
+      <p>Either type works above a window opening. What matters is that one of them is there, filled with grout and rebar.</p>
+    </div>
+  </div>
+
+  <h3 style="margin:20px 0 10px; color:#79b8ff; font-size:0.85rem; text-transform:uppercase; letter-spacing:1.5px;">How to Identify It Visually</h3>
+  <div class="grid-3">
+    <div class="card good">
+      <h3>✓ Sign 1 — Look at the block course above the opening</h3>
+      <p>Stand back and look at the top of the window opening. The course of blocks directly above it should look slightly different — bond beam or lintel blocks have a <strong>slightly lower profile</strong> and often have a smoother top face (from being grouted flush). Sometimes you can see grout fill at the ends.</p>
+    </div>
+    <div class="card good">
+      <h3>✓ Sign 2 — Tap the wall above the opening</h3>
+      <p>Tap the blocks above the opening with a knuckle or small hammer. A <strong>solid, dense sound</strong> means grouted (good). A hollow "thud" means empty cores. The course directly above the window opening should sound solid if a bond beam was installed there.</p>
+    </div>
+    <div class="card good">
+      <h3>✓ Sign 3 — Check the block ends at the opening</h3>
+      <p>Look at the cut ends of the blocks at the sides (jambs) of the opening. If you can see a cross-section of the block, look for the presence of <strong>grout fill and rebar</strong> in the horizontal channel. Even partial visibility confirms it.</p>
+    </div>
+  </div>
+
+  <div class="card warn" style="margin-top:16px;">
+    <h3>⚠ What If There Is No Bond Beam?</h3>
+    <p>If you tap the blocks above the opening and they sound hollow, or if you can see empty cores at the jambs, you need a bond beam installed before any window goes in. This is masonry/structural work — options are:</p>
+    <ul style="margin-top:8px;">
+      <li><strong>Option A — Install a CMU lintel:</strong> Remove the course of blocks above the opening, replace with lintel blocks, set rebar, fill with grout, let cure (28 days for full strength, 7 days minimum). Most correct solution.</li>
+      <li><strong>Option B — Steel angle lintel:</strong> A structural steel angle (e.g., 3×3×¼" or 4×4×¼" depending on span) can be placed in a saw-cut slot above the opening as a lintel. Faster but requires a masonry saw and exact fit.</li>
+      <li><strong>Option C — Precast concrete lintel:</strong> A pre-made concrete lintel dropped into the opening above the window. Available at masonry supply yards sized by span.</li>
+    </ul>
+    <p style="margin-top:10px;" class="flag">⚠ For your ~34" openings: minimum bond beam depth is <strong>8 inches</strong> bearing at least <strong>8 inches on solid CMU on each side</strong> of the opening. Minimum 2 pieces of #4 rebar at the bottom of the channel.</p>
+  </div>
+
+  <h3 style="margin:20px 0 10px; color:#79b8ff; font-size:0.85rem; text-transform:uppercase; letter-spacing:1.5px;">Bond Beam Cross-Section</h3>
+  <div class="diagram-wrap" style="margin-bottom:20px;">
+    <p class="diagram-title">Bond Beam Detail — Section at Window Head</p>
+    <svg viewBox="0 0 500 180" width="500" height="180" xmlns="http://www.w3.org/2000/svg">
+      <!-- CMU blocks each side -->
+      <rect x="10"  y="20" width="80" height="80" fill="#1e2e3e" stroke="#4a7fc1" stroke-width="1.5"/>
+      <rect x="10"  y="100" width="80" height="40" fill="#1e2e3e" stroke="#4a7fc1" stroke-width="1"/>
+      <rect x="410" y="20" width="80" height="80" fill="#1e2e3e" stroke="#4a7fc1" stroke-width="1.5"/>
+      <rect x="410" y="100" width="80" height="40" fill="#1e2e3e" stroke="#4a7fc1" stroke-width="1"/>
+      <!-- CMU texture -->
+      <line x1="50" y1="20" x2="50" y2="100" stroke="#2d5080" stroke-width="0.5"/>
+      <line x1="10" y1="60" x2="90" y2="60" stroke="#2d5080" stroke-width="0.5"/>
+      <line x1="450" y1="20" x2="450" y2="100" stroke="#2d5080" stroke-width="0.5"/>
+      <line x1="410" y1="60" x2="490" y2="60" stroke="#2d5080" stroke-width="0.5"/>
+
+      <!-- Bond beam channel block (U-shape) -->
+      <rect x="90" y="20" width="320" height="80" fill="#2c3f55" stroke="#5b8dd9" stroke-width="1.5"/>
+      <!-- U-channel interior -->
+      <rect x="100" y="24" width="300" height="60" fill="#0a4a0a" rx="2"/>
+      <!-- Grout fill -->
+      <rect x="102" y="26" width="296" height="56" fill="#1a6a1a" opacity="0.8"/>
+      <text x="250" y="57" text-anchor="middle" fill="#5cb85c" font-size="9" font-family="Courier New">GROUT FILL</text>
+
+      <!-- Rebar circles -->
+      <circle cx="170" cy="68" r="5" fill="#e3b341" stroke="#f0c060" stroke-width="1.5"/>
+      <circle cx="330" cy="68" r="5" fill="#e3b341" stroke="#f0c060" stroke-width="1.5"/>
+      <text x="250" y="75" text-anchor="middle" fill="#e3b341" font-size="8" font-family="Courier New">#4 REBAR (2 min.)</text>
+
+      <!-- Opening below -->
+      <rect x="90" y="100" width="320" height="60" fill="#060f1a" stroke="#388bfd" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="250" y="135" text-anchor="middle" fill="#388bfd" font-size="10" font-family="Courier New">WINDOW OPENING</text>
+
+      <!-- Bearing dimension arrows -->
+      <line x1="10" y1="15" x2="90" y2="15" stroke="#f97583" stroke-width="1"/>
+      <line x1="10" y1="10" x2="10" y2="20" stroke="#f97583" stroke-width="1"/>
+      <line x1="90" y1="10" x2="90" y2="20" stroke="#f97583" stroke-width="1"/>
+      <text x="50" y="11" text-anchor="middle" fill="#f97583" font-size="8" font-family="Courier New">8" min. bear</text>
+
+      <line x1="410" y1="15" x2="490" y2="15" stroke="#f97583" stroke-width="1"/>
+      <line x1="410" y1="10" x2="410" y2="20" stroke="#f97583" stroke-width="1"/>
+      <line x1="490" y1="10" x2="490" y2="20" stroke="#f97583" stroke-width="1"/>
+      <text x="450" y="11" text-anchor="middle" fill="#f97583" font-size="8" font-family="Courier New">8" min. bear</text>
+
+      <!-- Span label -->
+      <line x1="90" y1="15" x2="410" y2="15" stroke="#cdd9e5" stroke-width="0.7" stroke-dasharray="3,3"/>
+      <text x="250" y="11" text-anchor="middle" fill="#cdd9e5" font-size="8" font-family="Courier New">OPENING SPAN (~34")</text>
+
+      <!-- Labels -->
+      <text x="250" y="110" text-anchor="middle" fill="#5b8dd9" font-size="8" font-family="Courier New">BOND BEAM / LINTEL BLOCK</text>
+      <text x="50"  y="175" text-anchor="middle" fill="#4a7fc1" font-size="8" font-family="Courier New">SOLID CMU</text>
+      <text x="450" y="175" text-anchor="middle" fill="#4a7fc1" font-size="8" font-family="Courier New">SOLID CMU</text>
+    </svg>
+  </div>
+
+  <div class="card">
+    <h3>Field Action — Go Confirm This First</h3>
+    <p>Before purchasing any window materials, go out to the foundation and do the tap test on the block course immediately above each of the two window openings. Then look at the jamb ends of those blocks. Take a photo and share it here — the block profile will make it clear whether a bond beam block was used or if it's a standard CMU.</p>
+    <p class="ok" style="margin-top:8px;">✓ If your mason built this professionally and intentionally left window openings, there is almost certainly a bond beam already there — this is standard practice. Verify to be sure.</p>
+    <p class="flag">⚠ Do not skip this step. A window installed without a proper lintel above it can fail over time as the wall settles.</p>
+  </div>
+
+  <!-- ══ WINDOW TYPE COMPARISON ════════════════════════════════════ -->
+  <h2>Window Type Recommendations for Basement</h2>
+  <table>
+    <thead>
+      <tr><th>Type</th><th>How It Opens</th><th>Pros</th><th>Cons</th><th>Fit Here?</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Hopper</strong></td>
+        <td>Hinged at bottom, tilts inward at top</td>
+        <td>Great ventilation, easy to clean inside, sheds rain well</td>
+        <td>Opening swings into room</td>
+        <td style="color:#5cb85c;">✓ Best for basement</td>
+      </tr>
+      <tr>
+        <td><strong>Slider</strong></td>
+        <td>Slides horizontally</td>
+        <td>Easy to operate, no interior swing</td>
+        <td>Screen on outside (hard to reach), horizontal sill collects water</td>
+        <td style="color:#f0ad4e;">~ OK</td>
+      </tr>
+      <tr>
+        <td><strong>Casement</strong></td>
+        <td>Hinged at side, cranks open</td>
+        <td>Good seal when closed, full opening</td>
+        <td>Crank mechanism can corrode in wet basement</td>
+        <td style="color:#f0ad4e;">~ OK</td>
+      </tr>
+      <tr>
+        <td><strong>Fixed / Picture</strong></td>
+        <td>Does not open</td>
+        <td>Lowest cost, best seal</td>
+        <td>No ventilation</td>
+        <td style="color:#f97583;">✗ Not recommended alone</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin-top:10px;">For a utility room / tiny home, you likely want at least one operable window for ventilation and code egress if there's ever a sleeping space. <strong>Vinyl frames</strong> are strongly recommended over wood or aluminum for basement applications — they don't rot or corrode.</p>
+
+
+  <!-- ══ SITE PHOTOS ════════════════════════════════════════════════ -->
+  <h2>Site Photos — Reference</h2>
+  <p style="margin-bottom:14px;">Photos taken 2026-05-20. Add new photos here as work progresses.</p>
+  <div class="photo-grid">
+    <div class="photo-slot">
+      <div class="icon">📷</div>
+      <strong>Overview — SW Corner</strong>
+      <span>South wall (1–2 courses) meets west wall. Footing visible. Door opening right.</span>
+      <span style="color:#e3b341; font-size:0.68rem;">Provided 2026-05-20</span>
+    </div>
+    <div class="photo-slot">
+      <div class="icon">📷</div>
+      <strong>Foundation Overview #1</strong>
+      <span>View from above — interior, PVC pipe stub visible</span>
+      <span style="color:#e3b341; font-size:0.68rem;">Provided 2026-05-20</span>
+    </div>
+    <div class="photo-slot">
+      <div class="icon">📷</div>
+      <strong>Foundation Overview #2</strong>
+      <span>View from south — door opening, two wall heights visible</span>
+      <span style="color:#e3b341; font-size:0.68rem;">Provided 2026-05-20</span>
+    </div>
+    <div class="photo-slot">
+      <div class="icon">📷</div>
+      <strong>North Wall Window Opening</strong>
+      <span>Add close-up photo of the actual opening here</span>
+      <span style="color:#6a8fa8; font-size:0.68rem;">— Not yet taken —</span>
+    </div>
+    <div class="photo-slot">
+      <div class="icon">📷</div>
+      <strong>South Wall Window Opening</strong>
+      <span>Add close-up photo of the actual opening here</span>
+      <span style="color:#6a8fa8; font-size:0.68rem;">— Not yet taken —</span>
+    </div>
+    <div class="photo-slot">
+      <div class="icon">📷</div>
+      <strong>Bond Beam / Lintel</strong>
+      <span>Photo of bond beam above each window opening — confirm it exists</span>
+      <span style="color:#f97583; font-size:0.68rem;">⚠ Critical — get this photo</span>
+    </div>
+  </div>
+
+
+  <!-- ══ QUICK REFERENCE ═══════════════════════════════════════════ -->
+  <h2>Quick Reference — Field Checklist</h2>
+  <div class="card">
+    <p class="flag">□ Bond beam confirmed above north wall opening</p>
+    <p class="flag">□ Bond beam confirmed above south wall opening</p>
+    <p class="flag">□ Rough opening measured at 3 points (top/mid/bottom)</p>
+    <p class="flag">□ PT lumber purchased — Ground Contact UC4B rated</p>
+    <p class="flag">□ Buck assembled with galvanized fasteners</p>
+    <p class="flag">□ Sealant applied to back of buck before setting</p>
+    <p class="flag">□ Buck level (sill), plumb (jambs), square (corners)</p>
+    <p class="flag">□ Tapcons driven every 12" around perimeter</p>
+    <p class="flag">□ Flashing tape applied: sill → jambs → head</p>
+    <p class="flag">□ Metal drip cap at head</p>
+    <p class="flag">□ Window unit ordered to fit RO</p>
+    <p class="flag">□ Window set, shimmed level and plumb</p>
+    <p class="flag">□ Window opens and closes correctly before final fastening</p>
+    <p class="flag">□ Low-expansion foam in gap (Window &amp; Door formula)</p>
+    <p class="flag">□ Exterior backer rod + caulk perimeter seal</p>
+  </div>
+
+  <p style="margin-top: 24px; font-size: 0.7rem; color: #4a6a88; text-align: center;">
+    Tornado Room Framing Project · Window Installation Detail · Rev 01 · 2026-05-20<br>
+    Sources: <a href="https://hammerandhand.com/best-practices/manual/3-windows-doors/3-3-window-buck-masonry-wall/" style="color:#388bfd;">Hammer &amp; Hand Best Practices</a> ·
+    <a href="https://www.probuilder.com/construction/quality-matters/article/55218682/the-right-way-to-waterproof-recessed-windows-in-concrete-block-walls" style="color:#388bfd;">Pro Builder — CMU Waterproofing</a> ·
+    <a href="https://www.aconcordcarpenter.com/cutting-concrete-block-to-install-window.html" style="color:#388bfd;">Concord Carpenter — CMU Windows</a>
+  </p>
+
+</div>
+</body>
+</html>

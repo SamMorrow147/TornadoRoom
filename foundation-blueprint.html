@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tornado Room — Foundation Blueprint</title>
+  <style>
+    /* ===== THEME TOKENS ============================================
+       :root is the LIGHT (architectural) theme — the default on open.
+       [data-theme="dark"] restores the original blueprint-terminal look.
+       Every color/font in the chrome, the static SVG and the JS-built
+       drawing reads from these tokens via var(), so flipping data-theme
+       on <html> re-skins the whole page with no redraw. ============== */
+    :root, [data-theme="light"] {
+      --bg:#e7e1d3; --panel:#fbfaf5; --ink:#2a2925; --ink-dim:#6f675a;
+      --ink-faint:#9c9484; --note:#5b5446; --accent:#34536e;
+      --line:#cabfa8; --line-soft:#e4ddcc; --card-bg:#f4f0e7;
+      --layer-bg:#ece6d8; --hover:#efeade;
+      --grid-fine:#e7e0cf; --grid-bold:#d7ccb4; --soil:#cdbfa1; --interior-fill:#f2ecdd;
+      --good:#3f7d4f; --warn:#a9741a; --bad:#b23a3a;
+      --badge-bg:#eef1e8; --ok-bg:#edf3ea; --bad-bg:#f6e9e9;
+      --cmu-fill:#ded5c0; --cmu-stroke-out:#4a463f; --cmu-stroke-in:#8d836f; --cmu-cell:#ece5d4;
+      --win:#2f6ea8; --door:#a9741a;
+      --sill-fill:#bf7415; --sill-stroke:#8f5410;
+      --rim-fill:#5fa06f; --rim-stroke:#2f6b3f;
+      --joist-fill:#4f9e63; --joist-stroke:#2f7a45;
+      --wall-plate-fill:#8a5fae; --wall-plate-stroke:#5e4080; --wall-stud:#7e5aa0; --wall-stud-stroke:#4a3066; --wall-post:#5e3f80;
+      --subfloor-fill:#a87f3c; --subfloor-stroke:#7a5a26;
+      --bolt:#c0531a; --bolt-core:#fbe7d2;
+      --sillseal:#8a6ab0; --sillseal-fill:#d8c9ea;
+      --grout:#c3b89f; --grout-stroke:#8d836f;
+      --patio-fill:#d7d2c4; --patio-stroke:#7d7567; --patio-joint:#a89f8c; --patio-edge:#5f594d;
+      --dim:#2a2925;
+      --font:'Helvetica Neue', Arial, 'Segoe UI', sans-serif;
+    }
+    [data-theme="dark"] {
+      --bg:#0d1b2a; --panel:#060f1a; --ink:#cdd9e5; --ink-dim:#6a8fa8;
+      --ink-faint:#4a6a88; --note:#8aa8c0; --accent:#79b8ff;
+      --line:#1e3a5f; --line-soft:#1a2e40; --card-bg:#111f2e;
+      --layer-bg:#080f18; --hover:#111f2e;
+      --grid-fine:#0d1f30; --grid-bold:#122030; --soil:#152215; --interior-fill:#0e1a0e;
+      --good:#5cb85c; --warn:#f0ad4e; --bad:#f97583;
+      --badge-bg:#132030; --ok-bg:#0c1a0c; --bad-bg:#1a0c0c;
+      --cmu-fill:#1e2e3e; --cmu-stroke-out:#4a7fc1; --cmu-stroke-in:#2d5080; --cmu-cell:#0e1a22;
+      --win:#388bfd; --door:#e3b341;
+      --sill-fill:#c87c14; --sill-stroke:#e8a430;
+      --rim-fill:#86efac; --rim-stroke:#bbf7d0;
+      --joist-fill:#22c55e; --joist-stroke:#4ade80;
+      --wall-plate-fill:#c084fc; --wall-plate-stroke:#d8b4fe; --wall-stud:#c084fc; --wall-stud-stroke:#e9d5ff; --wall-post:#a855f7;
+      --subfloor-fill:#7a5a2a; --subfloor-stroke:#caa46a;
+      --bolt:#ff8c1a; --bolt-core:#1a0900;
+      --sillseal:#8a6ab0; --sillseal-fill:#5a3a7a;
+      --grout:#3a4654; --grout-stroke:#5a6b7a;
+      --patio-fill:#16222e; --patio-stroke:#5a7a96; --patio-joint:#2c485f; --patio-edge:#8fb8d6;
+      --dim:#cdd9e5;
+      --font:'Courier New', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background:var(--bg); color:var(--ink); font-family:var(--font); min-height:100vh; transition:background .25s, color .25s; }
+    header { padding:18px 36px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:18px; }
+    .head-left { display:flex; align-items:center; gap:18px; }
+    header h1 { font-size:1.2rem; color:var(--accent); letter-spacing:2px; text-transform:uppercase; }
+    header p  { font-size:0.75rem; color:var(--ink-dim); margin-top:3px; }
+    .badge { font-size:0.7rem; padding:3px 10px; border-radius:3px; background:var(--badge-bg); border:1px solid var(--good); color:var(--good); letter-spacing:1px; }
+    .badge.warn { border-color:var(--warn); color:var(--warn); }
+
+    /* top-left light/dark toggle */
+    .theme-toggle { display:inline-flex; border:1px solid var(--line); border-radius:6px; overflow:hidden; background:var(--card-bg); flex:0 0 auto; }
+    .tt-opt { display:inline-flex; align-items:center; gap:6px; padding:7px 12px; font-size:0.62rem; letter-spacing:1.2px; text-transform:uppercase; font-family:var(--font); color:var(--ink-faint); background:transparent; border:none; cursor:pointer; transition:background .15s, color .15s; }
+    .tt-opt svg { width:14px; height:14px; }
+    .tt-opt + .tt-opt { border-left:1px solid var(--line); }
+    .tt-opt.active { background:var(--accent); color:var(--panel); }
+    .tt-opt:not(.active):hover { background:var(--hover); color:var(--ink); }
+
+    .layout { display:flex; gap:0; min-height:calc(100vh - 62px); }
+    .blueprint-panel { flex:1; display:flex; flex-direction:column; align-items:center; padding:24px 20px; overflow-x:auto; gap:18px; }
+    .sidebar { width:310px; min-width:310px; border-left:1px solid var(--line); padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:16px; }
+
+    .card { background:var(--card-bg); border:1px solid var(--line); border-radius:4px; padding:14px; }
+    .card h3 { font-size:0.72rem; color:var(--accent); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px; border-bottom:1px solid var(--line); padding-bottom:6px; }
+    table { width:100%; border-collapse:collapse; font-size:0.75rem; }
+    table th { color:var(--ink-dim); font-weight:normal; text-align:left; padding:4px 6px; }
+    table td { padding:5px 6px; border-bottom:1px solid var(--line-soft); }
+    .ok{color:var(--good);} .warn{color:var(--warn);} .tbd{color:var(--ink-dim);} .hi{color:var(--accent);font-weight:bold;}
+    .flag { font-size:0.72rem; line-height:1.6; color:var(--warn); margin:3px 0; }
+    .note { font-size:0.72rem; line-height:1.7; color:var(--note); }
+    .legend-row { display:flex; align-items:center; gap:8px; font-size:0.73rem; margin:4px 0; color:var(--ink-dim); }
+    .swatch { width:22px; height:10px; border-radius:2px; }
+    .scale-label { font-size:0.7rem; color:var(--ink-dim); text-align:center; margin-top:4px; letter-spacing:1px; }
+    .panel-title { align-self:flex-start; font-size:0.66rem; color:var(--ink-faint); letter-spacing:2px; text-transform:uppercase; margin:2px 0 -8px 4px; }
+
+    .layer-panel { width:108px; min-width:108px; border-right:1px solid var(--line); padding:18px 8px; display:flex; flex-direction:column; align-items:center; gap:8px; background:var(--layer-bg); }
+    .layer-panel-title { font-size:0.6rem; color:var(--ink-faint); letter-spacing:2.5px; text-transform:uppercase; text-align:center; margin-bottom:4px; }
+    .toggle-btn { width:88px; display:flex; flex-direction:column; align-items:center; gap:6px; padding:10px 6px 9px; border-radius:4px; border:1px solid var(--line); background:var(--panel); cursor:pointer; transition:border-color .15s, background .15s; user-select:none; outline:none; }
+    .toggle-btn:hover { background:var(--hover); }
+    .toggle-btn .t-icon { color:var(--ink-faint); transition:color .15s, filter .15s; line-height:0; }
+    .toggle-btn .t-label { font-size:0.58rem; letter-spacing:0.8px; text-transform:uppercase; text-align:center; line-height:1.4; color:var(--ink-faint); font-family:var(--font); transition:color .15s; }
+    .toggle-btn.active { border-color:var(--tc); background:var(--hover); }
+    .toggle-btn.active .t-icon { color:var(--tc); }
+    [data-theme="dark"] .toggle-btn.active .t-icon { filter:drop-shadow(0 0 4px var(--tc)); }
+    .toggle-btn.active .t-label { color:var(--tc); }
+    /* layer accent colors follow the theme tokens */
+    .toggle-btn.lt-sill{--tc:var(--sill-stroke);} .toggle-btn.lt-rim{--tc:var(--rim-fill);}
+    .toggle-btn.lt-joist{--tc:var(--joist-fill);} .toggle-btn.lt-subfloor{--tc:var(--subfloor-stroke);}
+    .toggle-btn.lt-wall{--tc:var(--wall-plate-fill);} .toggle-btn.lt-bolt{--tc:var(--bolt);}
+    .toggle-btn.lt-open{--tc:var(--win);} .toggle-btn.lt-dims{--tc:var(--ink);}
+    .toggle-btn.lt-patio{--tc:var(--patio-stroke);}
+    .layer-divider { width:60px; height:1px; background:var(--line); margin:4px 0; }
+    .selfcheck { font-size:0.7rem; padding:8px 10px; border-radius:4px; border:1px solid var(--good); background:var(--ok-bg); color:var(--good); }
+    .selfcheck.bad { border-color:var(--bad); background:var(--bad-bg); color:var(--bad); }
+    /* wall framing elevations */
+    .elev-grid { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; align-items:flex-end; width:100%; max-width:1000px; }
+    .elev-card { background:var(--card-bg); border:1px solid var(--line); border-radius:4px; padding:10px 12px 12px; }
+    /* layer load-in animation */
+    .layer-group { opacity:0; transition: opacity 0.55s ease; pointer-events:none; }
+    .layer-group.visible { opacity:1; pointer-events:all; }
+    .layer-group.hidden  { opacity:0 !important; pointer-events:none; }
+    .toggle-btn.layer-pending { opacity:0.32; transition: opacity 0.45s ease; }
+    /* layer name flash label */
+    #layer-announce {
+      position:absolute; left:50%; transform:translateX(-50%);
+      bottom:14px; pointer-events:none;
+      font-family:var(--font); font-size:0.68rem; letter-spacing:2px; text-transform:uppercase;
+      color:var(--accent); opacity:0; transition:opacity 0.25s ease;
+      white-space:nowrap;
+    }
+    #layer-announce.show { opacity:1; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="head-left">
+    <div class="theme-toggle" id="themeToggle" role="group" aria-label="Color theme">
+      <button type="button" class="tt-opt" data-mode="light" aria-pressed="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M19.4 4.6l-1.8 1.8M6.4 17.6l-1.8 1.8"/></svg>
+        Light
+      </button>
+      <button type="button" class="tt-opt" data-mode="dark" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.2A8 8 0 1 1 10.8 4a6.2 6.2 0 0 0 9.2 9.2z"/></svg>
+        Dark
+      </button>
+    </div>
+    <div>
+      <h1>Tornado Room — Foundation Blueprint</h1>
+      <p>CMU Block Basement + South Patio + Wall Framing Elevations · Datum: EXTERIOR out-to-out · Rev 12 (parametric)</p>
+    </div>
+  </div>
+  <span class="badge warn">PRELIMINARY — FIELD VERIFY ALL DIMS</span>
+</header>
+
+<div class="layout">
+
+  <!-- LAYER TOGGLES -->
+  <div class="layer-panel">
+    <div class="layer-panel-title">Layers</div>
+    <button class="toggle-btn active lt-bolt" data-target="anchor-bolts"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10" cy="10" r="5.5"/><circle cx="10" cy="10" r="2"/><line x1="10" y1="2" x2="10" y2="4.5"/><line x1="10" y1="15.5" x2="10" y2="18"/><line x1="2" y1="10" x2="4.5" y2="10"/><line x1="15.5" y1="10" x2="18" y2="10"/></svg></div><div class="t-label">Anchor<br>Bolts</div></button>
+    <button class="toggle-btn active lt-sill" data-target="sill-plates"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="15" height="4" rx="0.5"/><rect x="2.5" y="11" width="15" height="4" rx="0.5"/></svg></div><div class="t-label">Sill<br>Plates</div></button>
+    <button class="toggle-btn active lt-rim" data-target="rim-joists"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="16" height="16" rx="0.5"/><rect x="5.5" y="5.5" width="9" height="9" rx="0.5"/></svg></div><div class="t-label">Rim /<br>Box Sill</div></button>
+    <button class="toggle-btn active lt-joist" data-target="field-joists"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="2" y1="3" x2="18" y2="3"/><line x1="2" y1="17" x2="18" y2="17"/><line x1="5" y1="3" x2="5" y2="17"/><line x1="10" y1="3" x2="10" y2="17"/><line x1="15" y1="3" x2="15" y2="17"/></svg></div><div class="t-label">Field<br>Joists</div></button>
+    <button class="toggle-btn active lt-subfloor" data-target="subfloor"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7.5" height="7.5" rx="0.3"/><rect x="10.5" y="2" width="7.5" height="7.5" rx="0.3"/><rect x="2" y="10.5" width="7.5" height="7.5" rx="0.3"/><rect x="10.5" y="10.5" width="7.5" height="7.5" rx="0.3"/></svg></div><div class="t-label">Sub-<br>floor</div></button>
+    <button class="toggle-btn active lt-wall" data-target="wall-framing"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="3" x2="18" y2="3"/><line x1="2" y1="17" x2="18" y2="17"/><line x1="3" y1="3" x2="3" y2="17"/><line x1="10" y1="3" x2="10" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/></svg></div><div class="t-label">Wall<br>Framing</div></button>
+    <button class="toggle-btn active lt-open" data-target="openings"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="2" y1="10" x2="6" y2="10"/><line x1="14" y1="10" x2="18" y2="10"/><line x1="6" y1="10" x2="6" y2="18"/><path d="M6 18 A8 8 0 0 0 14 10"/></svg></div><div class="t-label">Open-<br>ings</div></button>
+    <button class="toggle-btn active lt-dims" data-target="dims"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="10" x2="17" y2="10"/><polyline points="6,7 3,10 6,13"/><polyline points="14,7 17,10 14,13"/><line x1="3" y1="6" x2="3" y2="14"/><line x1="17" y1="6" x2="17" y2="14"/></svg></div><div class="t-label">Dim-<br>ensions</div></button>
+    <div class="layer-divider"></div>
+    <button class="toggle-btn active lt-patio" data-target="patio"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="15" height="15" rx="0.5"/><line x1="10" y1="2.5" x2="10" y2="17.5"/><line x1="2.5" y1="10" x2="17.5" y2="10"/></svg></div><div class="t-label">S<br>Patio</div></button>
+  </div>
+
+  <!-- BLUEPRINT -->
+  <div class="blueprint-panel" style="position:relative;">
+
+    <div class="panel-title">Plan · looking down · North = up</div>
+    <div id="layer-announce"></div>
+    <svg id="blueprint" viewBox="0 0 760 1105" width="760" height="1105"
+         xmlns="http://www.w3.org/2000/svg"
+         style="background:var(--panel); border:1px solid var(--line); border-radius:4px; display:block;">
+      <defs>
+        <pattern id="smallgrid" width="12.5" height="12.5" patternUnits="userSpaceOnUse">
+          <path d="M12.5 0L0 0 0 12.5" fill="none" stroke="var(--grid-fine)" stroke-width="0.5"/>
+        </pattern>
+        <pattern id="grid" width="62.5" height="62.5" patternUnits="userSpaceOnUse">
+          <rect width="62.5" height="62.5" fill="url(#smallgrid)"/>
+          <path d="M62.5 0L0 0 0 62.5" fill="none" stroke="var(--grid-bold)" stroke-width="1"/>
+        </pattern>
+        <pattern id="soil" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+          <line x1="0" y1="0" x2="0" y2="8" stroke="var(--soil)" stroke-width="0.8"/>
+        </pattern>
+        <symbol id="ab-sym" overflow="visible">
+          <circle cx="0" cy="0" r="5.6" fill="var(--panel)" stroke="var(--panel)" stroke-width="1"/>
+          <circle cx="0" cy="0" r="4.5" stroke="var(--bolt)" stroke-width="1.6" fill="var(--bolt-core)"/>
+          <line x1="-7" y1="0" x2="7" y2="0" stroke="var(--bolt)" stroke-width="1.3"/>
+          <line x1="0" y1="-7" x2="0" y2="7" stroke="var(--bolt)" stroke-width="1.3"/>
+        </symbol>
+      </defs>
+      <rect width="760" height="1048" fill="url(#grid)"/>
+
+      <g id="walls"        class="layer-group"></g>
+      <g id="patio"        class="layer-group"></g>
+      <g id="openings"     class="layer-group"></g>
+      <g id="sill-plates"  class="layer-group"></g>
+      <g id="rim-joists"   class="layer-group"></g>
+      <g id="field-joists" class="layer-group"></g>
+      <g id="subfloor"     class="layer-group"></g>
+      <g id="wall-framing" class="layer-group"></g>
+      <g id="anchor-bolts" class="layer-group"></g>
+      <g id="dims" class="layer-group"></g>
+
+      <!-- compass -->
+      <g transform="translate(690, 150)">
+        <circle cx="0" cy="0" r="26" fill="var(--bg)" stroke="var(--line)" stroke-width="1.5"/>
+        <polygon points="0,-19 4,-4 0,-8 -4,-4" fill="var(--ink)"/>
+        <polygon points="0,19 4,4 0,8 -4,4" fill="var(--ink-faint)"/>
+        <text x="0" y="-29" text-anchor="middle" fill="var(--ink)" font-size="11" font-family="var(--font)" font-weight="bold">N</text>
+        <text x="0" y="38" text-anchor="middle" fill="var(--ink-dim)" font-size="9" font-family="var(--font)">S</text>
+        <text x="-36" y="4" text-anchor="middle" fill="var(--ink-dim)" font-size="9" font-family="var(--font)">W</text>
+        <text x="36" y="4" text-anchor="middle" fill="var(--ink-dim)" font-size="9" font-family="var(--font)">E</text>
+      </g>
+
+      <!-- title block -->
+      <rect x="12" y="1058" width="736" height="34" fill="var(--bg)" stroke="var(--line)" stroke-width="1"/>
+      <line x1="380" y1="1058" x2="380" y2="1092" stroke="var(--line)" stroke-width="0.5"/>
+      <text x="20" y="1075" fill="var(--accent)" font-size="10" font-family="var(--font)" font-weight="bold">TORNADO ROOM — FOUNDATION FLOOR PLAN  |  CMU BLOCK BASEMENT + S PATIO</text>
+      <text x="20" y="1087" fill="var(--ink-dim)" font-size="8" font-family="var(--font)">SCALE 2.5 px = 1 IN  |  DATUM: EXTERIOR OUT-TO-OUT  |  NORTH = UP</text>
+      <text x="390" y="1075" fill="var(--ink-dim)" font-size="8" font-family="var(--font)">DATE 2026-05-23  REV 12  PLAN + ELEVATIONS</text>
+      <text x="390" y="1087" fill="var(--warn)" font-size="8" font-family="var(--font)" id="tb-check">SELF-CHECK …</text>
+    </svg>
+    <p class="scale-label">Each small grid square = 5"  ·  large square = 25"  ·  interior clear shown in grey</p>
+
+    <div class="panel-title">Section A–A · exterior wall stack-up · scale 7 px/in</div>
+    <svg id="section" viewBox="0 0 250 250" width="380" height="380"
+         xmlns="http://www.w3.org/2000/svg"
+         style="background:var(--panel); border:1px solid var(--line); border-radius:4px; display:block;">
+      <g id="section-stack"></g>
+    </svg>
+    <p class="scale-label">CMU → sill seal → 2×6 sill plate → 2×8 rim + bearing joist → ¾" subfloor</p>
+
+    <div class="panel-title" style="margin-top:14px;">Wall Framing Elevations · shed roof, high E → low W · 2×6 studs @ 16" OC</div>
+    <div id="elev-check" class="selfcheck" style="max-width:620px; align-self:center; text-align:center;">building elevations…</div>
+    <div id="elevations" class="elev-grid"></div>
+    <p class="scale-label">Single bottom plate · double top plate · 3-stud corner posts · openings carried up from the CMU openings below · (2) 2×8 headers · scale 1.8 px/in</p>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <div id="selfcheck" class="selfcheck">running self-check…</div>
+
+    <div class="card">
+      <h3>Datum &amp; Sizes</h3>
+      <p class="note">All wall lengths are <span class="hi">EXTERIOR</span>, out-to-out of the 8" CMU (7⅝" actual). Interior clear is derived, not measured.</p>
+      <table style="margin-top:8px">
+        <tr><td class="tbd">Exterior</td><td id="m-ext" class="hi"></td></tr>
+        <tr><td class="tbd">Interior clear</td><td id="m-int"></td></tr>
+        <tr><td class="tbd">CMU thickness</td><td>7⅝" (8" nom)</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Legend</h3>
+      <div class="legend-row"><span class="swatch" style="background:var(--cmu-fill);border:1.5px solid var(--cmu-stroke-out);"></span> CMU wall</div>
+      <div class="legend-row"><span class="swatch" style="background:var(--interior-fill);border:1px solid var(--cmu-stroke-in);"></span> Interior (dirt)</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--win) 13%, transparent);border:1.5px dashed var(--win);"></span> Window opening</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--door) 13%, transparent);border:1.5px dashed var(--door);"></span> Door opening</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--sill-fill) 33%, transparent);border:1.5px solid var(--sill-stroke);"></span> Sill plate (2×6 PT, flat)</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--rim-fill) 45%, transparent);border:1.5px solid var(--rim-stroke);"></span> Rim / box sill (2×8 on edge)</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--joist-fill) 25%, transparent);border:1.5px solid var(--joist-stroke);"></span> Field joist (2×8 SYP)</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--subfloor-fill) 35%, transparent);border:1.5px solid var(--subfloor-stroke);"></span> Subfloor panel (¾" T&amp;G)</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--wall-plate-fill) 45%, transparent);border:1.5px solid var(--wall-plate-stroke);"></span> Wall framing (2×6 studs)</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--bolt) 50%, transparent);border:1.5px solid var(--bolt);"></span> Anchor bolt (J-bolt)</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--patio-fill) 70%, transparent);border:1.5px solid var(--patio-stroke);"></span> Concrete patio (10'×10')</div>
+    </div>
+
+    <div class="card">
+      <h3>◧ Floor Joists</h3>
+      <table>
+        <tr><td class="tbd">Spec</td><td style="color:var(--joist-stroke);font-weight:bold">2×8 #2 SYP</td></tr>
+        <tr><td class="tbd">Spacing</td><td>16" OC</td></tr>
+        <tr><td class="tbd">Direction</td><td>E–W (short span)</td></tr>
+        <tr><td class="tbd">Joist length</td><td id="m-joist-len"></td></tr>
+        <tr><td class="tbd">Clear span</td><td id="m-clear"></td></tr>
+        <tr><td class="tbd">Bearing / end</td><td id="m-bearing"></td></tr>
+        <tr><td class="tbd">Count</td><td id="m-joist-count"></td></tr>
+      </table>
+      <p class="flag" style="margin-top:8px">• Field joist clear span is well under the IRC R502.3.1 limit for 2×8 SYP @16" OC (~13'1" at 40 psf).</p>
+      <p class="flag">• Min bearing on wood sill is 1½" (IRC R502.6) — we have plenty.</p>
+      <p class="flag">• Confirm species/grade at the yard; SYP assumed.</p>
+    </div>
+
+    <div class="card">
+      <h3>▥ Subfloor</h3>
+      <p class="note" style="margin-bottom:8px">Lay <span class="hi">¾" (23/32") T&amp;G</span> rated subfloor (plywood or OSB, Exposure 1) over the joists.</p>
+      <table>
+        <tr><td class="tbd">Panel</td><td>4×8 ¾" T&amp;G</td></tr>
+        <tr><td class="tbd">Strength axis</td><td>⟂ to joists (8' runs N–S)</td></tr>
+        <tr><td class="tbd">Pieces</td><td id="m-sheets"></td></tr>
+      </table>
+      <p class="flag" style="margin-top:8px">Placement strategy</p>
+      <p class="note">1 · Run the 8' length <strong>across</strong> the joists; the 4' end joints land on a joist center (8' = six 16" bays). ✓</p>
+      <p class="note">2 · <strong>Stagger</strong> end joints by 4' course-to-course (brick pattern) — never let four corners meet.</p>
+      <p class="note">3 · <strong>T&amp;G long edges</strong> support themselves between joists — no blocking needed. (Square-edge panels → add 2× blocking under the long seams.)</p>
+      <p class="note">4 · Leave a <strong>⅛" gap</strong> at all panel ends/edges for expansion.</p>
+      <p class="note">5 · <strong>Glue + screw:</strong> bead of subfloor adhesive on every joist top, then #8 × 2" screws (or ring-shank nails) ~6" OC at edges, 12" OC in field. Glue kills squeaks.</p>
+      <p class="note">6 · Start in a corner with a full sheet; begin alternate courses with a half sheet to set the stagger; field-cut the perimeter.</p>
+      <p class="note" style="margin-top:6px">Numbered panels on the plan = the cut sequence. Buy ~8 sheets (≈6.3 of coverage + cutting waste).</p>
+    </div>
+
+    <div class="card">
+      <h3>▤ Wall Framing</h3>
+      <p class="note" style="margin-bottom:8px">Recommended for the above-grade walls: <span class="hi">2×6 @ 16" OC</span>, SPF or SYP #2.</p>
+      <table>
+        <tr><td class="tbd">Studs</td><td style="color:var(--wall-plate-stroke);font-weight:bold">2×6 @ 16" OC</td></tr>
+        <tr><td class="tbd">Plates</td><td>double top + single bottom</td></tr>
+        <tr><td class="tbd">Corners</td><td>3-stud posts (×4)</td></tr>
+        <tr><td class="tbd">Stud count</td><td id="m-studs"></td></tr>
+      </table>
+      <p class="flag" style="margin-top:8px">Why 2×6 over 2×4 here:</p>
+      <p class="note">• Lands flush on the 5½" sill — load drops straight down stud → plate → rim → sill → CMU.</p>
+      <p class="note">• Deeper cavity ≈ R-21 vs R-13/15 — matters for a conditioned room in tornado country.</p>
+      <p class="note">• Room for bath + kitchen drain/vent runs in the walls.</p>
+      <p class="note">• Better for the tall (east) high-side wall of the shed roof and for wind.</p>
+      <p class="flag" style="margin-top:8px">Notes</p>
+      <p class="note">• Interior non-bearing partitions can be 2×4.</p>
+      <p class="note">• Bottom plate need not be PT (the PT is the sill on the CMU).</p>
+      <p class="note">• Final size depends on high-wall height + local energy/wind code — confirm.</p>
+      <p class="note" style="margin-top:6px">To switch the drawing to 2×4: set <span class="hi">studD: 3.5</span> in the CONFIG (CFG.wall).</p>
+    </div>
+
+    <div class="card">
+      <h3>⚓ Anchor Bolts</h3>
+      <table>
+        <thead><tr><th>Wall</th><th>Count</th></tr></thead>
+        <tbody id="bolt-rows"></tbody>
+      </table>
+      <p class="note" style="margin-top:8px">½" J-bolts, 7" min embed into grouted CMU cores. IRC R403.1.6: ≤6' OC, within 12" of each plate end, ≥2 per piece.</p>
+      <p class="flag" style="margin-top:6px">• Tornado upgrade: tighten to 4' OC + 3"×3" plate washers (see note below).</p>
+      <p class="flag">• Grout the core solid at each bolt.</p>
+    </div>
+
+    <div class="card">
+      <h3>▦ South Patio</h3>
+      <p class="note" style="margin-bottom:8px">A <span class="hi">10'×10'</span> on-grade concrete patio off the south wall, connected at the south door. Toggle it with the <strong>S Patio</strong> layer button.</p>
+      <table>
+        <tr><td class="tbd">Size</td><td class="hi">10'-0" × 10'-0" (100 sf)</td></tr>
+        <tr><td class="tbd">Slab</td><td>4" concrete</td></tr>
+        <tr><td class="tbd">Base</td><td>4" compacted gravel</td></tr>
+        <tr><td class="tbd">Control joints</td><td>cross → four 5' panels</td></tr>
+        <tr><td class="tbd">Slope</td><td>¼"/ft away from wall</td></tr>
+      </table>
+      <p class="flag" style="margin-top:8px">Build notes</p>
+      <p class="note">• <strong>Isolation joint:</strong> ½" expansion material between slab and foundation — pour the patio independent of the wall so they move separately.</p>
+      <p class="note">• <strong>Reinforce:</strong> #3 rebar @ 18" OC each way (or 6×6 W1.4 WWM), kept up on chairs at mid-slab.</p>
+      <p class="note">• <strong>Drainage:</strong> slope the finished surface ¼" per foot away from the foundation (2½" fall over 10').</p>
+      <p class="note">• <strong>Edges:</strong> thicken the free edges (turn-down) to ~8"–12"; set below frost depth if it carries any load.</p>
+      <p class="note">• <strong>Concrete:</strong> ≈100 sf × 4" ≈ 1.25 cu yd; add ~10% waste → order ~1.4 cu yd (4000 psi, air-entrained).</p>
+      <p class="flag" style="margin-top:6px">• Confirm the south door swing/threshold height works with the finished slab elevation.</p>
+      <p class="flag">• Verify local frost depth & setbacks before pouring.</p>
+    </div>
+
+    <div class="card" style="border-color:var(--warn);">
+      <h3 style="color:var(--warn);border-color:var(--warn);">⚠ Tornado Shelter Scope</h3>
+      <p class="note">This sheet shows <span class="hi">ordinary IRC platform framing</span>. A <em>rated</em> tornado shelter is governed by <span class="hi">ICC 500</span> / FEMA P-361 — wind-borne debris, uplift, and connection loads that exceed IRC and require an engineer's stamp. Treat this as a framing layout, not a certified shelter design.</p>
+    </div>
+
+    <div class="card">
+      <h3>⚠ Field Verify</h3>
+      <p class="flag">• Confirm wall lengths are EXTERIOR (out-to-out) — the whole model depends on it.</p>
+      <p class="flag">• Out-of-square: N−S = ¼", E−W = 2". Within shim tolerance but verify diagonals.</p>
+      <p class="flag">• All 4 corner heights + mid-span wobble (only NE ~40⅝" known).</p>
+      <p class="flag">• Windows/door do NOT reach the top of the wall (sill runs continuously over them).</p>
+      <p class="flag">• Door · E swing direction; confirm 31¾" opening.</p>
+      <p class="flag">• Door · S (south wall): confirm 36" R.O. and swing direction. Shown 12" from west corner — verify no conflict with interior stair or egress path.</p>
+    </div>
+
+    <div class="card">
+      <h3>Rev Log</h3>
+      <p class="note">Rev 06 · 2026-05-22 — last hand-placed version. Rim joists sat on the wrong edge (N/S overhung the interior; W/E floated outboard of the sill).</p>
+      <p class="note" style="margin-top:6px">Rev 07 · 2026-05-22 — <span class="hi">Full rebuild.</span> One parametric model (single source of truth). Datum corrected to EXTERIOR out-to-out → interior re-derived. All four rims now sit on their sill plates flush to the exterior, over the CMU. Joist length/span recomputed (118¼" / 110¼"). Anchor bolts auto-laid from IRC rule. Added Section A–A. Live self-check.</p>
+      <p class="note" style="margin-top:6px">Rev 08 · 2026-05-22 — Added the <span class="hi">Wall Framing</span> layer (toggle): perimeter plate ring, 3-stud corner posts, 2×6 studs @ 16" OC on all four walls. Recommendation: 2×6 over 2×4 (bears flush on the 5½" sill, deeper insulation cavity, plumbing room, taller shed-roof wall). Above-grade openings TBD.</p>
+      <p class="note" style="margin-top:6px">Rev 09 · 2026-05-22 — Added the <span class="hi">Subfloor</span> layer (toggle): ¾" T&amp;G panels, strength axis ⟂ joists, end joints on joist centers, staggered brick pattern, numbered cut sequence. ~8 sheets.</p>
+      <p class="note" style="margin-top:6px">Rev 10 · 2026-05-23 — Added <span class="hi">Door · S</span> (36" R.O.) on the south wall, 12" from the west corner, left of the existing south window. Layer toggle order updated to build sequence (anchor bolts → sill → rim → joists…). Bolt avoidance updated for both south openings.</p>
+      <p class="note" style="margin-top:6px">Rev 11 · 2026-05-23 — Added the <span class="hi">South Patio</span> layer (toggle): a 10'×10' on-grade concrete slab off the south wall, centered and connected at the south door. Shows control-joint cross (four 5' panels), ½" isolation joint at the foundation, slope-to-drain arrow, and its own dimension chain. Canvas extended ~10' south. Patio added to the parametric model (CFG.patio) and self-check.</p>
+      <p class="note" style="margin-top:6px">Rev 12 · 2026-05-23 — Added <span class="hi">Wall Framing Elevations</span> for all four walls (new section below). Shed roof: <span class="hi">high E → low W</span>, 8'-0" low wall, 4:12 pitch (MN snow + shingles). N &amp; S are rake walls (sloped top plate + gable studs); E is the high flat wall, W the low flat wall. Each shows the single bottom plate, double top plate, 2×6 studs @ 16" OC, 3-stud corner posts, and opening framing (king/jack studs, (2) 2×8 headers, cripples, window sill) with the door/windows carried up from the CMU openings. Driven by CFG.roof (single source of truth).</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   TORNADO ROOM — FOUNDATION GEOMETRY ENGINE  (single source of truth)
+   ----------------------------------------------------------------------------
+   Every layer (walls, sill plates, rim/box-sill, field joists, anchor bolts,
+   dimensions, cross-section) is DERIVED from CFG below. Change a measurement
+   here and the whole drawing + the numbers redraw consistently.
+
+   DATUM:  all CFG.ext lengths are EXTERIOR, out-to-out of the CMU block.
+   UNITS:  inches internally; converted to SVG px via CFG.scale.
+   STACK-UP (correct platform / box-sill framing, exterior wall):
+     CMU block  ->  sill seal  ->  sill plate (flat, flush to exterior)
+                ->  rim joist (on edge, flush to exterior, sits ON the sill)
+                ->  field joists (bear on sill, butt the rim's inner face)
+                ->  subfloor
+   INVARIANT:  rim  is inside  sill  is inside  CMU   on all four walls.
+   ============================================================================ */
+const BP = (function () {
+
+  const CFG = {
+    scale: 2.5,                 // px per inch (plan view)
+    t: 7.625,                   // CMU actual thickness (8" nominal block)
+    ext: { N: 121.25, S: 121.0, E: 238.75, W: 240.75 },   // EXTERIOR out-to-out
+    lumber: {
+      sillW: 5.5, sillT: 1.5,   // 2x6 PT laid flat (5.5 wide across wall, 1.5 thick)
+      rimT: 1.5, rimD: 7.25,    // 2x8 rim on edge (1.5 thick in plan, 7.25 deep)
+      joistT: 1.5, joistD: 7.25,// 2x8 field joist on edge
+      joistOC: 16,
+      subfloor: 0.75            // 23/32 ply ~ 0.75
+    },
+    openings: {
+      Nwin:  { wall: 'N', fromE: 40.5,  width: 34.5,  label: 'WINDOW · N' },
+      Swin:  { wall: 'S', fromE: 23.75, width: 34.25, label: 'WINDOW · S' },
+      Sdoor: { wall: 'S', fromE: 73.0,  width: 36.0,  label: 'DOOR · S'   },
+      Edoor: { wall: 'E', fromS: 47.5,  width: 31.75, label: 'DOOR · E' }
+    },
+    anchor: { maxOC: 72, end: 6 },     // IRC R403.1.6: <=72" OC, within 12" of ends
+    wall: { size: '2×6', studD: 5.5, studW: 1.5, oc: 16, topPlies: 2, botPlies: 1 }, // above-grade stud wall; set studD:3.5 for 2×4
+    // exterior concrete patio off the south wall. align: 'center' | 'west' | 'east' | 'full' (full = span the whole wall).
+    patio: { side: 'S', align: 'center', width: 120, depth: 120, thickness: 4, base: 4, slope: 0.25 }, // 10'×10' slab, 4" on 4" gravel, ¼"/ft slope
+    // shed roof for the above-grade framing: high on the EAST, slopes down to the WEST. lowEave = top-of-plate height on the low (W) wall.
+    roof: { lowEave: 96, pitch: 4, high: 'E', low: 'W' }, // 8'-0" low wall, 4:12 (good for MN snow + shingles)
+    origin: { x: 210, y: 96 }          // SVG px of exterior NW corner (plan)
+  };
+
+  const S  = CFG.scale;
+  const t  = CFG.t;
+  const L  = CFG.lumber;
+  const W  = Math.max(CFG.ext.N, CFG.ext.S);   // drawn exterior width  (E-W)
+  const H  = Math.max(CFG.ext.E, CFG.ext.W);   // drawn exterior height (N-S)
+
+  // ---- inch -> px helpers (plan) -------------------------------------------
+  const px = v => +(v * S).toFixed(2);
+  const X  = v => +(CFG.origin.x + v * S).toFixed(2);
+  const Y  = v => +(CFG.origin.y + v * S).toFixed(2);
+  const rIn = (x0, y0, x1, y1, attrs) =>
+    `<rect x="${X(x0)}" y="${Y(y0)}" width="${px(x1 - x0)}" height="${px(y1 - y0)}" ${attrs}/>`;
+  const lIn = (x0, y0, x1, y1, attrs) =>
+    `<line x1="${X(x0)}" y1="${Y(y0)}" x2="${X(x1)}" y2="${Y(y1)}" ${attrs}/>`;
+
+  // ---- derived geometry -----------------------------------------------------
+  const G = {
+    extW: W, extH: H,
+    intW: W - 2 * t,            // interior clear E-W
+    intH: H - 2 * t,            // interior clear N-S
+    sill: {
+      N: { x0: 0, y0: 0,        x1: W,            y1: L.sillW, len: CFG.ext.N, dom: true },
+      S: { x0: 0, y0: H - L.sillW, x1: W,         y1: H,       len: CFG.ext.S, dom: true },
+      W: { x0: 0, y0: L.sillW, x1: L.sillW,       y1: H - L.sillW, len: CFG.ext.W - 2 * L.sillW, dom: false },
+      E: { x0: W - L.sillW, y0: L.sillW, x1: W,   y1: H - L.sillW, len: CFG.ext.E - 2 * L.sillW, dom: false }
+    },
+    rim: {
+      N: { x0: 0, y0: 0,            x1: W,         y1: L.rimT },
+      S: { x0: 0, y0: H - L.rimT,   x1: W,         y1: H },
+      W: { x0: 0, y0: L.rimT,       x1: L.rimT,    y1: H - L.rimT },
+      E: { x0: W - L.rimT, y0: L.rimT, x1: W,      y1: H - L.rimT }
+    }
+  };
+
+  // field joists: run E-W, bear on W & E sills, butt the W & E rim inner faces
+  G.joist = {
+    length: W - 2 * L.rimT,                 // from inner face of W rim to inner face of E rim
+    clearSpan: W - 2 * L.sillW,             // unsupported: between inner edges of the two sills
+    bearing: L.sillW - L.rimT,              // bearing onto each sill
+    x0: L.rimT, x1: W - L.rimT,
+    centers: (function () {
+      const c = [];
+      const first = L.joistOC;              // 16" OC laid out from the N exterior face
+      const lastAllowed = H - L.rimT - L.joistT / 2;
+      for (let y = first; y <= lastAllowed + 0.01; y += L.joistOC) c.push(+y.toFixed(2));
+      return c;
+    })()
+  };
+
+  // opening spans expressed in along-wall inch coords (from the wall's west/north end)
+  function openingSpan(o) {
+    if (o.wall === 'N' || o.wall === 'S') {
+      const len = (o.wall === 'N') ? CFG.ext.N : CFG.ext.S;
+      const e = len - o.fromE;              // east edge measured from west(0)
+      return { s: e - o.width, e: e, len };
+    } else { // E wall, measured from south
+      const len = CFG.ext.E;
+      const b = len - o.fromS;              // bottom edge measured from north(0)
+      return { s: b - o.width, e: b, len };
+    }
+  }
+
+  // anchor bolt layout along a wall of given length, avoiding opening spans
+  function boltsAlong(len, avoid) {
+    const e = CFG.anchor.end, maxOC = CFG.anchor.maxOC;
+    avoid = avoid || [];
+    const span = len - 2 * e;
+    const n = Math.max(2, Math.ceil(span / maxOC) + 1);
+    let pos = [];
+    for (let i = 0; i < n; i++) pos.push(+(e + span * i / (n - 1)).toFixed(2));
+    // drop any that land in an opening
+    pos = pos.filter(p => !avoid.some(o => p > o.s - 1 && p < o.e + 1));
+    // add a flanking bolt ~6" outside each opening edge
+    for (const o of avoid) {
+      const a = +(o.s - e).toFixed(2), b = +(o.e + e).toFixed(2);
+      if (a > e && !pos.some(p => Math.abs(p - a) < 8)) pos.push(a);
+      if (b < len - e && !pos.some(p => Math.abs(p - b) < 8)) pos.push(b);
+    }
+    pos.sort((x, y) => x - y);
+    // close any gap > maxOC
+    for (let i = 0; i < pos.length - 1; i++) {
+      if (pos[i + 1] - pos[i] > maxOC) {
+        const m = +((pos[i] + pos[i + 1]) / 2).toFixed(2);
+        if (!avoid.some(o => m > o.s && m < o.e)) { pos.splice(i + 1, 0, m); i--; }
+      }
+    }
+    return pos;
+  }
+
+  // ===========================================================================
+  //  LAYER BUILDERS  (each returns an SVG inner-markup string)
+  // ===========================================================================
+
+  function buildWalls() {
+    let s = '';
+    // CMU solid
+    s += rIn(0, 0, W, H, 'fill="var(--cmu-fill)"');
+    // interior (dirt floor)
+    s += rIn(t, t, W - t, H - t, 'fill="var(--interior-fill)"');
+    s += rIn(t, t, W - t, H - t, 'fill="url(#soil)" opacity="0.7"');
+    // outer + inner wall outlines
+    s += rIn(0, 0, W, H, 'fill="none" stroke="var(--cmu-stroke-out)" stroke-width="2"');
+    s += rIn(t, t, W - t, H - t, 'fill="none" stroke="var(--cmu-stroke-in)" stroke-width="1"');
+    return s;
+  }
+
+  function buildOpenings() {
+    let s = '';
+    const draw = (o, color) => {
+      const sp = openingSpan(o);
+      let x0, y0, x1, y1;
+      if (o.wall === 'N')      { x0 = sp.s; x1 = sp.e; y0 = 0;     y1 = t; }
+      else if (o.wall === 'S') { x0 = sp.s; x1 = sp.e; y0 = H - t; y1 = H; }
+      else                     { y0 = sp.s; y1 = sp.e; x0 = W - t; x1 = W; }
+      s += rIn(x0, y0, x1, y1, `fill="var(--panel)" stroke="${color}" stroke-width="1.4" stroke-dasharray="5,3"`);
+    };
+    draw(CFG.openings.Nwin,  'var(--win)');
+    draw(CFG.openings.Swin,  'var(--win)');
+    draw(CFG.openings.Sdoor, 'var(--door)');
+    draw(CFG.openings.Edoor, 'var(--door)');
+    return s;
+  }
+
+  function plate(g, label, vertical) {
+    let s = rIn(g.x0, g.y0, g.x1, g.y1,
+      'fill="var(--sill-fill)" fill-opacity="0.32" stroke="var(--sill-stroke)" stroke-width="1.4"');
+    const cx = (g.x0 + g.x1) / 2, cy = (g.y0 + g.y1) / 2;
+    const rot = vertical ? ` transform="rotate(-90,${X(cx)},${Y(cy)})"` : '';
+    s += `<text x="${X(cx)}" y="${Y(cy) + 3}" text-anchor="middle" fill="var(--sill-stroke)" font-size="7.5" font-family="var(--font)" font-weight="bold"${rot}>${label}</text>`;
+    return s;
+  }
+
+  function buildSill() {
+    let s = '';
+    s += plate(G.sill.N, `N-1  (${ftin(CFG.ext.N)})`, false);
+    s += plate(G.sill.S, `S-1  (${ftin(CFG.ext.S)})`, false);
+    // W split into two pieces over a grouted core
+    const wTot = G.sill.W, wLen = wTot.len, wSplit = 120; // 10' first piece
+    s += plate({ x0: wTot.x0, y0: wTot.y0, x1: wTot.x1, y1: wTot.y0 + wSplit }, 'W-1', true);
+    s += plate({ x0: wTot.x0, y0: wTot.y0 + wSplit, x1: wTot.x1, y1: wTot.y1 }, 'W-2', true);
+    s += lIn(wTot.x0 - 1.2, wTot.y0 + wSplit, wTot.x1 + 1.2, wTot.y0 + wSplit, 'stroke="var(--sill-stroke)" stroke-width="1.4" stroke-dasharray="4,2"');
+    // E split into two pieces
+    const eTot = G.sill.E, eSplit = 120;
+    s += plate({ x0: eTot.x0, y0: eTot.y0, x1: eTot.x1, y1: eTot.y0 + eSplit }, 'E-1', true);
+    s += plate({ x0: eTot.x0, y0: eTot.y0 + eSplit, x1: eTot.x1, y1: eTot.y1 }, 'E-2', true);
+    s += lIn(eTot.x0 - 1.2, eTot.y0 + eSplit, eTot.x1 + 1.2, eTot.y0 + eSplit, 'stroke="var(--sill-stroke)" stroke-width="1.4" stroke-dasharray="4,2"');
+    return s;
+  }
+
+  function buildRim() {
+    let s = '';
+    const r = G.rim;
+    const fill = 'fill="var(--rim-fill)" fill-opacity="0.8" stroke="var(--rim-stroke)" stroke-width="1.2"';
+    s += rIn(r.N.x0, r.N.y0, r.N.x1, r.N.y1, fill);
+    s += rIn(r.S.x0, r.S.y0, r.S.x1, r.S.y1, fill);
+    s += rIn(r.W.x0, r.W.y0, r.W.x1, r.W.y1, fill);
+    s += rIn(r.E.x0, r.E.y0, r.E.x1, r.E.y1, fill);
+    return s;
+  }
+
+  function buildJoists() {
+    let s = '';
+    const j = G.joist, half = L.joistT / 2;
+    for (const cy of j.centers) {
+      s += rIn(j.x0, cy - half, j.x1, cy + half,
+        'fill="var(--joist-fill)" fill-opacity="0.34" stroke="var(--joist-stroke)" stroke-width="0.6"');
+    }
+    return s;
+  }
+
+  // above-grade stud wall (plan view): plate ring + corner posts + field studs @ OC
+  function studsAlong(len) {
+    const c = [], sd = CFG.wall.studD;
+    for (let x = CFG.wall.oc; x < len - sd * 0.6; x += CFG.wall.oc) c.push(+x.toFixed(2));
+    return c;
+  }
+  function buildWall() {
+    const wd = CFG.wall.studD, sw = CFG.wall.studW, h = sw / 2;
+    const plate = 'fill="var(--wall-plate-fill)" fill-opacity="0.12" stroke="var(--wall-plate-stroke)" stroke-width="1.1"';
+    const stud  = 'fill="var(--wall-stud)" fill-opacity="0.62" stroke="var(--wall-stud-stroke)" stroke-width="0.5"';
+    const post  = 'fill="var(--wall-post)" fill-opacity="0.78" stroke="var(--wall-stud-stroke)" stroke-width="0.6"';
+    let s = '';
+
+    // south door R.O. span (in wall inch coords from west)
+    const sdSp = openingSpan(CFG.openings.Sdoor);
+
+    // plate ring — south wall split at door R.O., others continuous
+    s += rIn(0, 0, W, wd, plate);                           // north plate (full)
+    s += rIn(0, H - wd, sdSp.s, H, plate);                 // south plate — west of door
+    s += rIn(sdSp.e, H - wd, W, H, plate);                 // south plate — east of door
+    s += rIn(0, wd, wd, H - wd, plate);                    // west plate
+    s += rIn(W - wd, wd, W, H - wd, plate);               // east plate
+
+    // corner posts (3-stud corners)
+    s += rIn(0, 0, wd, wd, post);
+    s += rIn(W - wd, 0, W, wd, post);
+    s += rIn(0, H - wd, wd, H, post);
+    s += rIn(W - wd, H - wd, W, H, post);
+
+    // south door framing — king studs (outside R.O.) + jack/trimmer studs (inside R.O.)
+    s += rIn(sdSp.s - sw, H - wd, sdSp.s,      H, post);  // west king stud
+    s += rIn(sdSp.e,      H - wd, sdSp.e + sw, H, post);  // east king stud
+    s += rIn(sdSp.s,      H - wd, sdSp.s + sw, H, stud);  // west jack/trimmer
+    s += rIn(sdSp.e - sw, H - wd, sdSp.e,      H, stud);  // east jack/trimmer
+
+    // field studs @ OC — north wall always; south wall skips studs inside door R.O.
+    let n = 0;
+    studsAlong(W).forEach(cx => {
+      s += rIn(cx - h, 0, cx + h, wd, stud);   // north always
+      n++;
+      if (cx + h <= sdSp.s - sw || cx - h >= sdSp.e + sw) {   // south: skip inside door + kings
+        s += rIn(cx - h, H - wd, cx + h, H, stud);
+        n++;
+      }
+    });
+    studsAlong(H).forEach(cy => { s += rIn(0, cy - h, wd, cy + h, stud); s += rIn(W - wd, cy - h, W, cy + h, stud); n += 2; });
+    BP._studs = { field: n, corners: 4, total: n + 4 };
+
+    // label
+    s += `<text x="${X(W / 2)}" y="${Y(H / 2) + 26}" text-anchor="middle" fill="var(--wall-plate-fill)" font-size="8.5" font-family="var(--font)" opacity="0.6" font-weight="bold">STUD WALL · ${CFG.wall.size} @ ${CFG.wall.oc}" OC</text>`;
+    return s;
+  }
+
+  // subfloor sheathing layout (plan): 4x8 panels, strength axis (8') PERPENDICULAR to joists.
+  // Joists run E-W, so the 8' length runs N-S; end joints land on joist centers; courses staggered.
+  function buildSubfloor() {
+    const SW = 48, SL = 96;          // panel: 48" wide (E-W) x 96" long (N-S, across joists)
+    const full = 'fill="var(--subfloor-fill)" fill-opacity="0.30" stroke="var(--subfloor-stroke)" stroke-width="1"';
+    const cut  = 'fill="var(--subfloor-fill)" fill-opacity="0.15" stroke="var(--subfloor-stroke)" stroke-width="1" stroke-dasharray="5,2"';
+    let s = '', nFull = 0, nCut = 0, idx = 0;
+    const cols = [];
+    for (let x = 0; x < W - 0.01; x += SW) cols.push([x, Math.min(x + SW, W)]);
+    cols.forEach((c, ci) => {
+      const cw = c[1] - c[0];
+      const bounds = [0];
+      if (ci % 2 === 1 && SL / 2 < H) bounds.push(SL / 2);  // stagger odd columns by half a panel
+      let y = bounds[bounds.length - 1];
+      while (y < H - 0.01) { y = Math.min(y + SL, H); bounds.push(y); }
+      // merge a tiny final sliver into the previous piece
+      if (bounds.length >= 3 && bounds[bounds.length - 1] - bounds[bounds.length - 2] < 12)
+        bounds.splice(bounds.length - 2, 1);
+      for (let i = 0; i < bounds.length - 1; i++) {
+        const y0 = bounds[i], y1 = bounds[i + 1];
+        const isCut = (cw < SW - 0.01) || ((y1 - y0) < SL - 0.01);
+        s += rIn(c[0], y0, c[1], y1, isCut ? cut : full);
+        isCut ? nCut++ : nFull++; idx++;
+        s += `<text x="${X((c[0] + c[1]) / 2)}" y="${Y((y0 + y1) / 2) + 3}" text-anchor="middle" fill="var(--subfloor-stroke)" font-size="8" font-family="var(--font)" opacity="0.85">${idx}</text>`;
+      }
+    });
+    BP._sheets = { full: nFull, cut: nCut, pieces: idx, buy: Math.ceil((W * H / 144) / 32 * 1.15) };
+    s += `<text x="${X(W / 2)}" y="${Y(H / 2) - 26}" text-anchor="middle" fill="var(--subfloor-stroke)" font-size="8" font-family="var(--font)" opacity="0.7">SUBFLOOR ¾" T&amp;G · panels &#8869; joists · joints staggered · ⅛" gaps</text>`;
+    return s;
+  }
+
+  function buildBolts() {
+    let s = '';
+    const place = (cx, cy) => `<use href="#ab-sym" x="${X(cx)}" y="${Y(cy)}"/>`;
+    const mid = L.sillW / 2;                          // bolt at sill centerline
+    const nSp  = openingSpan(CFG.openings.Nwin);
+    const sSp  = openingSpan(CFG.openings.Swin);
+    const sdSp = openingSpan(CFG.openings.Sdoor);
+    const eSp  = openingSpan(CFG.openings.Edoor);
+    BP._bolts = { N: 0, S: 0, E: 0, W: 0 };
+    boltsAlong(CFG.ext.N, [nSp]).forEach(p => { s += place(p, mid); BP._bolts.N++; });
+    boltsAlong(CFG.ext.S, [sSp, sdSp]).forEach(p => { s += place(p, H - mid); BP._bolts.S++; });
+    boltsAlong(CFG.ext.W, []).forEach(p => { s += place(mid, p); BP._bolts.W++; });
+    boltsAlong(CFG.ext.E, [eSp]).forEach(p => { s += place(W - mid, p); BP._bolts.E++; });
+    return s;
+  }
+
+  // ---- exterior concrete patio (off the south wall) -------------------------
+  //  Drawn south of the foundation, sharing the south wall line (y = H).
+  //  Slab + control joints + isolation joint at the wall + door landing + slope.
+  function patioGeom() {
+    const P = CFG.patio;
+    const pw = (P.align === 'full') ? W : P.width;
+    const x0 = (P.align === 'center') ? (W - pw) / 2 : (P.align === 'east') ? (W - pw) : 0;
+    return { P, pw, x0, x1: x0 + pw, y0: H, y1: H + P.depth };
+  }
+  function buildPatio() {
+    if (!CFG.patio) return '';
+    const g = patioGeom(), P = g.P;
+    const mx = (g.x0 + g.x1) / 2, my = (g.y0 + g.y1) / 2;
+    const pS = 'var(--patio-stroke)', pJ = 'var(--patio-joint)', pE = 'var(--patio-edge)';
+    const fr = { 0.125:'⅛', 0.25:'¼', 0.375:'⅜', 0.5:'½', 0.625:'⅝', 0.75:'¾', 0.875:'⅞' };
+    const slopeTxt = fr[P.slope] || ('' + P.slope);
+    let s = '';
+
+    // slab body
+    s += rIn(g.x0, g.y0, g.x1, g.y1, `fill="var(--patio-fill)" fill-opacity="0.55" stroke="${pS}" stroke-width="1.6"`);
+    // turn-down / thickened edge on the three free sides (inset dashed line)
+    s += `<path d="M ${X(g.x0 + 3)} ${Y(g.y0)} L ${X(g.x0 + 3)} ${Y(g.y1 - 3)} L ${X(g.x1 - 3)} ${Y(g.y1 - 3)} L ${X(g.x1 - 3)} ${Y(g.y0)}" fill="none" stroke="${pS}" stroke-width="0.7" stroke-dasharray="3,2" opacity="0.6"/>`;
+
+    // control joints — tooled cross at mid -> four 5'-0" panels
+    s += lIn(mx, g.y0, mx, g.y1, `stroke="${pJ}" stroke-width="1.1" stroke-dasharray="6,3"`);
+    s += lIn(g.x0, my, g.x1, my, `stroke="${pJ}" stroke-width="1.1" stroke-dasharray="6,3"`);
+
+    // isolation joint along the foundation (slab is NOT bonded to the wall) — visual cue only; labelled in keynote below
+    s += lIn(g.x0, g.y0 + 2.5, g.x1, g.y0 + 2.5, `stroke="${pE}" stroke-width="1.3" stroke-dasharray="2,2"`);
+
+    // south door landing on the slab (bold edge segment — door itself is labelled by the openings/dims layers)
+    const sd = openingSpan(CFG.openings.Sdoor);
+    s += lIn(sd.s, g.y0, sd.e, g.y0, `stroke="${pE}" stroke-width="3"`);
+
+    // slope-to-drain arrow (away from foundation, toward south)
+    const ax = g.x1 - 14, a1 = my + 18;
+    s += lIn(ax, my - 18, ax, a1, `stroke="${pS}" stroke-width="1"`);
+    s += `<polygon points="${X(ax)},${Y(a1)} ${X(ax) - 4},${Y(a1) - 8} ${X(ax) + 4},${Y(a1) - 8}" fill="${pS}"/>`;
+    s += `<text x="${X(ax) - 6}" y="${Y(my)}" text-anchor="middle" fill="${pS}" font-size="6.5" font-family="var(--font)" transform="rotate(-90,${X(ax) - 6},${Y(my)})">SLOPE ${slopeTxt}"/FT</text>`;
+
+    // labels (stacked clear of the dimension band at the top)
+    s += `<text x="${X(mx)}" y="${Y(g.y0 + 34)}" text-anchor="middle" fill="${pS}" font-size="11" font-family="var(--font)" font-weight="bold" letter-spacing="1">CONCRETE PATIO</text>`;
+    s += `<text x="${X(mx)}" y="${Y(g.y0 + 46)}" text-anchor="middle" fill="${pS}" font-size="6.5" font-family="var(--font)" opacity="0.8">½" isolation joint at foundation · slope ${slopeTxt}"/ft away</text>`;
+    s += `<text x="${X(mx)}" y="${Y(g.y1 - 16)}" text-anchor="middle" fill="${pS}" font-size="8" font-family="var(--font)" opacity="0.85">${ftft(g.pw)} × ${ftft(P.depth)} · ${P.thickness}" SLAB on ${P.base}" GRAVEL</text>`;
+
+    // dimensions (live with the patio layer; depth is collinear with the E-wall dim chain)
+    s += dimV(g.y0, g.y1, W, 34, `${ftin(P.depth)}`, pS);
+    s += dimH(g.x0, g.x1, g.y1, 30, `${ftin(g.pw)}`, pS);
+
+    return s;
+  }
+
+  // ---- dimension lines ------------------------------------------------------
+  function dimH(xa, xb, yIn, off, txt, color) {                 // horizontal dim, off in px above/below
+    const y = Y(yIn) + off;
+    return `<line x1="${X(xa)}" y1="${y}" x2="${X(xb)}" y2="${y}" stroke="${color}" stroke-width="1"/>`
+      + `<line x1="${X(xa)}" y1="${y - 5}" x2="${X(xa)}" y2="${y + 5}" stroke="${color}" stroke-width="1"/>`
+      + `<line x1="${X(xb)}" y1="${y - 5}" x2="${X(xb)}" y2="${y + 5}" stroke="${color}" stroke-width="1"/>`
+      + `<text x="${(X(xa) + X(xb)) / 2}" y="${y + (off < 0 ? -4 : 12)}" text-anchor="middle" fill="${color}" font-size="9" font-family="var(--font)">${txt}</text>`;
+  }
+  function dimV(ya, yb, xIn, off, txt, color) {                 // vertical dim, off in px left/right
+    const x = X(xIn) + off;
+    const my = (Y(ya) + Y(yb)) / 2;
+    return `<line x1="${x}" y1="${Y(ya)}" x2="${x}" y2="${Y(yb)}" stroke="${color}" stroke-width="1"/>`
+      + `<line x1="${x - 5}" y1="${Y(ya)}" x2="${x + 5}" y2="${Y(ya)}" stroke="${color}" stroke-width="1"/>`
+      + `<line x1="${x - 5}" y1="${Y(yb)}" x2="${x + 5}" y2="${Y(yb)}" stroke="${color}" stroke-width="1"/>`
+      + `<text x="${x + (off < 0 ? -6 : 6)}" y="${my}" text-anchor="middle" fill="${color}" font-size="9" font-family="var(--font)" transform="rotate(${off < 0 ? -90 : 90},${x + (off < 0 ? -6 : 6)},${my})">${txt}</text>`;
+  }
+
+  function buildDims() {
+    let s = '';
+    const wh = 'var(--dim)', bl = 'var(--win)', am = 'var(--door)';
+    // overall exterior
+    s += dimH(0, W, 0, -34, `${ftin(CFG.ext.N)}  EXT · N WALL`, wh);
+    s += dimH(0, W, H, 30, `${ftin(CFG.ext.S)}  EXT · S WALL`, wh);
+    s += dimV(0, H, 0, -34, `${ftin(CFG.ext.W)}  EXT · W WALL`, wh);
+    s += dimV(0, H, W, 34, `${ftin(CFG.ext.E)}  EXT · E WALL`, wh);
+    // interior clear
+    s += dimH(t, W - t, t, -14, `${ftin(G.intW)} clear`, 'var(--ink-dim)');
+    // N window dims (above)
+    const nSp = openingSpan(CFG.openings.Nwin);
+    s += dimH(0, nSp.s, 0, -18, `${ftin(nSp.s)}`, bl);
+    s += dimH(nSp.s, nSp.e, 0, -18, `${ftin(CFG.openings.Nwin.width)} WIN`, bl);
+    s += dimH(nSp.e, CFG.ext.N, 0, -18, `${ftin(CFG.openings.Nwin.fromE)}`, bl);
+    // S door + window dims (below)
+    const sSp  = openingSpan(CFG.openings.Swin);
+    const sdSp = openingSpan(CFG.openings.Sdoor);
+    s += dimH(0, sdSp.s, H, 14, `${ftin(sdSp.s)}`, am);
+    s += dimH(sdSp.s, sdSp.e, H, 14, `${ftin(CFG.openings.Sdoor.width)} DOOR`, am);
+    s += dimH(sdSp.e, sSp.s, H, 14, `${ftin(sSp.s - sdSp.e)}`, 'var(--ink-dim)');
+    s += dimH(sSp.s, sSp.e, H, 14, `${ftin(CFG.openings.Swin.width)} WIN`, bl);
+    s += dimH(sSp.e, CFG.ext.S, H, 14, `${ftin(CFG.openings.Swin.fromE)}`, bl);
+    // E door dims (right)
+    const eSp = openingSpan(CFG.openings.Edoor);
+    s += dimV(eSp.e, CFG.ext.E, W, 14, `${ftin(CFG.openings.Edoor.fromS)}`, am);
+    s += dimV(eSp.s, eSp.e, W, 14, `${ftin(CFG.openings.Edoor.width)} DOOR`, am);
+    return s;
+  }
+
+  // ---- CROSS SECTION (own coordinate space) ---------------------------------
+  // West exterior wall, cut looking north. Shows the vertical stack-up.
+  function buildSection() {
+    const sc = 7;                 // px/inch (detail is zoomed)
+    const ox = 70, oyTop = 22;    // px origin: exterior face (x), top of subfloor (y)
+    const exX = v => +(ox + v * sc).toFixed(2);          // inches from exterior face -> px
+    const tY  = v => +(oyTop + v * sc).toFixed(2);       // inches DOWN from top of subfloor -> px
+    const R = (x0, y0, x1, y1, a) =>
+      `<rect x="${exX(x0)}" y="${tY(y0)}" width="${((x1 - x0) * sc).toFixed(2)}" height="${((y1 - y0) * sc).toFixed(2)}" ${a}/>`;
+    const Ln = (x0, y0, x1, y1, a) =>
+      `<line x1="${exX(x0)}" y1="${tY(y0)}" x2="${exX(x1)}" y2="${tY(y1)}" ${a}/>`;
+    const Tx = (x, y, txt, a) => `<text x="${exX(x)}" y="${tY(y)}" ${a} font-family="var(--font)">${txt}</text>`;
+
+    // vertical datum (inches down from top of subfloor):
+    const sub = L.subfloor;                 // 0 -> sub : subfloor
+    const joistTop = sub;                   // sub -> sub+joistD : rim/joist
+    const joistBot = sub + L.joistD;
+    const sillTop = joistBot;               // sill flat sits below rim/joist
+    const sillBot = sillTop + L.sillT;
+    const cmuTop = sillBot;                 // sill seal between (thin) — draw line
+    const cmuBot = cmuTop + 16;             // show two 8" courses
+
+    let s = '';
+    // --- CMU (two courses), exterior face at x=0, interior at x=t ---
+    s += R(0, cmuTop, t, cmuBot, 'fill="var(--cmu-fill)" stroke="var(--cmu-stroke-out)" stroke-width="1.2"');
+    s += Ln(0, cmuTop + 8, t, cmuTop + 8, 'stroke="var(--cmu-stroke-in)" stroke-width="0.8"');     // course line
+    // hollow cores (two cells per course) — except grouted core under bolt
+    const cell = (cx, cy) => R(cx - 1.4, cy + 1.2, cx + 1.4, cy + 6.8, 'fill="var(--cmu-cell)" stroke="var(--cmu-stroke-in)" stroke-width="0.6"');
+    s += cell(t * 0.30, cmuTop) + cell(t * 0.30, cmuTop + 8);
+    // grouted core at x ~0.62t (under bolt) -> filled
+    s += R(t * 0.62 - 1.6, cmuTop + 1.2, t * 0.62 + 1.6, cmuBot - 1.2, 'fill="var(--grout)" stroke="var(--grout-stroke)" stroke-width="0.5"');
+    s += Tx(t * 0.62, cmuBot - 2.2, 'GROUT', 'fill="var(--ink-dim)" font-size="5.5" text-anchor="middle"');
+
+    // --- sill seal (thin) ---
+    s += R(0, cmuTop - 0.5, L.sillW, cmuTop, 'fill="var(--sillseal-fill)" fill-opacity="0.7" stroke="var(--sillseal)" stroke-width="0.5"');
+
+    // --- sill plate (flat) flush exterior ---
+    s += R(0, sillTop, L.sillW, sillBot, 'fill="var(--sill-fill)" fill-opacity="0.45" stroke="var(--sill-stroke)" stroke-width="1.3"');
+
+    // --- rim joist (on edge) at exterior edge, on the sill ---
+    s += R(0, joistTop, L.rimT, joistBot, 'fill="var(--rim-fill)" fill-opacity="0.85" stroke="var(--rim-stroke)" stroke-width="1.3"');
+
+    // --- field joist: bears on sill, butts rim inner face ---
+    s += R(L.rimT, joistTop, L.rimT + L.joistT, joistBot, 'fill="var(--joist-fill)" fill-opacity="0.45" stroke="var(--joist-stroke)" stroke-width="1.3"');
+    // joist continues to the right (break line)
+    s += R(L.rimT + L.joistT, joistTop, L.sillW + 2, joistBot, 'fill="var(--joist-fill)" fill-opacity="0.18" stroke="var(--joist-stroke)" stroke-width="0.7" stroke-dasharray="3,2"');
+
+    // --- subfloor across the top ---
+    s += R(0, 0, L.sillW + 2, sub, 'fill="var(--subfloor-fill)" fill-opacity="0.5" stroke="var(--subfloor-stroke)" stroke-width="1.2"');
+
+    // --- anchor bolt: hook in grout, up through sill, nut+washer on top ---
+    const bx = t * 0.62;
+    s += Ln(bx, cmuBot - 3, bx, sillTop - 0.2, 'stroke="var(--bolt)" stroke-width="2"');
+    s += `<path d="M ${exX(bx)} ${tY(cmuBot - 3)} q 0 ${3 * sc * 0.0} ${-2.2 * sc} 0" fill="none" stroke="var(--bolt)" stroke-width="2"/>`;
+    s += Ln(bx - 2.4, sillTop - 0.2, bx + 2.4, sillTop - 0.2, 'stroke="var(--bolt)" stroke-width="3"');   // plate washer
+    s += R(bx - 1.0, sillTop - 1.6, bx + 1.0, sillTop - 0.2, 'fill="var(--bolt)"');                        // nut
+
+    // --- dimension callouts ---
+    const dr = (x, y0, y1, txt) => Ln(x, y0, x, y1, 'stroke="var(--dim)" stroke-width="0.7"')
+      + Tx(x + 0.3, (y0 + y1) / 2 + 1, txt, 'fill="var(--dim)" font-size="6"');
+    s += dr(t + 1.5, cmuTop, cmuBot, '8" CMU');
+    s += Tx(L.sillW / 2, sillBot + 3, '5½" sill', 'fill="var(--sill-stroke)" font-size="6" text-anchor="middle"');
+    s += Tx(L.rimT + L.joistT + 3.5, joistTop + 4, '7¼" joist', 'fill="var(--joist-stroke)" font-size="6"');
+    s += Tx(L.rimT / 2, joistTop - 1.5, 'RIM', 'fill="var(--rim-stroke)" font-size="5.5" text-anchor="middle"');
+    s += Tx(L.sillW + 2.6, sub / 2 + 1.2, '¾" subfloor', 'fill="var(--subfloor-stroke)" font-size="6"');
+    // labels exterior / interior (spread apart — wall is only 7⅝" wide)
+    s += Tx(-2.5, cmuBot + 5, '◄ EXTERIOR', 'fill="var(--ink-dim)" font-size="6"');
+    s += Tx(t + 2, cmuBot + 5, 'INTERIOR ►', 'fill="var(--ink-dim)" font-size="6"');
+    // bearing dim
+    s += Tx(L.rimT + L.joistT + 0.2, joistBot + 2.2, `bearing ${G.joist.bearing}"`, 'fill="var(--ink-dim)" font-size="5.5"');
+    return s;
+  }
+
+  // ---- formatting -----------------------------------------------------------
+  function ftin(inch) {
+    const neg = inch < 0; inch = Math.abs(inch);
+    const whole = Math.floor(inch);
+    const frac = inch - whole;
+    const eighths = Math.round(frac * 8);
+    let f = '';
+    if (eighths === 8) return ftin((neg ? -1 : 1) * (whole + 1));
+    const map = { 1: '⅛', 2: '¼', 3: '⅜', 4: '½', 5: '⅝', 6: '¾', 7: '⅞' };
+    if (eighths) f = map[eighths];
+    return (neg ? '-' : '') + whole + (f ? f : '') + '"';
+  }
+  function ftft(inch) {                       // feet-inches, e.g. 120 -> 10'-0"
+    const ft = Math.floor(inch / 12);
+    return ft + "'-" + ftin(inch - ft * 12);
+  }
+
+  // ===========================================================================
+  function buildAll() {
+    return {
+      walls:    buildWalls(),
+      patio:    buildPatio(),
+      openings: buildOpenings(),
+      sill:     buildSill(),
+      rim:      buildRim(),
+      joists:   buildJoists(),
+      subfloor: buildSubfloor(),
+      wall:     buildWall(),
+      bolts:    buildBolts(),
+      dims:     buildDims(),
+      section:  buildSection()
+    };
+  }
+
+  // ---- self-test ------------------------------------------------------------
+  function verify() {
+    const out = [], fail = [];
+    const ok = (cond, msg) => { out.push((cond ? 'PASS ' : 'FAIL ') + msg); if (!cond) fail.push(msg); };
+
+    // INVARIANT 1: rim inside sill inside CMU, all four walls (across-wall axis)
+    // N wall: across axis = y, exterior at 0
+    ok(G.rim.N.y1 <= G.sill.N.y1 + 1e-9, 'N rim within N sill (across wall)');
+    ok(G.sill.N.y1 <= t + 1e-9,          'N sill within N CMU');
+    ok(G.rim.N.y0 >= 0 - 1e-9 && G.rim.N.y0 <= G.sill.N.y0 + 1e-9, 'N rim flush to exterior on sill');
+    // S wall
+    ok(G.rim.S.y0 >= G.sill.S.y0 - 1e-9, 'S rim within S sill (across wall)');
+    ok(G.sill.S.y0 >= H - t - 1e-9,      'S sill within S CMU');
+    // W wall: across axis = x
+    ok(G.rim.W.x1 <= G.sill.W.x1 + 1e-9, 'W rim within W sill (across wall)');
+    ok(G.sill.W.x1 <= t + 1e-9,          'W sill within W CMU');
+    // E wall
+    ok(G.rim.E.x0 >= G.sill.E.x0 - 1e-9, 'E rim within E sill (across wall)');
+    ok(G.sill.E.x0 >= W - t - 1e-9,      'E sill within E CMU');
+
+    // INVARIANT 2: every rim sits over CMU (its across-wall band must lie within wall band)
+    ok(G.rim.N.y1 <= t,     'N rim sits OVER the CMU (not over interior)');
+    ok(G.rim.S.y0 >= H - t, 'S rim sits OVER the CMU (not over interior)');
+    ok(G.rim.W.x1 <= t,     'W rim sits OVER the CMU');
+    ok(G.rim.E.x0 >= W - t, 'E rim sits OVER the CMU');
+
+    // INVARIANT 3: joist bearing & span
+    ok(G.joist.bearing >= 1.5, `field joist bearing ${G.joist.bearing}" >= 1.5" min (wood-on-wood)`);
+    ok(G.joist.clearSpan < 13 * 12 + 1, `clear span ${ftin(G.joist.clearSpan)} under 2x8 SYP @16"OC limit`);
+
+    // INVARIANT 3b: stud wall bears fully on the sill line and covers the rim
+    ok(CFG.wall.studD <= L.sillW + 1e-9, `${CFG.wall.size} wall (${CFG.wall.studD}") bears within the ${L.sillW}" sill plate`);
+    ok(CFG.wall.studD >= L.rimT, `${CFG.wall.size} wall covers the rim joist (clean load path to CMU)`);
+
+    // INVARIANT 3c: subfloor 8' panel length spans whole joist bays -> end joints land on a joist
+    ok(96 % L.joistOC === 0, `subfloor 8' panel length lands on a joist at ${L.joistOC}" OC (end joints supported)`);
+
+    // INVARIANT 4: anchor bolts spacing <=72 and >=2 per wall
+    const checkWall = (name, len, avoid) => {
+      const p = boltsAlong(len, avoid);
+      ok(p.length >= 2, `${name} wall has >=2 bolts (${p.length})`);
+      let maxGap = p[0];
+      for (let i = 1; i < p.length; i++) maxGap = Math.max(maxGap, p[i] - p[i - 1]);
+      maxGap = Math.max(maxGap, len - p[p.length - 1]);
+      ok(maxGap <= CFG.anchor.maxOC + 0.5, `${name} wall max bolt gap ${maxGap.toFixed(1)}" <= 72"`);
+      return p.length;
+    };
+    const nB = checkWall('N', CFG.ext.N, [openingSpan(CFG.openings.Nwin)]);
+    const sB = checkWall('S', CFG.ext.S, [openingSpan(CFG.openings.Swin), openingSpan(CFG.openings.Sdoor)]);
+    const wB = checkWall('W', CFG.ext.W, []);
+    const eB = checkWall('E', CFG.ext.E, [openingSpan(CFG.openings.Edoor)]);
+
+    // INVARIANT 5: patio
+    if (CFG.patio) {
+      const g = patioGeom(), sd = openingSpan(CFG.openings.Sdoor);
+      ok(g.y0 === H, 'patio shares the south wall line (connected, not floating)');
+      ok(g.P.depth > 0, `patio projects ${ftft(g.P.depth)} south of the foundation`);
+      ok(g.pw <= W + 1e-9, `patio width ${ftft(g.pw)} fits within the ${ftft(W)} south wall`);
+      ok(g.P.thickness >= 3.5, `patio slab ${g.P.thickness}" >= 3.5" min for a walking slab`);
+      ok(sd.s >= g.x0 - 1e-9 && sd.e <= g.x1 + 1e-9, 'south door opens onto the patio slab');
+    }
+
+    // report key derived numbers
+    out.push('--- derived ---');
+    out.push(`exterior        : ${ftin(W)} x ${ftin(H)}`);
+    out.push(`interior clear  : ${ftin(G.intW)} x ${ftin(G.intH)}`);
+    out.push(`sill N-1 / S-1  : ${ftin(CFG.ext.N)} / ${ftin(CFG.ext.S)}`);
+    out.push(`sill W tot / E  : ${ftin(G.sill.W.len)} / ${ftin(G.sill.E.len)}`);
+    out.push(`joist length    : ${ftin(G.joist.length)}  (clear span ${ftin(G.joist.clearSpan)})`);
+    out.push(`field joists    : ${G.joist.centers.length}  + 2 end = ${G.joist.centers.length + 2}`);
+    out.push(`anchor bolts    : N${nB} S${sB} W${wB} E${eB} = ${nB + sB + wB + eB}`);
+    const sW = studsAlong(W).length * 2, sH = studsAlong(H).length * 2;
+    out.push(`stud wall       : ${CFG.wall.size} @ ${CFG.wall.oc}" OC -> ${sW + sH} field + 4 posts = ${sW + sH + 4}`);
+    buildSubfloor();
+    out.push(`subfloor        : ${BP._sheets.pieces} pieces (${BP._sheets.full} full, ${BP._sheets.cut} cut) -> buy ~${BP._sheets.buy} sheets`);
+    if (CFG.patio) { const g = patioGeom(); out.push(`patio           : ${ftft(g.pw)} x ${ftft(g.P.depth)} slab off S wall (${(g.pw * g.P.depth / 144).toFixed(0)} sf)`); }
+    return { out, fail };
+  }
+
+  return { CFG, G, buildAll, verify, ftin, openingSpan, boltsAlong, _bolts: {} };
+})();
+</script>
+<script>
+(function(){
+  function set(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
+  function go(){
+    var a = BP.buildAll();
+    var map = { walls:'walls', patio:'patio', openings:'openings', sill:'sill-plates', rim:'rim-joists',
+                joists:'field-joists', subfloor:'subfloor', wall:'wall-framing', bolts:'anchor-bolts', dims:'dims', section:'section-stack' };
+    Object.keys(map).forEach(function(k){ var el=document.getElementById(map[k]); if(el) el.innerHTML=a[k]; });
+
+    var G=BP.G, C=BP.CFG, f=BP.ftin;
+    set('m-ext', f(G.extW)+' × '+f(G.extH));
+    set('m-int', f(G.intW)+' × '+f(G.intH));
+    set('m-joist-len', f(G.joist.length));
+    set('m-clear', f(G.joist.clearSpan));
+    set('m-bearing', G.joist.bearing+'" each end');
+    set('m-joist-count', G.joist.centers.length+' field + 2 end = '+(G.joist.centers.length+2));
+    if(BP._studs) set('m-studs', BP._studs.field+' field + 4 posts = '+BP._studs.total);
+    if(BP._sheets) set('m-sheets', BP._sheets.pieces+' pieces · buy ~'+BP._sheets.buy);
+
+    var b=BP._bolts, rows='', total=0;
+    [['North',b.N],['South',b.S],['East',b.E],['West',b.W]].forEach(function(r){
+      rows+='<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'; total+=r[1];
+    });
+    rows+='<tr class="total"><td><strong>Total</strong></td><td><strong>'+total+'</strong></td></tr>';
+    var br=document.getElementById('bolt-rows'); if(br) br.innerHTML=rows;
+
+    var v=BP.verify(), pass=v.out.filter(function(x){return x.indexOf('PASS')===0;}).length;
+    var fails=v.fail.length, tot=pass+fails;
+    var sc=document.getElementById('selfcheck');
+    if(sc){ sc.textContent='Geometry self-check: '+pass+'/'+tot+' invariants pass'+(fails?(' — '+fails+' FAIL'):''); if(fails) sc.className='selfcheck bad'; }
+    set('tb-check','SELF-CHECK: '+pass+'/'+tot+' PASS'+(fails?(' · '+fails+' FAIL'):''));
+
+    // ---- layer load-in animation (build order) ----
+    var sequence = [
+      { id: 'walls',        btn: null,           label: 'CMU Foundation Walls' },
+      { id: 'patio',        btn: 'patio',        label: 'Concrete Patio · South' },
+      { id: 'anchor-bolts', btn: 'anchor-bolts', label: 'Anchor Bolts' },
+      { id: 'sill-plates',  btn: 'sill-plates',  label: 'Sill Plates' },
+      { id: 'rim-joists',   btn: 'rim-joists',   label: 'Rim / Box Sill' },
+      { id: 'field-joists', btn: 'field-joists', label: 'Field Joists' },
+      { id: 'subfloor',     btn: 'subfloor',     label: 'Subfloor' },
+      { id: 'wall-framing', btn: 'wall-framing', label: 'Wall Framing' },
+      { id: 'openings',     btn: 'openings',     label: 'Openings' },
+      { id: 'dims',         btn: 'dims',         label: 'Dimensions' }
+    ];
+    var STEP = 600, FIRST_DELAY = 350;
+    var announce = document.getElementById('layer-announce');
+    var announceTimer = null;
+
+    function flashLabel(text) {
+      if (!announce) return;
+      if (announceTimer) clearTimeout(announceTimer);
+      announce.textContent = text;
+      announce.classList.add('show');
+      announceTimer = setTimeout(function(){ announce.classList.remove('show'); }, 900);
+    }
+
+    // dim all toggle buttons initially
+    document.querySelectorAll('.toggle-btn').forEach(function(btn){ btn.classList.add('layer-pending'); });
+
+    sequence.forEach(function(item, i){
+      setTimeout(function(){
+        var el = document.getElementById(item.id);
+        if (el) { el.classList.add('visible'); el.classList.remove('hidden'); }
+        flashLabel(item.label);
+        if (item.btn) {
+          document.querySelectorAll('.toggle-btn').forEach(function(btn){
+            if (btn.dataset.target === item.btn) btn.classList.remove('layer-pending');
+          });
+        }
+      }, FIRST_DELAY + i * STEP);
+    });
+
+    // wire up toggle clicks — use hidden class so opacity transition works
+    document.querySelectorAll('.toggle-btn').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var el=document.getElementById(btn.dataset.target); if(!el) return;
+        var on=btn.classList.toggle('active');
+        if(on){ el.classList.remove('hidden'); } else { el.classList.add('hidden'); }
+      });
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',go); else go();
+})();
+</script>
+<script>
+/* ============================================================================
+   WALL FRAMING ELEVATIONS  (shed roof: high EAST, low WEST)
+   Reads BP.CFG (single source of truth) + CFG.roof. Each wall is drawn as a
+   framing elevation: single bottom plate, double top plate, 2×6 studs @ OC,
+   3-stud corner posts, opening framing (king + jack studs, (2) 2×8 header,
+   cripples, window sill), with the south door / windows carried up from the
+   CMU openings. N & S are rake walls (sloped top + gable studs); E is the high
+   flat wall, W the low flat wall.
+   ============================================================================ */
+(function () {
+  function build() {
+    if (typeof BP === 'undefined' || !BP.CFG.roof) return;
+    var C = BP.CFG, ft = BP.ftin;
+    var S = 1.8;                 // px/in (elevation scale)
+    var sw = C.wall.studW;       // 1.5" stud face
+    var oc = C.wall.oc;          // 16" OC
+    var bpT = 1.5;               // single bottom plate
+    var tpT = 3.0;               // double top plate
+    var hdrD = 7.25;             // (2) 2×8 header depth
+    var Wrun = Math.max(C.ext.N, C.ext.S);
+    var lowH = C.roof.lowEave;
+    var rise = C.roof.pitch / 12 * Wrun;
+    var highH = lowH + rise;
+
+    function ftft(v) { var f = Math.floor(v / 12); return f + "'-" + ft(v - f * 12); }
+
+    // openings positioned from the LEFT edge of each elevation, with vertical data
+    function openingsFor(wall) {
+      var out = [];
+      function add(o, type) {
+        var sp = BP.openingSpan(o);
+        var posLeft = (wall === 'S') ? sp.s : (sp.len - sp.e);   // S:left=W; N:left=E; E:left=S  (mirror)
+        var v = (type === 'door') ? { roSill: 0, roH: 82 } : { roSill: 44, roH: 36 };
+        out.push({ posLeft: posLeft, width: o.width, type: type, roSill: v.roSill, roH: v.roH });
+      }
+      if (wall === 'N') add(C.openings.Nwin, 'window');
+      if (wall === 'S') { add(C.openings.Swin, 'window'); add(C.openings.Sdoor, 'door'); }
+      if (wall === 'E') add(C.openings.Edoor, 'door');
+      return out;
+    }
+
+    var walls = [
+      { name: 'SOUTH WALL', sub: 'looking north · high E (right) → low W (left)', wall: 'S', len: C.ext.S, kind: 'rake', hL: lowH, hR: highH, leftDir: 'W', rightDir: 'E' },
+      { name: 'NORTH WALL', sub: 'looking south · high E (left) → low W (right)', wall: 'N', len: C.ext.N, kind: 'rake', hL: highH, hR: lowH, leftDir: 'E', rightDir: 'W' },
+      { name: 'EAST WALL · HIGH SIDE', sub: 'looking west · S (left) → N (right) · top of slope', wall: 'E', len: C.ext.E, kind: 'flat', hL: highH, hR: highH, leftDir: 'S', rightDir: 'N' },
+      { name: 'WEST WALL · LOW SIDE', sub: 'looking east · N (left) → S (right) · bottom of slope', wall: 'W', len: C.ext.W, kind: 'flat', hL: lowH, hR: lowH, leftDir: 'N', rightDir: 'S' }
+    ];
+
+    var DIM = 'var(--dim)';
+    var platef = 'fill="var(--wall-plate-fill)" fill-opacity="0.30" stroke="var(--wall-plate-stroke)" stroke-width="1"';
+    var studf = 'fill="var(--wall-stud)" fill-opacity="0.55" stroke="var(--wall-stud-stroke)" stroke-width="0.5"';
+    var postf = 'fill="var(--wall-post)" fill-opacity="0.82" stroke="var(--wall-stud-stroke)" stroke-width="0.6"';
+    var hdrf = 'fill="var(--wall-post)" fill-opacity="0.50" stroke="var(--wall-stud-stroke)" stroke-width="0.8"';
+
+    function buildElevation(w) {
+      var len = w.len, hMax = Math.max(w.hL, w.hR);
+      var ML = 62, MR = 24, MT = 44, MB = 46;
+      var Wpx = +(len * S + ML + MR).toFixed(1), Hpx = +(hMax * S + MT + MB).toFixed(1);
+      var ox = ML, oy = MT + hMax * S;                 // floor baseline (y) in px
+      var X = function (v) { return +(ox + v * S).toFixed(2); };
+      var Y = function (v) { return +(oy - v * S).toFixed(2); };
+      // rect from inch coords (x0<x1, y0<y1 with 0 at floor, up positive)
+      var R = function (x0, y0, x1, y1, a) {
+        return '<rect x="' + X(x0) + '" y="' + Y(y1) + '" width="' + ((x1 - x0) * S).toFixed(2) + '" height="' + ((y1 - y0) * S).toFixed(2) + '" ' + a + '/>';
+      };
+      var Ln = function (x0, y0, x1, y1, a) {
+        return '<line x1="' + X(x0) + '" y1="' + Y(y0) + '" x2="' + X(x1) + '" y2="' + Y(y1) + '" ' + a + '/>';
+      };
+      var topAt = function (x) { return w.hL + (w.hR - w.hL) * (x / len); };
+      var ops = openingsFor(w.wall);
+      var wallTop = (w.kind === 'flat') ? w.hL : lowH;  // top of the rectangular portion
+      var studTop = wallTop - tpT;                       // underside of the rectangular top plate
+      var s = '';
+
+      // floor / subfloor line
+      s += Ln(0, 0, len, 0, 'stroke="var(--subfloor-stroke)" stroke-width="1.4"');
+      // bottom plate — continuous, but cut out at door openings (doors reach the floor)
+      var doorCuts = ops.filter(function (o) { return o.type === 'door'; })
+        .map(function (o) { return [o.posLeft, o.posLeft + o.width]; })
+        .sort(function (a, b) { return a[0] - b[0]; });
+      var bpx = 0;
+      doorCuts.forEach(function (c) { if (c[0] > bpx) s += R(bpx, 0, c[0], bpT, platef); bpx = c[1]; });
+      s += R(bpx, 0, len, bpT, platef);
+      // double top plate (rectangular portion / flat wall)
+      s += R(0, wallTop - tpT, len, wallTop, platef);
+      s += Ln(0, wallTop - 1.5, len, wallTop - 1.5, 'stroke="var(--wall-plate-stroke)" stroke-width="0.5" stroke-dasharray="3,2"');
+
+      // corner posts (3-stud) full height of rectangular portion
+      s += R(0, bpT, sw, studTop, postf);
+      s += R(len - sw, bpT, len, studTop, postf);
+
+      function overlapsOpening(cx) {
+        for (var i = 0; i < ops.length; i++) {
+          var o = ops[i];
+          if (cx + sw / 2 > o.posLeft - sw - 0.1 && cx - sw / 2 < o.posLeft + o.width + sw + 0.1) return true;
+        }
+        return false;
+      }
+
+      // field studs @ OC (skip those inside an opening's king-stud zone)
+      for (var x = oc; x < len - sw; x += oc) {
+        if (overlapsOpening(x)) continue;
+        s += R(x - sw / 2, bpT, x + sw / 2, studTop, studf);
+      }
+
+      // opening framing
+      ops.forEach(function (o) {
+        var roT = o.roSill + o.roH;
+        var L0 = o.posLeft, L1 = o.posLeft + o.width;
+        // king studs (outside RO, full height)
+        s += R(L0 - sw, bpT, L0, studTop, postf);
+        s += R(L1, bpT, L1 + sw, studTop, postf);
+        // jack / trimmer studs (inside, up to header bottom)
+        s += R(L0, bpT, L0 + sw, roT, studf);
+        s += R(L1 - sw, bpT, L1, roT, studf);
+        // (2) 2×8 header
+        s += R(L0 - sw, roT, L1 + sw, roT + hdrD, hdrf);
+        s += Ln(L0 - sw, roT + hdrD / 2, L1 + sw, roT + hdrD / 2, 'stroke="var(--wall-stud-stroke)" stroke-width="0.5"');
+        // cripples above header, on the 16" layout, up to top plate
+        if (studTop > roT + hdrD + 1) {
+          for (var cx = Math.ceil(L0 / oc) * oc; cx < L1; cx += oc) {
+            s += R(cx - sw / 2, roT + hdrD, cx + sw / 2, studTop, studf);
+          }
+        }
+        // window: rough sill + cripples below
+        if (o.type === 'window') {
+          s += R(L0, o.roSill - 1.5, L1, o.roSill, studf);
+          for (var dx = Math.ceil(L0 / oc) * oc; dx < L1; dx += oc) {
+            s += R(dx - sw / 2, bpT, dx + sw / 2, o.roSill - 1.5, studf);
+          }
+        }
+        // RO outline + label
+        var oc2 = (o.type === 'door') ? 'var(--door)' : 'var(--win)';
+        s += R(L0, o.roSill, L1, roT, 'fill="' + oc2 + '" fill-opacity="0.10" stroke="' + oc2 + '" stroke-width="1.2" stroke-dasharray="5,3"');
+        var mcy = (o.roSill + roT) / 2;
+        s += '<text x="' + X((L0 + L1) / 2) + '" y="' + (Y(mcy) - 3) + '" text-anchor="middle" fill="' + oc2 + '" font-size="8" font-family="var(--font)" font-weight="bold">' + o.type.toUpperCase() + '</text>';
+        s += '<text x="' + X((L0 + L1) / 2) + '" y="' + (Y(mcy) + 8) + '" text-anchor="middle" fill="' + oc2 + '" font-size="6.5" font-family="var(--font)">' + ft(o.width) + ' × ' + ft(o.roH) + ' RO</text>';
+        s += '<text x="' + X((L0 + L1) / 2) + '" y="' + (Y(roT + hdrD / 2) + 2.5) + '" text-anchor="middle" fill="var(--wall-plate-stroke)" font-size="5.5" font-family="var(--font)">(2) 2×8 HDR</text>';
+      });
+
+      // rake wall: sloped double top plate + gable studs filling the triangle
+      if (w.kind === 'rake') {
+        s += '<polygon points="' + X(0) + ',' + Y(w.hL) + ' ' + X(len) + ',' + Y(w.hR) + ' ' + X(len) + ',' + Y(w.hR - tpT) + ' ' + X(0) + ',' + Y(w.hL - tpT) + '" ' + platef + '/>';
+        var gx = [];
+        for (var gxx = 0; gxx <= len - sw + 0.1; gxx += oc) gx.push(gxx);
+        if (gx[gx.length - 1] < len - sw - 0.1) gx.push(len - sw);
+        gx.forEach(function (xx) {
+          var yTop = topAt(xx + sw / 2) - tpT;
+          if (yTop > lowH + 1) s += R(xx, lowH, xx + sw, yTop, studf);
+        });
+        // slope callout
+        var mxx = len * 0.55;
+        s += '<text x="' + X(mxx) + '" y="' + (Y(topAt(mxx)) - 5) + '" text-anchor="middle" fill="var(--ink-dim)" font-size="8" font-family="var(--font)" font-style="italic">' + C.roof.pitch + ':12</text>';
+      }
+
+      // ---- dimensions ----
+      var dyB = oy + 24;
+      s += '<line x1="' + X(0) + '" y1="' + dyB + '" x2="' + X(len) + '" y2="' + dyB + '" stroke="' + DIM + '" stroke-width="0.8"/>';
+      s += '<line x1="' + X(0) + '" y1="' + (dyB - 4) + '" x2="' + X(0) + '" y2="' + (dyB + 4) + '" stroke="' + DIM + '" stroke-width="0.8"/>';
+      s += '<line x1="' + X(len) + '" y1="' + (dyB - 4) + '" x2="' + X(len) + '" y2="' + (dyB + 4) + '" stroke="' + DIM + '" stroke-width="0.8"/>';
+      s += '<text x="' + ((X(0) + X(len)) / 2) + '" y="' + (dyB + 12) + '" text-anchor="middle" fill="' + DIM + '" font-size="8" font-family="var(--font)">' + ftft(len) + '</text>';
+      // orientation letters
+      s += '<text x="' + X(0) + '" y="' + (oy + 12) + '" text-anchor="middle" fill="var(--ink-faint)" font-size="8" font-family="var(--font)">' + w.leftDir + '</text>';
+      s += '<text x="' + X(len) + '" y="' + (oy + 12) + '" text-anchor="middle" fill="var(--ink-faint)" font-size="8" font-family="var(--font)">' + w.rightDir + '</text>';
+      // height dims (left)
+      function vdim(h, dxx, txt) {
+        s += '<line x1="' + dxx + '" y1="' + Y(0) + '" x2="' + dxx + '" y2="' + Y(h) + '" stroke="' + DIM + '" stroke-width="0.8"/>';
+        s += '<line x1="' + (dxx - 4) + '" y1="' + Y(0) + '" x2="' + (dxx + 4) + '" y2="' + Y(0) + '" stroke="' + DIM + '" stroke-width="0.8"/>';
+        s += '<line x1="' + (dxx - 4) + '" y1="' + Y(h) + '" x2="' + (dxx + 4) + '" y2="' + Y(h) + '" stroke="' + DIM + '" stroke-width="0.8"/>';
+        var my = (Y(0) + Y(h)) / 2;
+        s += '<text x="' + (dxx - 6) + '" y="' + my + '" text-anchor="middle" fill="' + DIM + '" font-size="7.5" font-family="var(--font)" transform="rotate(-90,' + (dxx - 6) + ',' + my + ')">' + txt + '</text>';
+      }
+      if (w.kind === 'flat') vdim(w.hL, ox - 30, ftft(w.hL));
+      else { vdim(lowH, ox - 30, ftft(lowH) + ' low'); vdim(highH, ox - 46, ftft(highH) + ' high'); }
+
+      return '<div class="elev-card"><svg viewBox="0 0 ' + Wpx + ' ' + Hpx + '" width="' + Wpx + '" height="' + Hpx + '" xmlns="http://www.w3.org/2000/svg" style="background:var(--panel);border:1px solid var(--line);border-radius:4px;display:block;">'
+        + s
+        + '<text x="' + ox + '" y="18" fill="var(--accent)" font-size="10" font-family="var(--font)" font-weight="bold">' + w.name + '</text>'
+        + '<text x="' + ox + '" y="30" fill="var(--ink-dim)" font-size="7.5" font-family="var(--font)">' + w.sub + '</text>'
+        + '</svg></div>';
+    }
+
+    var host = document.getElementById('elevations');
+    if (host) host.innerHTML = walls.map(buildElevation).join('');
+
+    var chk = document.getElementById('elev-check');
+    if (chk) {
+      var okFit = (82 < lowH) && (80 < lowH);
+      chk.textContent = 'Shed roof: high E ' + ftft(highH) + ' → low W ' + ftft(lowH)
+        + ' · ' + C.roof.pitch + ':12 (' + rise.toFixed(1) + '" rise over ' + ftft(Wrun) + ')'
+        + ' · openings fit under the low plate: ' + (okFit ? 'YES ✓' : 'NO');
+      if (!okFit) chk.className = 'selfcheck bad';
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build); else build();
+})();
+</script>
+
+<script>
+/* Light / Dark theme toggle (top-left). Always opens in LIGHT (architectural);
+   clicking either segment re-skins the page live. */
+(function(){
+  var root=document.documentElement, opts=document.querySelectorAll('.tt-opt');
+  function apply(mode){
+    root.setAttribute('data-theme', mode);
+    opts.forEach(function(b){ var on=b.dataset.mode===mode; b.classList.toggle('active',on); b.setAttribute('aria-pressed', on?'true':'false'); });
+  }
+  apply('light');
+  opts.forEach(function(b){ b.addEventListener('click', function(){ apply(b.dataset.mode); }); });
+})();
+</script>
+</body>
+</html>
