@@ -229,7 +229,6 @@
       <p>CMU Basement + Patio + Framing Elevations + Roof / Rafter Detail · Datum: EXTERIOR out-to-out · Rev 14 (parametric)</p>
     </div>
   </div>
-  <span class="badge warn">PRELIMINARY — FIELD VERIFY ALL DIMS</span>
 </header>
 
 <!-- MOBILE TOP BAR (hidden on desktop) -->
@@ -1336,6 +1335,8 @@ const BP = (function () {
     function buildElevation(w) {
       var len = w.len;
       var rake = (w.kind === 'rake');
+      var cmuCourses = 3, cmuCourseH = 8;              // show (3) nominal-8" CMU courses below the floor (N & S only)
+      var belowIn = rake ? cmuCourses * cmuCourseH : 0;// depth of CMU foundation drawn below the floor line
       var rafterD = 9.25, shTh = 0.6;                  // 2×10 rafter + sheathing (roof drawn on rake walls)
       var ovW = rake ? ovSide('W') : 0;                // eave overhang on the low (W) side
       var xMin = 0, xMax = len, zTop = Math.max(w.hL, w.hR);
@@ -1343,7 +1344,7 @@ const BP = (function () {
         zTop = Math.max(w.hL, w.hR) + rafterD + shTh;  // include the roof above the high end
         if (w.wall === 'S') xMin = -ovW; else xMax = len + ovW;   // overhang on the low (W) side
       }
-      var ML = 60, MR = 32, MT = 40, MB = 46;
+      var ML = 60, MR = 32, MT = 40, MB = 46 + belowIn * S;   // extra bottom room for CMU courses on rake walls
       var Wpx = +((xMax - xMin) * S + ML + MR).toFixed(1), Hpx = +(zTop * S + MT + MB).toFixed(1);
       var ox = ML - xMin * S, oy = MT + zTop * S;       // floor baseline (y) in px
       var X = function (v) { return +(ox + v * S).toFixed(2); };
@@ -1363,6 +1364,36 @@ const BP = (function () {
 
       // floor / subfloor line
       s += Ln(0, 0, len, 0, 'stroke="var(--subfloor-stroke)" stroke-width="1.4"');
+
+      // ---- CMU foundation: (3) 8" courses shown below the floor, with basement windows (rake walls N & S) ----
+      if (rake) {
+        var cmuBot = -belowIn, blockLen = 16;            // 16" nominal block length (running bond)
+        var bwTop = 0, bwBot = -2 * cmuCourseH;          // basement window fills the top 2 courses (~16")
+        // solid CMU band (top of wall at the floor line, down 3 courses)
+        s += R(0, cmuBot, len, 0, 'fill="var(--cmu-fill)" stroke="var(--cmu-stroke-out)" stroke-width="1.4"');
+        // bed joints (horizontal mortar) between courses
+        for (var bj = 1; bj < cmuCourses; bj++)
+          s += Ln(0, -bj * cmuCourseH, len, -bj * cmuCourseH, 'stroke="var(--cmu-stroke-in)" stroke-width="0.6"');
+        // head joints (vertical mortar) in running bond — alternate courses offset half a block
+        for (var cc = 0; cc < cmuCourses; cc++) {
+          var yT = -cc * cmuCourseH, yB = -(cc + 1) * cmuCourseH;
+          for (var hx = (cc % 2 ? blockLen / 2 : blockLen); hx < len - 0.1; hx += blockLen)
+            s += Ln(hx, yT, hx, yB, 'stroke="var(--cmu-stroke-in)" stroke-width="0.6"');
+        }
+        // basement window opening(s): directly under the framed window, top 2 courses, bottom course solid
+        ops.filter(function (o) { return o.type === 'window'; }).forEach(function (o) {
+          var L0 = o.posLeft, L1 = o.posLeft + o.width, cxw = (L0 + L1) / 2, mcy = (bwTop + bwBot) / 2;
+          s += R(L0, bwBot, L1, bwTop, 'fill="var(--panel)" stroke="var(--win)" stroke-width="1.2" stroke-dasharray="5,3"');
+          s += '<text x="' + X(cxw) + '" y="' + (Y(mcy) - 2) + '" text-anchor="middle" fill="var(--win)" font-size="7" font-family="var(--font)" font-weight="bold">BASEMENT WIN</text>';
+          s += '<text x="' + X(cxw) + '" y="' + (Y(mcy) + 8) + '" text-anchor="middle" fill="var(--win)" font-size="6" font-family="var(--font)">' + ft(o.width) + ' × ' + ft(2 * cmuCourseH) + '</text>';
+        });
+        // CMU depth dimension (left side)
+        var dcx = ML - 22, mcyd = (Y(0) + Y(cmuBot)) / 2;
+        s += '<line x1="' + dcx + '" y1="' + Y(0) + '" x2="' + dcx + '" y2="' + Y(cmuBot) + '" stroke="' + DIM + '" stroke-width="0.8"/>';
+        s += '<line x1="' + (dcx - 4) + '" y1="' + Y(0) + '" x2="' + (dcx + 4) + '" y2="' + Y(0) + '" stroke="' + DIM + '" stroke-width="0.8"/>';
+        s += '<line x1="' + (dcx - 4) + '" y1="' + Y(cmuBot) + '" x2="' + (dcx + 4) + '" y2="' + Y(cmuBot) + '" stroke="' + DIM + '" stroke-width="0.8"/>';
+        s += '<text x="' + (dcx - 6) + '" y="' + mcyd + '" text-anchor="middle" fill="' + DIM + '" font-size="7" font-family="var(--font)" transform="rotate(-90,' + (dcx - 6) + ',' + mcyd + ')">(' + cmuCourses + ') 8&quot; CMU · ' + ftft(belowIn) + '</text>';
+      }
       // bottom plate — continuous, but cut out at door openings (doors reach the floor)
       var doorCuts = ops.filter(function (o) { return o.type === 'door'; })
         .map(function (o) { return [o.posLeft, o.posLeft + o.width]; })
@@ -1457,15 +1488,15 @@ const BP = (function () {
         s += '<text x="' + X(tailX) + '" y="' + (Y(topAt(tailX)) + 12) + '" text-anchor="' + ohAnch + '" fill="var(--roof-post)" font-size="6.5" font-family="var(--font)">' + ft(ovW) + ' eave O.H.</text>';
       }
 
-      // ---- dimensions ----
-      var dyB = oy + 24;
+      // ---- dimensions ---- (drop below the CMU courses on rake walls)
+      var dyB = oy + belowIn * S + 24;
       s += '<line x1="' + X(0) + '" y1="' + dyB + '" x2="' + X(len) + '" y2="' + dyB + '" stroke="' + DIM + '" stroke-width="0.8"/>';
       s += '<line x1="' + X(0) + '" y1="' + (dyB - 4) + '" x2="' + X(0) + '" y2="' + (dyB + 4) + '" stroke="' + DIM + '" stroke-width="0.8"/>';
       s += '<line x1="' + X(len) + '" y1="' + (dyB - 4) + '" x2="' + X(len) + '" y2="' + (dyB + 4) + '" stroke="' + DIM + '" stroke-width="0.8"/>';
       s += '<text x="' + ((X(0) + X(len)) / 2) + '" y="' + (dyB + 12) + '" text-anchor="middle" fill="' + DIM + '" font-size="8" font-family="var(--font)">' + ftft(len) + '</text>';
       // orientation letters
-      s += '<text x="' + X(0) + '" y="' + (oy + 12) + '" text-anchor="middle" fill="var(--ink-faint)" font-size="8" font-family="var(--font)">' + w.leftDir + '</text>';
-      s += '<text x="' + X(len) + '" y="' + (oy + 12) + '" text-anchor="middle" fill="var(--ink-faint)" font-size="8" font-family="var(--font)">' + w.rightDir + '</text>';
+      s += '<text x="' + X(0) + '" y="' + (oy + belowIn * S + 12) + '" text-anchor="middle" fill="var(--ink-faint)" font-size="8" font-family="var(--font)">' + w.leftDir + '</text>';
+      s += '<text x="' + X(len) + '" y="' + (oy + belowIn * S + 12) + '" text-anchor="middle" fill="var(--ink-faint)" font-size="8" font-family="var(--font)">' + w.rightDir + '</text>';
       // height dims (left)
       function vdim(h, dxx, txt) {
         s += '<line x1="' + dxx + '" y1="' + Y(0) + '" x2="' + dxx + '" y2="' + Y(h) + '" stroke="' + DIM + '" stroke-width="0.8"/>';
