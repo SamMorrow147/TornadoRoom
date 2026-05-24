@@ -132,6 +132,11 @@
     .mat-spec { font-size:0.68rem; color:var(--ink-dim); margin-top:3px; line-height:1.4; }
     .mat-note { font-size:0.66rem; color:var(--note); margin-top:5px; line-height:1.45; }
     .mat-buy { font-size:0.68rem; color:var(--good); margin-top:4px; font-weight:bold; }
+    .mat-thumb-link { flex:0 0 56px; display:block; text-decoration:none; line-height:0; }
+    .mat-thumb-link:hover .mat-thumb { border-color:var(--accent); }
+    .mat-thumb { width:56px; height:56px; object-fit:contain; border-radius:4px; border:1px solid var(--line-soft); background:var(--panel); padding:2px; transition:border-color .15s; }
+    .mat-price { font-size:0.75rem; color:var(--ink); font-weight:bold; margin-top:4px; }
+    .mat-section { list-style:none; font-size:0.65rem; font-weight:bold; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); padding:12px 0 4px; border-top:2px solid var(--accent); margin-top:8px; width:100%; }
     .mat-placeholder { font-size:0.68rem; color:var(--ink-faint); font-style:italic; margin-top:8px; }
 
     /* ── Materials dropdown toggle (main + per-elevation cards) ───────────── */
@@ -144,7 +149,7 @@
     .mat-toggle-hd[aria-expanded="false"] .mat-chevron { transform:rotate(-90deg); }
     /* collapsed elevation header drops its bottom border/margin so the card is compact */
     .elev-mat-card .mat-toggle-hd[aria-expanded="false"] { margin-bottom:0; border-bottom:none; padding-bottom:0; }
-    .mat-list-wrap { max-height:3200px; overflow:hidden; transition:max-height .45s ease; }
+    .mat-list-wrap { max-height:9000px; overflow:hidden; transition:max-height .45s ease; }
     .mat-list-wrap.mat-collapsed { max-height:0; }
 
     /* ── Build checklist ──────────────────────────────────────────────────── */
@@ -461,11 +466,11 @@
       </div>
       <div class="materials-col">
         <div class="materials-card">
-          <h3 class="mat-toggle-hd" id="matToggle" role="button" tabindex="0" aria-expanded="false">
+          <h3 class="mat-toggle-hd" id="matToggle" role="button" tabindex="0" aria-expanded="true">
             Materials
             <svg class="mat-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </h3>
-          <div class="mat-list-wrap mat-collapsed" id="matListWrap">
+          <div class="mat-list-wrap" id="matListWrap">
             <ul class="mat-list" id="materials-list"></ul>
           </div>
         </div>
@@ -488,6 +493,9 @@
       <button class="bk-reset-btn" id="bkResetBtn">Reset All</button>
     </div>
     <div id="build-checklist" class="build-checklist"></div>
+
+    <div class="panel-title" style="margin-top:28px;">Project Cost Estimate · listed framing &amp; structural materials · auto-totaled from this model</div>
+    <div id="cost-estimate"></div>
 
     <div id="layer-announce" aria-live="polite"></div>
   </div>
@@ -1444,16 +1452,77 @@ const BP = (function () {
       var rimNails=Math.ceil((rimNSLen*2+rimWELen*2)/6)+16; // @ ≤6" OC all 4 walls
       var plateNails=Math.ceil((rimNSLen*2+rimWELen*2)/8);  // 2 per bay, all 4 walls
 
-      function mi(qty,name,spec,note,buy,href){
+      function mi(qty,name,spec,note,buy,href,imgSrc,price){
         var nm=href?('<a class="mat-name" href="'+href+'" target="_blank" rel="noopener noreferrer">'+name+'</a>')
                    :('<span class="mat-name">'+name+'</span>');
-        return '<li class="mat-item"><div class="mat-qty">'+qty+'</div><div class="mat-body">'
+        var thumb=imgSrc?(href
+          ?('<a class="mat-thumb-link" href="'+href+'" target="_blank" rel="noopener noreferrer"><img class="mat-thumb" src="'+imgSrc+'" alt="" loading="lazy"></a>')
+          :('<img class="mat-thumb" src="'+imgSrc+'" alt="" loading="lazy">')):'';
+        return '<li class="mat-item"><div class="mat-qty">'+qty+'</div>'+thumb+'<div class="mat-body">'
           +nm+'<div class="mat-spec">'+spec+'</div><div class="mat-note">'+note+'</div>'
+          +(price?'<div class="mat-price">'+price+'</div>':'')
           +(buy?'<div class="mat-buy">'+buy+'</div>':'')
           +'</div></li>';
       }
 
       var menards='https://www.menards.com/main/hardware/fasteners-connectors/bolts/anchor-bolts/grip-fast-reg-1-2-hot-dipped-galvanized-anchor-bolt-w-nut-washers/232-9022/p-4393931518164314-c-8857.htm';
+      var mSillPT='https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/ac2-reg-2-x-6-2-prime-ground-contact-green-pressure-treated-lumber/1111066/p-1444422767258-c-13125.htm';
+      var mLumber2x8='https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/2-x-10-2-better-construction-framing-lumber/1022032/p-1444422415848-c-13125.htm';
+      var mJoistHanger='https://www.menards.com/main/hardware/fasteners-connectors/construction-hardware/structural-hangers/mitek-reg-triple-zinc-slant-nail-joist-hanger/jus26-tz/p-1444445489695-c-8843.htm';
+      var mHangerNails='https://www.menards.com/main/hardware/fasteners-connectors/nails/joist-hanger-nails/grip-fast-reg-10d-x-1-1-2-hot-dipped-galvanized-joist-hanger-nails/227-1507/p-1444445205096-c-8766.htm';
+      var mSubfloor='https://www.menards.com/main/building-materials/panel-products/tongue-groove-subfloor-panels/georgia-pacific-reg-dryguard-reg-3-4-x-4-x-8-sturd-i-floor-tongue-groove-osb-subfloor/1242878/p-1444431330901-c-13333.htm';
+      var mAdhesive='https://www.menards.com/main/paint/adhesives-glue-tape/adhesive/construction-adhesives/loctite-reg-pl-reg-400-all-weather-subfloor-deck-construction-adhesive/2136221/p-1444432321441-c-7921.htm';
+      var mScrews='https://www.menards.com/main/hardware/fasteners-connectors/screws/wood-screws/spax-reg-8-x-2-1-2-t-star-drive-yellow-zinc-flat-head-construction-screw-1-lb-box/4191020400604/p-1447285978550-c-8940.htm';
+      var mNails16d='https://www.menards.com/main/hardware/fasteners-connectors/nails/common-nails/grip-fast-reg-3-1-2-16d-bright-smooth-shank-common-nail-5-lb-box/2295088/p-1642874269878818-c-8759.htm';
+      // Product image URLs (from cdn.menardc.com)
+      var iAnchorBolt='https://cdn.menardc.com/main/items/media/HUTTI002/ProductXLarge/2329022_item.jpg';
+      var iSillPT='https://cdn.menardc.com/main/items/media/99998/ProductXLarge/111-1024_P_2x6-2MAIN.jpg';
+      var iLumber2x8='https://cdn.menardc.com/main/items/media/99998/ProductXLarge/1022016_RIGHT_LMD.jpg';
+      var iJoistHanger='https://cdn.menardc.com/main/items/media/UNITE035/ProductXLarge/JUS26-TZ_CorrosionIcon.jpg';
+      var iSubfloor='https://cdn.menardc.com/main/items/media/GEORG008/ProductXLarge/1242878_P_1_090424.jpg';
+      var iAdhesive='https://cdn.menardc.com/main/items/media/HENKE004/ProductXLarge/5201930_pl400_28oz_CMYK.jpg';
+      var iScrews='https://cdn.menardc.com/main/items/media/ABCFA001/ProductXLarge/4191020400604_screw.jpg';
+      var iNails16d='https://cdn.menardc.com/main/items/media/TREEI001/ProductXLarge/2295088_m.jpg';
+      // Menards prices (as of 5/24/2026 — confirm at store)
+      var pAnchorBolt='$3.29 / 2-count pack';
+      var pSillPT='$20.35 / 16\' board';
+      var pLumber2x8='$12.53 / 12\' board';
+      var pJoistHanger='$1.98 each';
+      var pSubfloor='$31.48 / sheet';
+      var pAdhesive='$7.58 / tube';
+      var pScrews='$12.63 / box';
+      var pNails16d='$16.49 / 5 lb box';
+      // ── Wall framing — URLs, images, prices ──────────────────────────────────
+      var mRafter=mLumber2x8; // same 2×10 product page
+      var iRafter=iLumber2x8;
+      var pRafter='$12.17 / 10\' board (select 16\' — confirm price in store)';
+      var mPineBoard='https://www.menards.com/main/building-materials/lumber-boards/boards/1-x-6-quality-pine-board/1033539/p-1444422751047-c-13115.htm';
+      var iPineBoard='https://cdn.menardc.com/main/items/media/99998/ProductXLarge/103-3512_P_2_071322.jpg';
+      var pPineBoard='$7.48 / board';
+      var mSubFascia='https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/2-x-6-construction-framing-lumber/1021758/p-1444422369989-c-13125.htm';
+      var iSubFascia='https://cdn.menardc.com/main/items/media/99998/ProductXLarge/1021758_P_Maste_LMD.jpg';
+      var pSubFascia='$19.39 / 20\' board';
+      var mSoffit='https://www.menards.com/main/building-materials/soffit/abtco-reg-12-x-12-brushed-vented-vinyl-soffit/vfbfwgb1201/p-1444437123560-c-1488981946224.htm';
+      var iSoffit='https://cdn.menardc.com/main/items/media/KPBUI001/ProductXLarge/1461622.jpg';
+      var pSoffit='$19.98 / panel';
+      var mFasciaCover='https://www.menards.com/main/building-materials/soffit/sell-even-6-x-12-aluminum-smooth-fascia/fh6-wh/p-1444424189971-c-1488981946224.htm';
+      var iFasciaCover='https://cdn.menardc.com/main/items/media/APPLE002/ProductXLarge/1571606Fascia0213.jpg';
+      var pFasciaCover='$22.78 / piece';
+      var mHClips='https://www.menards.com/main/hardware/fasteners-connectors/construction-hardware/miscellaneous-connectors/mitek-reg-g90-steel-plywood-clips/pc716-bmc/p-1444445513937-c-8865.htm';
+      var iHClips='https://cdn.menardc.com/main/items/media/UNITE035/ProductXLarge/PC716-BMC_main.jpg';
+      var pHClips='$4.84 / 25-pack';
+      var mDripEdge='https://www.menards.com/main/building-materials/roofing/roof-edge-tools-accessories/2-5-8-x-1-11-16-x-12-style-d-aluminum-drip-edge/ade12-wh/p-1444424196953-c-5817.htm';
+      var iDripEdge='https://cdn.menardc.com/main/items/media/APPLE002/ProductXLarge/ADE12-WH_ADE12-WH_05_DripEdge_ALUM_NA_White_ASC_GBA_IMG_HERO.jpg';
+      var pDripEdge='$9.98 / 12\' piece';
+      var mAngleClip='https://www.menards.com/main/hardware/fasteners-connectors/construction-hardware/structural-angles-straps/mitek-reg-1-5-16-x-2-3-8-x-6-15-16-angle-clip/ac7-tz/p-1444445476369-c-8815.htm';
+      var iAngleClip='https://cdn.menardc.com/main/items/media/UNITE035/ProductXLarge/AC7-TZ_main.jpg';
+      var pAngleClip='$4.78 each';
+      var mGutter='https://www.menards.com/main/building-materials/roofing-soffits-gutters/gutters-accessories/gutters/spectra-metals-5-x-10-k-style-aluminum-gutter/5k10rtw/p-1444443256229-c-1492703914553.htm';
+      var iGutter='https://cdn.menardc.com/main/items/media/SPECT009/ProductXLarge/GUTTER_WHITE2020.jpg';
+      var pGutter='$16.98 / 10\' section';
+      var mRebarChair='https://www.menards.com/main/building-materials/concrete-cement-masonry/concrete-accessories/plastic-rebar-chair/852058/p-1549265384188-c-5642.htm';
+      var iRebarChair='https://cdn.menardc.com/main/items/media/GARDE001/ProductXLarge/1831235_FV.jpg';
+      var pRebarChair='$0.33 each';
       var html='';
 
       // ── Anchor bolts ──────────────────────────────────────────────────────────
@@ -1461,57 +1530,119 @@ const BP = (function () {
         'Grip Fast · hot-dip galvanized · 7" min embed in grouted CMU core',
         'IRC ≤72" OC, within 12" of plate ends · N '+b.N+' · S '+b.S+' · W '+b.W+' · E '+b.E,
         'Buy ~'+(total+1)+' ('+total+' on plan + 1 spare)',
-        menards);
+        menards, iAnchorBolt, pAnchorBolt);
 
       // ── Sill plates ───────────────────────────────────────────────────────────
       html+=mi('6 pcs','2×6 PT sill plate  (flat on CMU)',
         'N: '+ftft2(sillNLen)+' · S: '+ftft2(sillSLen)+' · W: 10\'−0\" + '+ftft2(sillWLen-120)+' · E: 10\'−0\" + '+ftft2(sillELen-120),
         'Pressure-treated (UC4B+) · ½" sill-seal gasket under every piece · anchor bolts through · E/W pieces lap-splice over a grouted CMU core',
-        'Buy ~'+sillTotLF+' LF of 2×6 PT (6 cut pieces total)');
+        'Buy ~'+sillTotLF+' LF of 2×6 PT (6 cut pieces total)',
+        mSillPT, iSillPT, pSillPT);
 
       // ── Rim / box sill ────────────────────────────────────────────────────────
       html+=mi('6 pcs','2×8 rim / box sill  (on edge)',
         'N &amp; S: '+ftft2(rimNSLen)+' ea · W &amp; E: 2 pcs each ≈ '+ftft2(rimWELen/2)+' ea (splice at mid-span)',
         'Flush to exterior CMU face · N/S rims are parallel to joists · E/W rims receive joist ends — install hangers before raising those two rims',
-        'Buy ~'+rimTotLF+' LF of 2×8 (6 cut pieces total)');
+        'Buy ~'+rimTotLF+' LF of 2×8 (6 cut pieces total)',
+        mLumber2x8, iLumber2x8, pLumber2x8);
 
       // ── Field joists ──────────────────────────────────────────────────────────
       html+=mi(jc,'2×8 #2 SYP field joists',
         ftft2(G.joist.length)+' long · 16" OC · run E–W · clear span '+ftft2(G.joist.clearSpan),
         G.joist.bearing+'" bearing on W/E sill plates · butt W/E rim joists · IRC R502.3.1 OK @ 40 psf · confirm species/grade at the yard',
-        'Buy '+jc+' × 10\' 2×8 SYP (each 9\'−10\" joist cuts cleanly from a 10\' length)');
+        'Buy '+jc+' × 10\' 2×8 SYP (each 9\'−10\" joist cuts cleanly from a 10\' length)',
+        mLumber2x8, iLumber2x8, pLumber2x8);
 
       // ── Joist hangers ─────────────────────────────────────────────────────────
       html+=mi(totalHangers,'LUS28 joist hangers  (or IUS28)',
         'Simpson Strong-Tie LUS28 · '+jc+' on W rim + '+jc+' on E rim = '+totalHangers+' total',
         'Install on rim before raising · nail with 10d × 1½" joist-hanger nails (0.148" dia) ONLY — common nails reduce rated capacity',
-        'Buy '+totalHangers+' hangers + 1 lb box 10d × 1½" HDG joist-hanger nails (~'+(totalHangers*10)+' needed)');
+        'Buy '+totalHangers+' hangers + 1 lb box 10d × 1½" HDG joist-hanger nails (~'+(totalHangers*10)+' needed)',
+        mJoistHanger, iJoistHanger, pJoistHanger);
 
       // ── Subfloor ──────────────────────────────────────────────────────────────
       if(BP._sheets){
         html+=mi(BP._sheets.buy,'¾" (23/32") T&amp;G subfloor panels',
           '4×8 rated sheathing · Exposure 1 · strength axis ⊥ joists (8\' length runs N–S)',
           BP._sheets.pieces+' pieces ('+BP._sheets.full+' full + '+BP._sheets.cut+' cut) · stagger end joints · leave ⅛" gaps at all edges · glue + screw',
-          'Buy ~'+BP._sheets.buy+' sheets (plan count + ~15 % cutting waste)');
+          'Buy ~'+BP._sheets.buy+' sheets (plan count + ~15 % cutting waste)',
+          mSubfloor, iSubfloor, pSubfloor);
         html+=mi('2 tubes','Subfloor adhesive  (PL Premium or equiv.)',
           'Bead on every joist top before laying each panel',
           'Critical for squeak prevention — do not skip · one tube covers ≈200 LF of joist top',
-          'Buy 2 tubes (covers ~'+Math.ceil(jc*(G.joist.length/12)*1.2)+' LF of glue line with overlap)');
+          'Buy 2 tubes (covers ~'+Math.ceil(jc*(G.joist.length/12)*1.2)+' LF of glue line with overlap)',
+          mAdhesive, iAdhesive, pAdhesive);
         html+=mi('~200','#8 × 2" coarse-thread screws  (or 8d ring-shank nails)',
           'Fasten subfloor to every joist: 6" OC at panel edges, 12" OC in field',
           'Structural screws preferred over smooth-shank nails · use with adhesive for a squeak-free, rigid floor',
-          'Buy 1 lb box of 8d ring-shank nails or a box of #8 × 2" screws');
+          'Buy 1 lb box of 8d ring-shank nails or a box of #8 × 2" screws',
+          mScrews, iScrews, pScrews);
       }
 
       // ── Framing nails (rim + plate connections) ───────────────────────────────
       html+=mi('~'+rimNails,'16d common nails  (rim → sill, all 4 walls)',
         '3½" × 0.162" · face-nail rim edge to sill top at ≤6" OC',
         'Or 3" structural screws (GRK R4 / FastenMaster THD) at same spacing · toenail 2-16d at each rim end',
-        'Buy 2 lb box of 16d common nails (covers rim-to-sill on all four walls)');
+        'Buy 2 lb box of 16d common nails (covers rim-to-sill on all four walls)',
+        mNails16d, iNails16d, pNails16d);
       html+=mi('~'+plateNails,'16d common nails  (wall bottom plate → rim)',
         '3½" × 0.162" · face-nail wall bottom plate to top of rim, 2 per stud bay · all 4 walls',
         'IRC R602.3(1) · or 3" structural screws @ 16" OC field / 6" OC ends',
-        'Buy 1 lb box (above rim-to-sill box should have remainder)');
+        'Buy 1 lb box (above rim-to-sill box should have remainder)',
+        mNails16d, iNails16d, pNails16d);
+
+      // ── Wall Framing ─────────────────────────────────────────────────────────
+      html+='<li class="mat-section">Wall Framing · Roof · Eave · Patio</li>';
+      html+=mi('~14','2×10 #2 rafters  (@ 16" OC)',
+        '16\' lengths · shed roof run ~12\' + 18" W eave tail',
+        'Set plumb/bird\'s-mouth cuts to match roof pitch · hurricane-tie every rafter at both bearing walls',
+        'Buy 16\' boards — 1 per rafter bay + 2 gable tails',
+        mRafter, iRafter, pRafter);
+      html+=mi('2','1×6×8\' Quality Pine  (finish fascia — W eave)',
+        'Nailed over sub-fascia at the west (low) eave · painted finish',
+        'Cedar is the premium no-paint option · prime all 6 sides before install to prevent cupping',
+        'Buy 2 boards for the ~20\' W eave run',
+        mPineBoard, iPineBoard, pPineBoard);
+      html+=mi('1','2×6×20\' framing lumber  (sub-fascia — W eave)',
+        'Backs the finish fascia · supports soffit edge at W eave overhang',
+        'One 20\' board covers the full west wall in a single piece — no splice',
+        'Buy 1 board',
+        mSubFascia, iSubFascia, pSubFascia);
+      html+=mi('2','ABTCO® 12"×12\' vented vinyl soffit  (W eave intake)',
+        'Basketweave brushed-white vented panels · 18" eave depth fits in one 12" panel per run',
+        'Lanced vents provide intake air for roof cavity · snap into J-channel along wall and sub-fascia',
+        'Buy 2 panels for the ~20\' W eave run',
+        mSoffit, iSoffit, pSoffit);
+      html+=mi('2','Sell-Even® 6"×12\' aluminum smooth fascia cover  (W eave)',
+        'Wraps over 1× wood fascia · white baked enamel · no painting ever',
+        'Overlap pieces 1"–2" · nail through top hem only so panels can expand/contract',
+        'Buy 2 pieces (overlap at mid-span)',
+        mFasciaCover, iFasciaCover, pFasciaCover);
+      html+=mi('2 pks','MiTek® 7/16" G90 H-Clips  (roof panel edge support)',
+        '25-ct pack · slip on unsupported long edges between sheathing panels',
+        'Required at all mid-span panel edges not landing on a rafter — prevents edge sag',
+        'Buy 2 × 25-ct packs (one at each unsupported sheathing row)',
+        mHClips, iHClips, pHClips);
+      html+=mi('~6','2⅝"×1-11/16"×12\' Style-D aluminum drip edge  (roof perimeter)',
+        'White · install on all 4 roof edges before shingles · directs water off edge',
+        'Rake drip edge goes under ice &amp; water shield · eave drip edge goes over felt/shield',
+        'Buy 6 × 12\' pieces to cover full perimeter with overlap',
+        mDripEdge, iDripEdge, pDripEdge);
+      html+=mi('~16','MiTek® AC7-TZ angle clip  (corner &amp; top-plate ties)',
+        '1-5/16"×2-3/8"×6-15/16" triple-zinc · ties rake walls to flat walls at all 4 corners',
+        'Also secures double top-plate laps · nail with 10d × 1½" HDG nails',
+        'Buy 16 (4 per corner × 4 corners)',
+        mAngleClip, iAngleClip, pAngleClip);
+      html+=mi('2','Spectra Metals 5"×10\' K-style aluminum gutter  (W eave)',
+        'Two 10\' sections cover the ~20\' west run · add connector, end caps &amp; downspout from same aisle',
+        'Pitch gutter ⅛" per 10\' toward downspout · use hidden hangers at 24" OC max',
+        'Buy 2 sections + 1 inside corner + end caps + 1 downspout',
+        mGutter, iGutter, pGutter);
+      html+=mi('~28','Plastic rebar chair  (S patio slab)',
+        'Holds #3 rebar at mid-slab height (~1½") during pour · 10\'×10\' slab at 18" OC each way',
+        'Place under every rebar intersection · use wire ties at crossings to keep grid in place',
+        'Buy 28–30 chairs',
+        mRebarChair, iRebarChair, pRebarChair);
 
       ml.innerHTML=html;
     }
@@ -1639,6 +1770,82 @@ const BP = (function () {
     var postf = 'fill="var(--wall-post)" fill-opacity="0.82" stroke="var(--wall-stud-stroke)" stroke-width="0.6"';
     var hdrf = 'fill="var(--wall-post)" fill-opacity="0.50" stroke="var(--wall-stud-stroke)" stroke-width="0.8"';
 
+    // ---- framing takeoff: counts every wood member buildElevation() DRAWS -----
+    // Mirrors the exact geometry loops in buildElevation so the materials list
+    // and the drawing can never drift apart. Lengths are in inches. Roof rafters
+    // / sheathing are intentionally NOT counted here (shared E↔W members; they
+    // appear on both rake elevations and would double-count — handled elsewhere).
+    function tallyFraming(w) {
+      var len = w.len;
+      var rake = (w.kind === 'rake');
+      var wallTop = rake ? lowH : w.hL;     // top of the rectangular wall portion
+      var studTop = wallTop - tpT;          // underside of the (double) top plate
+      var fullLen = studTop - bpT;          // cut length of a full-height stud
+      var ops = openingsFor(w.wall);
+
+      // same overlap test the stud loop uses (a stud is dropped inside this zone)
+      function overlapsOpening(cx) {
+        for (var i = 0; i < ops.length; i++) {
+          var o = ops[i];
+          if (cx + sw / 2 > o.posLeft - sw - 0.1 && cx - sw / 2 < o.posLeft + o.width + sw + 0.1) return true;
+        }
+        return false;
+      }
+
+      var m = {
+        fullLen: fullLen,
+        botPlate: len,            // 2×6, single, continuous (in)
+        topPlate: 2 * len,        // 2×6, double top plate over rectangular portion (in)
+        rakePlate: 0,             // 2×6, sloped double top plate on rake walls (in)
+        corners: 2,               // full-height end posts (count)
+        field: 0,                 // full-height field studs @ OC (count)
+        king: 0,                  // full-height king studs (count)
+        jacks: [],                // trimmer studs, cut to header bottom (lengths)
+        headers: [],              // (2)-ply 2×8 headers (each entry = one header length, in)
+        crippleAbove: [],         // 2×6 cripples header→top plate (lengths)
+        roughSill: [],            // 2×6 window rough sills (lengths)
+        crippleBelow: [],         // 2×6 cripples sill→bottom plate (lengths)
+        gable: []                 // 2×6 rake/gable studs above lowH (lengths)
+      };
+
+      // field studs @ OC (skip those swallowed by an opening's king-stud zone)
+      for (var x = oc; x < len - sw; x += oc) {
+        if (overlapsOpening(x)) continue;
+        m.field++;
+      }
+
+      // per-opening framing (king + jack + header + cripples + window sill)
+      ops.forEach(function (o) {
+        var roT = o.roSill + o.roH;
+        var L0 = o.posLeft, L1 = o.posLeft + o.width;
+        m.king += 2;
+        m.jacks.push(roT - bpT, roT - bpT);
+        m.headers.push(o.width + 2 * sw);               // (2) 2×8, length = RO + 2 king faces
+        if (studTop > roT + hdrD + 1) {                 // cripples above header
+          for (var cx = Math.ceil(L0 / oc) * oc; cx < L1; cx += oc) m.crippleAbove.push(studTop - (roT + hdrD));
+        }
+        if (o.type === 'window') {                       // rough sill + cripples below
+          m.roughSill.push(o.width);
+          for (var dx = Math.ceil(L0 / oc) * oc; dx < L1; dx += oc) m.crippleBelow.push((o.roSill - 1.5) - bpT);
+        }
+      });
+
+      // rake wall: sloped double top plate + gable studs filling the triangle
+      if (rake) {
+        var rise = Math.abs(w.hR - w.hL);
+        m.rakePlate = 2 * Math.sqrt(len * len + rise * rise);
+        var topAt = function (xx) { return w.hL + (w.hR - w.hL) * (xx / len); };
+        var gx = [];
+        for (var gxx = 0; gxx <= len - sw + 0.1; gxx += oc) gx.push(gxx);
+        if (gx[gx.length - 1] < len - sw - 0.1) gx.push(len - sw);
+        gx.forEach(function (xx) {
+          var yTop = topAt(xx + sw / 2) - tpT;
+          if (yTop > lowH + 1) m.gable.push(yTop - lowH);
+        });
+      }
+      return m;
+    }
+
     // ---- per-elevation materials card ----------------------------------------
     function buildElevMaterials(w) {
       var L = C.lumber, G = BP.G;
@@ -1656,13 +1863,39 @@ const BP = (function () {
       var plateNails = Math.ceil(rimLen / 8);         // 2 × 16d per 16" bay
       var jc = G.joist.centers.length + 2;           // total field + 2 end joists
 
-      function mi(qty, name, spec, note) {
-        return '<li class="mat-item">'
-          + '<div class="mat-qty">' + qty + '</div>'
-          + '<div class="mat-body">'
-          + '<span class="mat-name">' + name + '</span>'
-          + '<div class="mat-spec">' + spec + '</div>'
-          + '<div class="mat-note">' + note + '</div>'
+      // Menards links / images / prices — scoped to this function
+      var _mSill   = 'https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/ac2-reg-2-x-6-2-prime-ground-contact-green-pressure-treated-lumber/1111066/p-1444422767258-c-13125.htm';
+      var _iSill   = 'https://cdn.menardc.com/main/items/media/99998/ProductXLarge/111-1024_P_2x6-2MAIN.jpg';
+      var _pSill   = '$20.35 / 16\' board';
+      var _mLumber = 'https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/2-x-10-2-better-construction-framing-lumber/1022032/p-1444422415848-c-13125.htm';
+      var _iLumber = 'https://cdn.menardc.com/main/items/media/99998/ProductXLarge/1022016_RIGHT_LMD.jpg';
+      var _pLumber = '$12.53 / 12\' board';
+      var _mHanger = 'https://www.menards.com/main/hardware/fasteners-connectors/construction-hardware/structural-hangers/mitek-reg-triple-zinc-slant-nail-joist-hanger/jus26-tz/p-1444445489695-c-8843.htm';
+      var _iHanger = 'https://cdn.menardc.com/main/items/media/UNITE035/ProductXLarge/JUS26-TZ_CorrosionIcon.jpg';
+      var _pHanger = '$1.98 each';
+      var _mHNails = 'https://www.menards.com/main/hardware/fasteners-connectors/nails/joist-hanger-nails/grip-fast-reg-10d-x-1-1-2-hot-dipped-galvanized-joist-hanger-nails/227-1507/p-1444445205096-c-8766.htm';
+      var _iHNails = 'https://cdn.menardc.com/main/items/media/TREEI001/ProductXLarge/2271507_1442_1700_JoistHangerNail_1.jpg';
+      var _pHNails = '$4.98 / 1 lb box';
+      var _mNails  = 'https://www.menards.com/main/hardware/fasteners-connectors/nails/common-nails/grip-fast-reg-3-1-2-16d-bright-smooth-shank-common-nail-5-lb-box/2295088/p-1642874269878818-c-8759.htm';
+      var _iNails  = 'https://cdn.menardc.com/main/items/media/TREEI001/ProductXLarge/2295088_m.jpg';
+      var _pNails  = '$16.49 / 5 lb box';
+      // SPF #2/stud-grade 2×6 for the above-grade wall framing (NOT the PT sill)
+      var _mStud   = 'https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/2-x-6-construction-framing-lumber/1021758/p-1444422369989-c-13125.htm';
+      var _iStud   = _iSill;   // same 2×6 board profile photo
+      // $/ft derived from prices already in this file: 2×6 from the PT sill SKU,
+      // 2×8 from the _pLumber SKU (the file already prices 2×8 rim/joists this way).
+      var _p6ft    = 20.35 / 16;   // ≈ $1.27/ft  (PT sill rate — SPF stud-grade runs less; verify locally)
+      var _p8ft    = 12.53 / 12;   // ≈ $1.04/ft
+
+      function mi(qty, name, spec, note, href, imgSrc, price) {
+        var nm = href ? ('<a class="mat-name" href="' + href + '" target="_blank" rel="noopener noreferrer">' + name + '</a>')
+                      : ('<span class="mat-name">' + name + '</span>');
+        var thumb = imgSrc ? (href
+          ? ('<a class="mat-thumb-link" href="' + href + '" target="_blank" rel="noopener noreferrer"><img class="mat-thumb" src="' + imgSrc + '" alt="" loading="lazy"></a>')
+          : ('<img class="mat-thumb" src="' + imgSrc + '" alt="" loading="lazy">')) : '';
+        return '<li class="mat-item"><div class="mat-qty">' + qty + '</div>' + thumb + '<div class="mat-body">'
+          + nm + '<div class="mat-spec">' + spec + '</div><div class="mat-note">' + note + '</div>'
+          + (price ? '<div class="mat-price">' + price + '</div>' : '')
           + '</div></li>';
       }
 
@@ -1672,45 +1905,144 @@ const BP = (function () {
       if (sillPcs === 1) {
         html += mi('1', '2×6 PT sill plate',
           ft(sillLen) + ' · one piece · laid flat on sill seal',
-          'Pressure-treated (UC4B+) · ½" sill-seal gasket under · anchor bolts through');
+          'Pressure-treated (UC4B+) · ½" sill-seal gasket under · anchor bolts through',
+          _mSill, _iSill, _pSill);
       } else {
         html += mi('2', '2×6 PT sill plate',
           ftft(120) + ' + ' + ftft(split2) + ' · two pieces',
-          'Splice over a grouted CMU core · both PT · ½" sill-seal gasket under each');
+          'Splice over a grouted CMU core · both PT · ½" sill-seal gasket under each',
+          _mSill, _iSill, _pSill);
       }
 
       // Rim / box sill
       html += mi('1', '2×8 rim / box sill (on edge)',
         ftft(rimLen) + ' · flush to exterior CMU face',
         isEW ? 'Field joists butt this rim — install hangers before raising rim'
-              : 'Runs parallel to field joists · face-nail top &amp; bottom to sill plate');
+              : 'Runs parallel to field joists · face-nail top &amp; bottom to sill plate',
+        _mLumber, _iLumber, _pLumber);
 
       // Field joists shown on the W (low) wall only — they run E→W and land on W sill
       if (w.wall === 'W') {
         html += mi(jc, '2×8 #2 SYP field joists',
           ftft(G.joist.length) + ' long · 16" OC · run E–W across floor',
-          'Clear span ' + ftft(G.joist.clearSpan) + ' · ' + G.joist.bearing + '" bearing on sill each end · IRC R502.3.1 OK @ 40 psf');
+          'Clear span ' + ftft(G.joist.clearSpan) + ' · ' + G.joist.bearing + '" bearing on sill each end · IRC R502.3.1 OK @ 40 psf',
+          _mLumber, _iLumber, _pLumber);
       }
 
       // Joist hangers on both E and W walls (joists butt both rims)
       if (isEW) {
         html += mi(jc, 'LUS28 joist hangers (or IUS28)',
           'Simpson Strong-Tie LUS28 · 1 per joist · ' + jc + ' total this wall',
-          'Set on rim before raising · nail with 10d × 1½" joist-hanger nails (0.148" dia) ONLY — no common-nail substitution');
+          'Set on rim before raising · nail with 10d × 1½" joist-hanger nails (0.148" dia) ONLY — no common-nail substitution',
+          _mHanger, _iHanger, _pHanger);
         html += mi('~' + (jc * 10), '10d × 1½" HDG joist-hanger nails',
           '0.148" dia · galvanized · ≈10 per LUS28 hanger',
-          'Buy in bulk box; label capacity is void if wrong nail spec is used');
+          'Buy in bulk box; label capacity is void if wrong nail spec is used',
+          _mHNails, _iHNails, _pHNails);
       }
 
       // Rim-to-sill face nails
       html += mi('~' + rimNails, '16d common nails  (rim → sill)',
         '3½" × 0.162" · face-nail rim edge to top of sill @ ≤6" OC',
-        'Alt: 3" structural screws (GRK R4 / FastenMaster THD) at same spacing · toenail 2-16d at each rim end');
+        'Alt: 3" structural screws (GRK R4 / FastenMaster THD) at same spacing · toenail 2-16d at each rim end',
+        _mNails, _iNails, _pNails);
 
       // Bottom-plate-to-rim nails (wall framing bearing on rim)
       html += mi('~' + plateNails, '16d common nails  (wall plate → rim)',
         '3½" × 0.162" · face-nail wall bottom plate to rim top · 2 per stud bay',
-        'IRC R602.3(1) · alt: 3" structural screws @ 16" OC field / 6" OC ends');
+        'IRC R602.3(1) · alt: 3" structural screws @ 16" OC field / 6" OC ends',
+        _mNails, _iNails, _pNails);
+
+      // ===== WALL FRAMING — every stud / plate / header the elevation draws =====
+      var F = tallyFraming(w);
+      function _sum(a) { return a.reduce(function (s, v) { return s + v; }, 0); }
+      function _grp(arr) {
+        var mp = {};
+        arr.forEach(function (v) { var k = (Math.round(v * 8) / 8).toFixed(3); mp[k] = (mp[k] || 0) + 1; });
+        return Object.keys(mp).sort(function (a, b) { return parseFloat(b) - parseFloat(a); })
+          .map(function (k) { return mp[k] + ' @ ' + ft(parseFloat(k)); }).join(' + ');
+      }
+      function _stockFt(cut) { return cut <= 93 ? 8 : cut <= 117 ? 10 : cut <= 141 ? 12 : cut <= 189 ? 16 : (Math.ceil(cut / 12) + 1); }
+
+      var fullCut = F.fullLen;
+      var fullN   = F.field + F.king;          // full-height field + king studs
+      var studStk = _stockFt(fullCut);
+
+      // 1) full-height wall studs (field + king)
+      html += mi(fullN, '2×6 wall studs @ 16" OC',
+        ft(fullCut) + ' cut · ' + F.field + ' field + ' + F.king + ' king (full height to top plate)',
+        'SPF #2 · single 2×6 bottom plate, double 2×6 top plate · cut from ' + studStk + "' stock",
+        _mStud, _iStud, '≈ $' + (fullN * studStk * _p6ft).toFixed(0) + '  (' + fullN + ' × ' + studStk + "')");
+
+      // 2) corner posts
+      html += mi(F.corners, '2×6 corner posts',
+        ft(fullCut) + ' · one at each end of this wall',
+        'Build as 3-stud corner assemblies at the building corners (the extra studs are shared with the adjoining wall — count once per corner)',
+        _mStud, _iStud, '');
+
+      // 3) jack / trimmer studs
+      if (F.jacks.length) html += mi(F.jacks.length, '2×6 jack / trimmer studs',
+        _grp(F.jacks) + ' · carry the header, nailed to the king studs',
+        'Cut to the rough-opening height under the header · 2 per opening',
+        _mStud, _iStud, '');
+
+      // 4) headers
+      if (F.headers.length) html += mi(F.headers.length, '(2) 2×8 headers',
+        F.headers.map(function (h) { return '2 plies × ' + ft(h); }).join(' · ') + '  (RO width + 2 king faces)',
+        'Two 2×8 plies (7¼") + ½" plywood spacer to fill the 5½" wall · one over each window & door · verify span / snow load with engineering',
+        _mLumber, _iLumber, '≈ $' + (_sum(F.headers) * 2 / 12 * _p8ft).toFixed(0) + '  (' + ft(_sum(F.headers) * 2) + ' of 2×8)');
+
+      // 5) cripples above the header
+      if (F.crippleAbove.length) html += mi(F.crippleAbove.length, '2×6 cripples (above header)',
+        _grp(F.crippleAbove) + ' · header top → top plate, on the 16" layout',
+        'Short fill studs that keep the 16" OC stud layout running above each opening',
+        _mStud, _iStud, '');
+
+      // 6) window rough sill
+      if (F.roughSill.length) html += mi(F.roughSill.length, '2×6 window rough sill',
+        _grp(F.roughSill) + ' · flat sill at the bottom of the window RO',
+        'Spans between the jack studs under the window opening',
+        _mStud, _iStud, '');
+
+      // 7) cripples below the sill
+      if (F.crippleBelow.length) html += mi(F.crippleBelow.length, '2×6 cripples (below sill)',
+        _grp(F.crippleBelow) + ' · bottom plate → rough sill, on the 16" layout',
+        'Support the rough sill and continue the stud layout under the window',
+        _mStud, _iStud, '');
+
+      // 8) gable / rake studs (rake walls only)
+      if (F.gable.length) html += mi(F.gable.length, '2×6 gable / rake studs',
+        _grp(F.gable) + ' · fill the triangle above the low top plate up to the sloped rake plate',
+        'Cut to the 4:12 rake — tallest at the high (E) end, stepping down toward the low (W) end',
+        _mStud, _iStud, '');
+
+      // 9) bottom plate
+      html += mi('1', '2×6 bottom plate (single)',
+        ft(F.botPlate) + ' run · cut out at door openings',
+        'Single 2×6 nailed to the rim / subfloor · pieces from ' + (F.botPlate > 189 ? "16' boards (splice over a stud)" : _stockFt(F.botPlate) + "' stock"),
+        _mStud, _iStud, '');
+
+      // 10) top plate (double) — incl. the sloped rake plate where applicable
+      var topLF = F.topPlate + F.rakePlate;
+      html += mi('1', '2×6 top plate (double)',
+        ft(F.topPlate) + ' × 2 plies' + (F.rakePlate ? ' + sloped rake plate ' + ft(F.rakePlate / 2) + ' × 2 plies' : '') + '  (lap the corners)',
+        'Double 2×6 · the upper plate laps the adjoining walls at the corners' + (F.rakePlate ? ' · the rake plate follows the 4:12 slope' : ''),
+        _mStud, _iStud, '');
+
+      // ---- boards-to-buy + estimated cost (2×6 priced from the in-file PT-sill rate) ----
+      var shortsLF = _sum(F.jacks) + _sum(F.crippleAbove) + _sum(F.crippleBelow) + _sum(F.roughSill) + _sum(F.gable);
+      var platesLF = F.botPlate + topLF;
+      var b_studs = fullN + F.corners;                                  // 1 board each
+      var b_short = (F.jacks.length || F.gable.length) ? Math.ceil(shortsLF * 1.15 / 192) : 0;
+      var b_plate = Math.ceil(platesLF * 1.08 / 192);
+      var b_hdr   = F.headers.length ? Math.ceil(_sum(F.headers) * 2 * 1.15 / 144) : 0;
+      var cost6   = (b_studs * studStk + (b_short + b_plate) * 16) * _p6ft;
+      var cost8   = b_hdr * 12 * _p8ft;
+      var boardsTxt = b_studs + ' × 2×6-' + studStk + "' (studs + corners) + " + b_short + " × 2×6-16' (jacks / cripples / sills) + " + b_plate + " × 2×6-16' (plates)" + (b_hdr ? ' + ' + b_hdr + " × 2×8-12' (headers)" : '');
+      html += mi('≈' + (b_studs + b_short + b_plate + b_hdr), '▸ Boards to buy — wall framing (est.)',
+        'Full studs ' + fullN + ' + ' + F.corners + ' corner · plates ' + ft(platesLF) + ' · short pieces ' + ft(shortsLF) + (F.headers.length ? ' · headers ' + ft(_sum(F.headers) * 2) + ' of 2×8' : ''),
+        'Buy ≈ ' + boardsTxt + '. Cost uses the in-file 2×6 rate (PT sill SKU) — SPF stud-grade is typically cheaper, so treat this as a ceiling; field-verify quantities and local price.',
+        _mStud, _iStud, '≈ $' + (cost6 + cost8).toFixed(0) + ' total');
 
       return '<div class="elev-mat-card">'
         + '<h3 class="mat-toggle-hd" role="button" tabindex="0" aria-expanded="false">'
@@ -1984,10 +2316,135 @@ const BP = (function () {
       return '<div class="rafter-detail-wrap">' + svg + ol + '</div>';
     }
 
+    // ===== PROJECT COST ESTIMATE — auto-totaled from the same model =====
+    function buildCostEstimate() {
+      var ceHost = document.getElementById('cost-estimate');
+      if (!ceHost) return;
+      var G = BP.G;
+      var P6 = 20.35 / 16, P8 = 12.53 / 12;   // $/ft derived in-file (2×6 PT sill SKU, 2×8 SKU)
+
+      // ---- floor-system quantities (recomputed from the model) ----
+      function spanOf(o) { return BP.openingSpan(o); }
+      var boltN = BP.boltsAlong(C.ext.N, [spanOf(C.openings.Nwin)]).length;
+      var boltS = BP.boltsAlong(C.ext.S, [spanOf(C.openings.Swin), spanOf(C.openings.Sdoor)]).length;
+      var boltW = BP.boltsAlong(C.ext.W, [spanOf(C.openings.Wdoor)]).length;
+      var boltE = BP.boltsAlong(C.ext.E, [spanOf(C.openings.Edoor)]).length;
+      var boltTotal = (BP._bolts && (BP._bolts.N + BP._bolts.S + BP._bolts.W + BP._bolts.E)) || (boltN + boltS + boltW + boltE);
+      var anchorPacks = Math.ceil((boltTotal + 1) / 2);
+      var jc = G.joist.centers.length + 2;
+      var Wpl = Math.max(C.ext.N, C.ext.S), Hpl = Math.max(C.ext.E, C.ext.W);
+      var sheets = (BP._sheets && BP._sheets.buy) || Math.ceil((Wpl * Hpl / 144) / 32 * 1.15);
+      var hangerNailBoxes = Math.ceil(jc * 2 * 10 / 170);
+
+      // bin-pack cut pieces into stock lengths (realistic boards to buy)
+      function binPack(pieces, stock) {
+        var p = pieces.slice().sort(function (a, b) { return b - a; }), rem = [];
+        p.forEach(function (len) {
+          var i = -1, j;
+          for (j = 0; j < rem.length; j++) { if (rem[j] >= len - 0.01) { i = j; break; } }
+          if (i >= 0) rem[i] -= len; else rem.push(stock - len);
+        });
+        return rem.length;
+      }
+      var sWlen = C.ext.W - 2 * C.lumber.sillW, sElen = C.ext.E - 2 * C.lumber.sillW;
+      var sillBoards = binPack([C.ext.N, C.ext.S, 120, sWlen - 120, 120, sElen - 120], 192);
+      var rimNS = Math.max(C.ext.N, C.ext.S), rimWE = Hpl - 2 * C.lumber.rimT;
+      var rimBoards = binPack([rimNS, rimNS, rimWE / 2, rimWE / 2, rimWE / 2, rimWE / 2], 144);
+
+      // ---- wall framing lumber (sum the per-elevation takeoff) ----
+      function _sum(a) { return a.reduce(function (s, v) { return s + v; }, 0); }
+      function _stockFt(cut) { return cut <= 93 ? 8 : cut <= 117 ? 10 : cut <= 141 ? 12 : cut <= 189 ? 16 : (Math.ceil(cut / 12) + 1); }
+      var wallCost = 0, wallBoards = 0;
+      walls.forEach(function (w) {
+        var F = tallyFraming(w);
+        var shortsLF = _sum(F.jacks) + _sum(F.crippleAbove) + _sum(F.crippleBelow) + _sum(F.roughSill) + _sum(F.gable);
+        var platesLF = F.botPlate + F.topPlate + F.rakePlate;
+        var fullN = F.field + F.king, studStk = _stockFt(F.fullLen);
+        var b_studs = fullN + F.corners;
+        var b_short = (F.jacks.length || F.gable.length) ? Math.ceil(shortsLF * 1.15 / 192) : 0;
+        var b_plate = Math.ceil(platesLF * 1.08 / 192);
+        var b_hdr = F.headers.length ? Math.ceil(_sum(F.headers) * 2 * 1.15 / 144) : 0;
+        wallCost += (b_studs * studStk + (b_short + b_plate) * 16) * P6 + b_hdr * 12 * P8;
+        wallBoards += b_studs + b_short + b_plate + b_hdr;
+      });
+
+      // ---- line items ----
+      function L(name, qty, unit, each, cost) { return { name: name, qty: qty, unit: unit, each: each, cost: cost }; }
+      var floor = [
+        L('½" HDG anchor bolt + nut/washers', anchorPacks, '2-ct pack', 3.29, anchorPacks * 3.29),
+        L('2×6 PT sill plate', sillBoards, "16' board", 20.35, sillBoards * 20.35),
+        L('2×8 rim / box sill', rimBoards, "12' board", 12.53, rimBoards * 12.53),
+        L('2×8 #2 SYP field joist', jc, "10' board", +(P8 * 10).toFixed(2), jc * P8 * 10),
+        L('LUS28 joist hanger', jc * 2, 'each', 1.98, jc * 2 * 1.98),
+        L('10d×1½" HDG hanger nails', hangerNailBoxes, '1 lb box', 4.98, hangerNailBoxes * 4.98),
+        L('¾" T&G subfloor panel', sheets, 'sheet', 31.48, sheets * 31.48),
+        L('Subfloor adhesive (PL)', 2, 'tube', 7.58, 2 * 7.58),
+        L('#8×2" subfloor screws', 1, 'box', 12.63, 12.63),
+        L('16d common nails', 1, '5 lb box', 16.49, 16.49)
+      ];
+      var wallItems = [L('2×6 / 2×8 wall framing lumber', wallBoards, 'boards', null, wallCost)];
+      var roof = [
+        L('2×10 #2 rafter', 14, "16' board", +(12.17 / 10 * 16).toFixed(2), 14 * (12.17 / 10 * 16)),
+        L('1×6×8 pine fascia', 2, 'board', 7.48, 2 * 7.48),
+        L('2×6×20 sub-fascia', 1, 'board', 19.39, 19.39),
+        L('Vented vinyl soffit', 2, 'panel', 19.98, 2 * 19.98),
+        L('Aluminum fascia cover', 2, 'piece', 22.78, 2 * 22.78),
+        L('Roof panel H-clips', 2, '25-pk', 4.84, 2 * 4.84),
+        L('Aluminum drip edge', 6, "12' pc", 9.98, 6 * 9.98),
+        L('AC7 angle clips', 16, 'each', 4.78, 16 * 4.78),
+        L('5" K-style gutter', 2, "10' pc", 16.98, 2 * 16.98)
+      ];
+      var patio = [L('Plastic rebar chairs', 28, 'each', 0.33, 28 * 0.33)];
+
+      function sub(a) { return a.reduce(function (s, r) { return s + r.cost; }, 0); }
+      var fS = sub(floor), wS = sub(wallItems), rS = sub(roof), pS = sub(patio), grand = fS + wS + rS + pS;
+      function money(v) { return '$' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+      function rows(arr) {
+        return arr.map(function (r) {
+          return '<tr><td class="ce-q">' + r.qty + '</td><td class="ce-u">' + (r.unit || '') + '</td><td class="ce-n">' + r.name + '</td>'
+            + '<td class="ce-e">' + (r.each != null ? ('$' + r.each.toFixed(2)) : '—') + '</td><td class="ce-c">' + money(r.cost) + '</td></tr>';
+        }).join('');
+      }
+      function group(title, arr, s) { return '<tr class="ce-grp"><td colspan="4">' + title + '</td><td class="ce-c">' + money(s) + '</td></tr>' + rows(arr); }
+
+      var html = ''
+        + '<style>'
+        + '.ce-wrap{max-width:680px;margin:10px auto 0;width:100%}'
+        + '.ce-table{width:100%;border-collapse:collapse;font-family:var(--font);font-size:0.78rem;color:var(--ink)}'
+        + '.ce-table th{text-align:left;color:var(--ink-dim);font-weight:600;font-size:0.66rem;text-transform:uppercase;letter-spacing:0.04em;padding:4px 6px;border-bottom:1px solid var(--line)}'
+        + '.ce-table td{padding:3px 6px;border-bottom:1px solid color-mix(in srgb,var(--line) 50%,transparent);vertical-align:top}'
+        + '.ce-q{text-align:right;white-space:nowrap;color:var(--accent);font-weight:bold}'
+        + '.ce-u{color:var(--ink-dim);white-space:nowrap}'
+        + '.ce-e{text-align:right;white-space:nowrap;color:var(--ink-dim);font-variant-numeric:tabular-nums}'
+        + '.ce-c{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}'
+        + '.ce-grp td{background:var(--bg);color:var(--accent);font-weight:bold;border-top:1px solid var(--line);padding-top:6px}'
+        + '.ce-total td{background:var(--bg);color:var(--ink);font-weight:bold;font-size:0.92rem;border-top:2px solid var(--accent);border-bottom:2px solid var(--accent);padding:8px 6px}'
+        + '.ce-total .ce-c{color:var(--accent)}'
+        + '.ce-note{max-width:680px;margin:8px auto 0;font-size:0.72rem;color:var(--ink-dim);line-height:1.5}'
+        + '.ce-warn{color:var(--warn)}'
+        + '</style>'
+        + '<div class="ce-wrap">'
+        + '<table class="ce-table">'
+        + '<thead><tr><th>Qty</th><th>Unit</th><th>Item</th><th>Unit&nbsp;$</th><th>Line</th></tr></thead><tbody>'
+        + group('Floor system', floor, fS)
+        + group('Wall framing (studs · plates · headers · corners)', wallItems, wS)
+        + group('Roof · eave · fascia · gutter', roof, rS)
+        + group('South patio (hardware)', patio, pS)
+        + '<tr class="ce-total"><td colspan="4">PROJECT TOTAL — listed framing &amp; structural materials</td><td class="ce-c">' + money(grand) + '</td></tr>'
+        + '</tbody></table>'
+        + '<p class="ce-note"><strong>Anchor bolts:</strong> ' + boltTotal + ' on plan (N' + boltN + ' · S' + boltS + ' · W' + boltW + ' · E' + boltE + '), buy ' + (boltTotal + 1) + '. '
+        + '<strong>Joists:</strong> ' + jc + '. <strong>Subfloor:</strong> ' + sheets + ' sheets. Prices = Menards, 2026-05-24 — confirm in store. '
+        + 'Wall-framing 2×6 is priced at the in-file PT-sill rate (≈$1.27/ft — a ceiling; SPF stud-grade runs less). Joists &amp; rafters priced from the in-file 2×8 / 2×10 $/ft at the listed buy lengths.</p>'
+        + '<p class="ce-note ce-warn"><strong>NOT included</strong> (price separately): the CMU foundation (already built), windows &amp; the 3 doors, concrete + gravel + #3 rebar for the patio (~1.4 cu yd), sill-seal gasket, H2.5 hurricane ties, roof sheathing + ice/water shield + shingles, the porch beam + (2) 6×6 posts, gutter downspout/end caps, insulation, drywall &amp; finishes, and sales tax.</p>'
+        + '</div>';
+      ceHost.innerHTML = html;
+    }
+
     var host = document.getElementById('elevations');
     if (host) host.innerHTML = walls.map(buildElevation).join('');
     var rdHost = document.getElementById('rafter-detail');
     if (rdHost) rdHost.innerHTML = buildRafterDetail();
+    buildCostEstimate();
 
     var chk = document.getElementById('elev-check');
     if (chk) {
