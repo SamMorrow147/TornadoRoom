@@ -61,7 +61,12 @@
 | Measurement | Value | Notes |
 |---|---|---|
 | Full wall length | 240 ¾" | Measured |
-| Openings | None | No windows or doors on west wall |
+| Door opening width | 36" (R.O.) | Standard 3'-0" door |
+| Door: left (N) edge from N corner | 120 ⅜" | On the wall centerline (240¾ ÷ 2) |
+| Door: S corner → opening start (S edge) | 84 ⅜" | Calculated: 240¾ − 120⅜ − 36 |
+| Door placement | Left/N edge centered | Door body extends south of center |
+
+> Door · W added Rev 15 (2026-05-24). Left (north) edge on the wall centerline; confirm swing direction and that the 82" R.O. height clears the low (W) shed-roof plate.
 
 ---
 

@@ -20,7 +20,7 @@ Live construction blueprint and field documentation for a CMU block basement bei
 
 - **Shape**: Rectangular ~10 ft × 20 ft (exterior out-to-out)
 - **Construction**: CMU (concrete masonry unit) block, 8" nominal / 7⅝" actual
-- **Openings**: Door (east wall), window (north wall), window (south wall), door (south wall)
+- **Openings**: Door (east wall), window (north wall), window (south wall), door (south wall), door (west wall)
 - **Datum**: All wall lengths are **exterior**, out-to-out of CMU. Interior clear is derived.
 - **Scale**: 2.5 px = 1 inch in plan view
 
@@ -49,6 +49,7 @@ Live construction blueprint and field documentation for a CMU block basement bei
 | 08 | 2026-05-22 | Wall framing layer added (2×6, 3-stud corners, 16" OC) |
 | 09 | 2026-05-22 | Subfloor layer added (¾" T&G, staggered, cut sequence) |
 | 10 | 2026-05-23 | Door · S (36" R.O.) added, 12" from west corner. South patio layer added. |
+| 15 | 2026-05-24 | Door · W (36" R.O.) added on the west wall — left (N) edge on the wall centerline (84⅜" from S corner). Threaded through all layers + self-check. |
 
 ---
 
