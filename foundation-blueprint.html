@@ -31,6 +31,8 @@
       --grout:#c3b89f; --grout-stroke:#8d836f;
       --patio-fill:#d7d2c4; --patio-stroke:#7d7567; --patio-joint:#a89f8c; --patio-edge:#5f594d;
       --roof-fill:#8aa0b5; --roof-stroke:#41576c; --roof-post:#6e4f2e;
+      --stove-fill:#3b3a38; --stove-stroke:#1f1e1c; --hearth-fill:#cdbfa0; --hearth-stroke:#8a7a55; --flue:#b5532a;
+      --laundry-fill:#dfe7ee; --laundry-stroke:#4f7596;
       --dim:#2a2925;
       --font:'Helvetica Neue', Arial, 'Segoe UI', sans-serif;
     }
@@ -54,6 +56,8 @@
       --grout:#3a4654; --grout-stroke:#5a6b7a;
       --patio-fill:#16222e; --patio-stroke:#5a7a96; --patio-joint:#2c485f; --patio-edge:#8fb8d6;
       --roof-fill:#2b3a4a; --roof-stroke:#86b0d0; --roof-post:#caa46a;
+      --stove-fill:#2a2f36; --stove-stroke:#aebccb; --hearth-fill:#3a3322; --hearth-stroke:#caa46a; --flue:#ff8c4a;
+      --laundry-fill:#243140; --laundry-stroke:#7fb1d8;
       --dim:#cdd9e5;
       --font:'Courier New', monospace;
     }
@@ -210,6 +214,7 @@
     .toggle-btn.lt-wall{--tc:var(--wall-plate-fill);} .toggle-btn.lt-bolt{--tc:var(--bolt);}
     .toggle-btn.lt-open{--tc:var(--win);} .toggle-btn.lt-door{--tc:var(--door);} .toggle-btn.lt-dims{--tc:var(--ink);}
     .toggle-btn.lt-patio{--tc:var(--patio-stroke);} .toggle-btn.lt-roof{--tc:var(--roof-stroke);}
+    .toggle-btn.lt-stove{--tc:var(--flue);} .toggle-btn.lt-laundry{--tc:var(--laundry-stroke);}
     .layer-divider { width:60px; height:1px; background:var(--line); margin:4px 0; }
     .selfcheck { font-size:0.7rem; padding:8px 10px; border-radius:4px; border:1px solid var(--good); background:var(--ok-bg); color:var(--good); }
     .selfcheck.bad { border-color:var(--bad); background:var(--bad-bg); color:var(--bad); }
@@ -351,7 +356,7 @@
     </div>
     <div>
       <h1>Tornado Room — Foundation Blueprint</h1>
-      <p>CMU Basement + Patio + Framing Elevations + Roof / Rafter Detail · Datum: EXTERIOR out-to-out · Rev 14 (parametric)</p>
+      <p>CMU Basement + Patio + Framing Elevations + Roof / Rafter Detail + Wood Stove + Laundry · Datum: EXTERIOR out-to-out · Rev 17 (parametric)</p>
     </div>
   </div>
 </header>
@@ -387,10 +392,12 @@
     <button class="toggle-btn active lt-wall" data-target="wall-framing"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="3" x2="18" y2="3"/><line x1="2" y1="17" x2="18" y2="17"/><line x1="3" y1="3" x2="3" y2="17"/><line x1="10" y1="3" x2="10" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/></svg></div><div class="t-label">Wall<br>Framing</div></button>
     <button class="toggle-btn active lt-open" data-target="openings-win"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="14" height="14" rx="0.5"/><line x1="10" y1="3" x2="10" y2="17"/><line x1="3" y1="10" x2="17" y2="10"/></svg></div><div class="t-label">Win-<br>dows</div></button>
     <button class="toggle-btn active lt-door" data-target="openings-door"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="12" height="16" rx="0.5"/><circle cx="13.5" cy="10" r="1"/><line x1="4" y1="18" x2="2" y2="18"/><line x1="16" y1="18" x2="18" y2="18"/></svg></div><div class="t-label">Doors</div></button>
-    <button class="toggle-btn lt-dims" data-target="dims"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="10" x2="17" y2="10"/><polyline points="6,7 3,10 6,13"/><polyline points="14,7 17,10 14,13"/><line x1="3" y1="6" x2="3" y2="14"/><line x1="17" y1="6" x2="17" y2="14"/></svg></div><div class="t-label">Dim-<br>ensions</div></button>
+    <button class="toggle-btn lt-dims" data-target="dims"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="10" x2="17" y2="10"/><polyline points="6,7 3,10 6,13"/><polyline points="14,7 17,10 14,13"/><line x1="3" y1="6" x2="3" y2="14"/><line x1="17" y1="6" x2="17" y2="14"/></svg></div><div class="t-label">Labels<br>&amp; Dims</div></button>
     <div class="layer-divider"></div>
     <button class="toggle-btn active lt-patio" data-target="patio"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="15" height="15" rx="0.5"/><line x1="10" y1="2.5" x2="10" y2="17.5"/><line x1="2.5" y1="10" x2="17.5" y2="10"/></svg></div><div class="t-label">S<br>Patio</div></button>
     <button class="toggle-btn active lt-roof" data-target="roof"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 13 L17.5 5"/><line x1="2.5" y1="13" x2="2.5" y2="17"/><line x1="17.5" y1="5" x2="17.5" y2="17"/><line x1="2.5" y1="17" x2="17.5" y2="17"/></svg></div><div class="t-label">Roof<br>Over</div></button>
+    <button class="toggle-btn active lt-stove" data-target="stove"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="12" height="9" rx="1"/><line x1="4" y1="14" x2="16" y2="14"/><line x1="10" y1="2" x2="10" y2="8"/><path d="M10 2.5 q3 1.2 0 3"/></svg></div><div class="t-label">Wood<br>Stove</div></button>
+    <button class="toggle-btn active lt-laundry" data-target="laundry"><div class="t-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="2.5" width="13" height="15" rx="1"/><line x1="3.5" y1="6" x2="16.5" y2="6"/><circle cx="10" cy="11.5" r="3.8"/><circle cx="5.6" cy="4.25" r="0.5" fill="currentColor" stroke="none"/><circle cx="8" cy="4.25" r="0.5" fill="currentColor" stroke="none"/></svg></div><div class="t-label">Laun-<br>dry</div></button>
   </div>
 
   <!-- BLUEPRINT -->
@@ -432,6 +439,8 @@
       <g id="anchor-bolts" class="layer-group"></g>
       <g id="dims" class="layer-group"></g>
       <g id="roof" class="layer-group"></g>
+      <g id="stove" class="layer-group"></g>
+      <g id="laundry" class="layer-group"></g>
 
       <!-- compass -->
       <g transform="translate(690, 150)">
@@ -449,7 +458,7 @@
       <line x1="380" y1="1058" x2="380" y2="1092" stroke="var(--line)" stroke-width="0.5"/>
       <text x="20" y="1075" fill="var(--accent)" font-size="10" font-family="var(--font)" font-weight="bold">TORNADO ROOM — FOUNDATION FLOOR PLAN  |  CMU BLOCK BASEMENT + S PATIO</text>
       <text x="20" y="1087" fill="var(--ink-dim)" font-size="8" font-family="var(--font)">SCALE 2.5 px = 1 IN  |  DATUM: EXTERIOR OUT-TO-OUT  |  NORTH = UP</text>
-      <text x="390" y="1075" fill="var(--ink-dim)" font-size="8" font-family="var(--font)">DATE 2026-05-24  REV 15  PLAN + ELEVATIONS</text>
+      <text x="390" y="1075" fill="var(--ink-dim)" font-size="8" font-family="var(--font)">DATE 2026-05-25  REV 17  PLAN + ELEVATIONS</text>
       <text x="390" y="1087" fill="var(--warn)" font-size="8" font-family="var(--font)" id="tb-check">SELF-CHECK …</text>
     </svg>
     <p class="scale-label">Each small grid square = 5"  ·  large square = 25"  ·  interior clear shown in grey</p>
@@ -534,6 +543,10 @@
       <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--patio-fill) 70%, transparent);border:1.5px solid var(--patio-stroke);"></span> Concrete patio (10'×10')</div>
       <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--roof-fill) 30%, transparent);border:1.5px dashed var(--roof-stroke);"></span> Roof over (covers porch)</div>
       <div class="legend-row"><span class="swatch" style="background:var(--roof-post);"></span> Porch beam / 6×6 post</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--stove-fill) 82%, transparent);border:1.5px dashed var(--stove-stroke);"></span> Wood stove (basement, below deck)</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--laundry-fill) 38%, transparent);border:1.5px dashed var(--laundry-stroke);"></span> Laundry · washer + dryer (basement, below deck)</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--hearth-fill) 50%, transparent);border:1.5px dashed var(--hearth-stroke);"></span> Hearth / floor-protection pad</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--flue) 38%, transparent);border:1.5px solid var(--flue);"></span> Class-A chimney + floor opening</div>
     </div>
 
     <div class="card">
@@ -636,6 +649,10 @@
       <p class="flag">• Door · E swing direction; confirm 31¾" opening.</p>
       <p class="flag">• Door · S (south wall): confirm 36" R.O. and swing direction. Shown 12" from west corner — verify no conflict with interior stair or egress path.</p>
       <p class="flag">• Door · W (west wall): confirm 36" R.O. and swing direction. Left (N) edge on the wall centerline (84⅜" from S corner) — verify the opening clears the low (W) shed-roof plate height and any interior layout.</p>
+      <p class="flag">• Wood stove — <span class="hi">clearance-to-combustibles NOT shown</span> (footprint only). Confirm rear/side clearances from the stove's UL listing; add a listed heat shield if you need reduced clearances to the E-wall framing.</p>
+      <p class="flag">• Wood stove is on the <span class="hi">E wall, a few feet north of the E door</span> (backed square to the wall; hearth clears the door opening by ~1'-7"). Confirm the E-door swing/egress path stays clear of the hearth.</p>
+      <p class="flag">• Chimney <span class="hi">3-2-10 rule</span>: the straight-up flue exits near the high (E) ridge, so it needs only <span class="hi">~3 ft above the roof</span>. Verify the exact penetration vs. the ridge beam & rafters (2" clearance, framed roof opening + flashing/storm collar).</p>
+      <p class="flag">• Hearth pad must be listed non-combustible with the stove's required R-value/thickness. Class-A floor &amp; roof penetrations need 2" clearance to combustibles (framed opening + radiation shield). Provide outside combustion air + a CO alarm for a basement stove.</p>
     </div>
 
     <div class="card">
@@ -650,6 +667,8 @@
       <p class="note" style="margin-top:6px">Rev 13 · 2026-05-23 — Added the <span class="hi">Roof Over</span> layer (toggle): the shed roof carries past the south wall to cover the 10'×10' porch, on a beam + 6×6 post each side. Plan shows the roof edge (dashed = above) with 18" eave/rake overhang on N/S/W and <span class="hi">0" (flush) on the high E side — to be extended later</span>, E–W rafter direction, high-E ridge / low-W eave, 4:12 slope arrows draining to the low side, and the porch beams + posts. Per-side overhangs via CFG.roof.overhang {N,S,E,W}.</p>
       <p class="note" style="margin-top:6px">Rev 14 · 2026-05-23 — The <span class="hi">South &amp; North (rake) elevations now show the roof</span>: 2×10 rafters on the sloped wall, the 18" west eave overhang with fascia + soffit, and the flush (0" overhang) high-E end. Added a keyed <span class="hi">Typical Shed Rafter construction detail</span> (bird's-mouth seats, H2.5 hurricane ties, fascia/soffit/gutter, roofing build-up, 4:12 pitch, flush high end) with numbered notes. Rafter size 2×10 @ 16" OC shown — verify for snow load / get truss engineering.</p>
       <p class="note" style="margin-top:6px">Rev 15 · 2026-05-24 — Added <span class="hi">Door · W</span> (36" R.O.) on the west wall. Placed so its <span class="hi">left (north) edge sits on the wall centerline</span> (84⅜" from the S corner; door body fills toward the south). Added to the parametric model (CFG.openings.Wdoor) and carried through every layer: openings, wall framing (west plate split + king/jack studs), anchor-bolt avoidance, the W-wall dimension chain, the West elevation, and the self-check (incl. a centerline assertion).</p>
+      <p class="note" style="margin-top:6px">Rev 16 · 2026-05-24 — Added the <span class="hi">Wood Stove</span> layer (toggle): a small (~24"×20") freestanding stove on the <span class="hi">EAST wall of the lower level (basement), a few feet north of the E door</span>, squared to the wall. Backing to the east (high) side of the shed roof lets a <span class="hi">straight-up Class-A flue exit near the ridge</span>, so the chimney needs only <span class="hi">~3 ft above the roof</span> (vs ~5 ft from the low/W side) and drafts better. Shows the stove footprint (dashed = below the floor deck), the hearth / floor-protection pad, and the chimney: a framed floor-deck opening (2" clearance, (2) headers + doubled trimmers — lands in a joist bay, no joist cut), up through the upper level, and out the roof with flashing + storm collar. The <span class="hi">South elevation</span> shows the flue rising near the high end through the roof to the NFPA 211 <span class="hi">3-2-10</span> height. Parametric (CFG.stove supports wall 'E'/'W') + self-check. Footprint only — listed clearances to combustibles must be field-confirmed.</p>
+      <p class="note" style="margin-top:6px">Rev 17 · 2026-05-25 — Added the <span class="hi">Laundry</span> layer (toggle): a <span class="hi">washer + dryer side-by-side on the WEST wall of the lower level (basement), up near the NORTH corner</span> — north of the W door (which starts ~120" off the N corner). Each unit ~27" along the wall × 31" deep; ~55" total run, 6" off the north wall. Drawn dashed (= below the floor deck, same convention as the wood stove) with each appliance's drum/door cue and a leader-lined label. Parametric (CFG.laundry supports wall 'W'/'E') + self-check (within interior clear, backs square to the wall, clears the W door, no overlap with the stove). <span class="hi">Footprint only</span> — supply box / standpipe drain / dryer vent / 240V outlet not drawn; confirm hookups, drain, vent path, and clearances in the field.</p>
     </div>
 
   </div>
@@ -702,6 +721,31 @@ const BP = (function () {
     // overhang = eave/rake projection per side (in); coverPatio extends the roof south to cover the porch on posts.
     // E (high) side = 0 → roof is flush at the east wall for now (to be extended later).
     roof: { lowEave: 96, pitch: 4, high: 'E', low: 'W', overhang: { N: 18, S: 18, E: 0, W: 18 }, coverPatio: true }, // 8'-0" low wall, 4:12 (MN snow + shingles)
+    // wood stove · LOWER LEVEL (basement / tornado shelter). Backs square to the EAST wall — the HIGH side
+    // of the shed roof — a few feet NORTH of the east door. A straight-up flue exits near the high ridge, so
+    // the chimney only needs ~3 ft above the roof (vs ~5 ft from the low/W side) and drafts better (warm, interior).
+    // Footprint only (clearance-to-combustibles NOT drawn — confirm from the stove's listing).
+    // exit:'top' → straight-up Class-A insulated chimney through the floor deck, the upper level, and the shed roof.
+    stove: {
+      level: 'lower', wall: 'E', placeLabel: 'E wall · N of door',
+      bodyW: 24, bodyD: 20,         // footprint: 24" along the wall (N–S) × 20" deep (E–W, into the room)
+      backGap: 2,                   // nominal air gap stove back → interior wall face (footprint only)
+      fromSouth: 120.75,            // stove CENTER measured north from the S corner along the E wall (≈120" off the N wall; ~41" N of the E door)
+      hearthFront: 16, hearthSide: 8, // ember / hearth-pad projection beyond the stove (NFPA 211 min — confirm vs. listing)
+      exit: 'top', flueOD: 8, chimClr: 2 // 6" flue → ~8" Class-A OD; 2" clearance to combustibles → framed opening = OD + 2×clr
+    },
+    // laundry · LOWER LEVEL (basement). Washer + dryer side-by-side, backs square to the WEST wall,
+    // up near the NORTH corner (north of the W door, which starts ~120" off the N corner). Footprint
+    // only — supply box / standpipe / dryer vent / 240V NOT drawn. Drawn dashed = below the floor deck.
+    // wall:'W' (default) or 'E'; units listed from the north (first = nearest the N corner).
+    laundry: {
+      level: 'lower', wall: 'W', placeLabel: 'W wall · N corner',
+      unitW: 27, unitD: 31,         // each appliance: 27" along the wall (N–S) × 31" deep (E–W, into the room)
+      gap: 1,                       // gap between the two units
+      backGap: 4,                   // hose/air gap behind → interior CMU wall face (footprint only)
+      fromNorth: 6,                 // gap from the N interior wall face to the N edge of the run
+      units: ['WASHER', 'DRYER']    // order from the north (first = nearest the N corner)
+    },
     origin: { x: 210, y: 96 }          // SVG px of exterior NW corner (plan)
   };
 
@@ -853,28 +897,27 @@ const BP = (function () {
   // keep a combined helper for any code that still calls buildOpenings()
   function buildOpenings() { return buildOpeningsWin() + buildOpeningsDoor(); }
 
-  function plate(g, label, vertical) {
-    let s = rIn(g.x0, g.y0, g.x1, g.y1,
+  function plate(g) {
+    return rIn(g.x0, g.y0, g.x1, g.y1,
       'fill="var(--sill-fill)" fill-opacity="0.32" stroke="var(--sill-stroke)" stroke-width="1.4"');
+  }
+  function plateLabel(g, label, vertical) {
     const cx = (g.x0 + g.x1) / 2, cy = (g.y0 + g.y1) / 2;
     const rot = vertical ? ` transform="rotate(-90,${X(cx)},${Y(cy)})"` : '';
-    s += `<text x="${X(cx)}" y="${Y(cy) + 3}" text-anchor="middle" fill="var(--sill-stroke)" font-size="7.5" font-family="var(--font)" font-weight="bold"${rot}>${label}</text>`;
-    return s;
+    return `<text x="${X(cx)}" y="${Y(cy) + 3}" text-anchor="middle" fill="var(--sill-stroke)" font-size="7.5" font-family="var(--font)" font-weight="bold"${rot}>${label}</text>`;
   }
 
   function buildSill() {
     let s = '';
-    s += plate(G.sill.N, `N-1  (${ftin(CFG.ext.N)})`, false);
-    s += plate(G.sill.S, `S-1  (${ftin(CFG.ext.S)})`, false);
-    // W split into two pieces over a grouted core
-    const wTot = G.sill.W, wLen = wTot.len, wSplit = 120; // 10' first piece
-    s += plate({ x0: wTot.x0, y0: wTot.y0, x1: wTot.x1, y1: wTot.y0 + wSplit }, 'W-1', true);
-    s += plate({ x0: wTot.x0, y0: wTot.y0 + wSplit, x1: wTot.x1, y1: wTot.y1 }, 'W-2', true);
+    s += plate(G.sill.N);
+    s += plate(G.sill.S);
+    const wTot = G.sill.W, wSplit = 120;
+    s += plate({ x0: wTot.x0, y0: wTot.y0, x1: wTot.x1, y1: wTot.y0 + wSplit });
+    s += plate({ x0: wTot.x0, y0: wTot.y0 + wSplit, x1: wTot.x1, y1: wTot.y1 });
     s += lIn(wTot.x0 - 1.2, wTot.y0 + wSplit, wTot.x1 + 1.2, wTot.y0 + wSplit, 'stroke="var(--sill-stroke)" stroke-width="1.4" stroke-dasharray="4,2"');
-    // E split into two pieces
     const eTot = G.sill.E, eSplit = 120;
-    s += plate({ x0: eTot.x0, y0: eTot.y0, x1: eTot.x1, y1: eTot.y0 + eSplit }, 'E-1', true);
-    s += plate({ x0: eTot.x0, y0: eTot.y0 + eSplit, x1: eTot.x1, y1: eTot.y1 }, 'E-2', true);
+    s += plate({ x0: eTot.x0, y0: eTot.y0, x1: eTot.x1, y1: eTot.y0 + eSplit });
+    s += plate({ x0: eTot.x0, y0: eTot.y0 + eSplit, x1: eTot.x1, y1: eTot.y1 });
     s += lIn(eTot.x0 - 1.2, eTot.y0 + eSplit, eTot.x1 + 1.2, eTot.y0 + eSplit, 'stroke="var(--sill-stroke)" stroke-width="1.4" stroke-dasharray="4,2"');
     return s;
   }
@@ -962,9 +1005,6 @@ const BP = (function () {
       }
     });
     BP._studs = { field: n, corners: 4, total: n + 4 };
-
-    // label
-    s += planTxt(W / 2, H / 2 + 26, `STUD WALL · ${CFG.wall.size} @ ${CFG.wall.oc}" OC`, { fill: 'var(--wall-plate-fill)', size: 8.5, bold: true, opacity: 0.85 });
     return s;
   }
 
@@ -975,6 +1015,7 @@ const BP = (function () {
     const full = 'fill="var(--subfloor-fill)" fill-opacity="0.30" stroke="var(--subfloor-stroke)" stroke-width="1"';
     const cut  = 'fill="var(--subfloor-fill)" fill-opacity="0.15" stroke="var(--subfloor-stroke)" stroke-width="1" stroke-dasharray="5,2"';
     let s = '', nFull = 0, nCut = 0, idx = 0;
+    BP._subfloorPanels = [];
     const cols = [];
     for (let x = 0; x < W - 0.01; x += SW) cols.push([x, Math.min(x + SW, W)]);
     cols.forEach((c, ci) => {
@@ -991,11 +1032,10 @@ const BP = (function () {
         const isCut = (cw < SW - 0.01) || ((y1 - y0) < SL - 0.01);
         s += rIn(c[0], y0, c[1], y1, isCut ? cut : full);
         isCut ? nCut++ : nFull++; idx++;
-        s += `<text x="${X((c[0] + c[1]) / 2)}" y="${Y((y0 + y1) / 2) + 3}" text-anchor="middle" fill="var(--subfloor-stroke)" font-size="8" font-family="var(--font)" opacity="0.85">${idx}</text>`;
+        BP._subfloorPanels.push({ cx: (c[0] + c[1]) / 2, cy: (y0 + y1) / 2, idx });
       }
     });
     BP._sheets = { full: nFull, cut: nCut, pieces: idx, buy: Math.ceil((W * H / 144) / 32 * 1.15) };
-    s += planTxt(W / 2, H / 2 - 26, 'SUBFLOOR ¾" T&amp;G · panels ⟂ joists · joints staggered · ⅛" gaps', { fill: 'var(--subfloor-stroke)', size: 8, opacity: 0.9 });
     return s;
   }
 
@@ -1030,8 +1070,6 @@ const BP = (function () {
     const g = patioGeom(), P = g.P;
     const mx = (g.x0 + g.x1) / 2, my = (g.y0 + g.y1) / 2;
     const pS = 'var(--patio-stroke)', pJ = 'var(--patio-joint)', pE = 'var(--patio-edge)';
-    const fr = { 0.125:'⅛', 0.25:'¼', 0.375:'⅜', 0.5:'½', 0.625:'⅝', 0.75:'¾', 0.875:'⅞' };
-    const slopeTxt = fr[P.slope] || ('' + P.slope);
     let s = '';
 
     // slab body
@@ -1054,16 +1092,6 @@ const BP = (function () {
     const ax = g.x1 - 14, a1 = my + 18;
     s += lIn(ax, my - 18, ax, a1, `stroke="${pS}" stroke-width="1"`);
     s += `<polygon points="${X(ax)},${Y(a1)} ${X(ax) - 4},${Y(a1) - 8} ${X(ax) + 4},${Y(a1) - 8}" fill="${pS}"/>`;
-    s += `<text x="${X(ax) - 6}" y="${Y(my)}" text-anchor="middle" fill="${pS}" font-size="6.5" font-family="var(--font)" transform="rotate(-90,${X(ax) - 6},${Y(my)})">SLOPE ${slopeTxt}"/FT</text>`;
-
-    // labels (stacked clear of the dimension band at the top)
-    s += planTxt(mx, g.y0 + 34, 'CONCRETE PATIO', { fill: pS, size: 11, bold: true, ls: '1' });
-    s += planTxt(mx, g.y0 + 46, `½" isolation joint at foundation · slope ${slopeTxt}"/ft away`, { fill: pS, size: 6.5, opacity: 0.95 });
-    s += planTxt(mx, g.y1 - 16, `${ftft(g.pw)} × ${ftft(P.depth)} · ${P.thickness}" SLAB on ${P.base}" GRAVEL`, { fill: pS, size: 8, opacity: 0.9 });
-
-    // dimensions (live with the patio layer; depth is collinear with the E-wall dim chain)
-    s += dimV(g.y0, g.y1, W, 34, `${ftin(P.depth)}`, pS);
-    s += dimH(g.x0, g.x1, g.y1, 30, `${ftin(g.pw)}`, pS);
 
     return s;
   }
@@ -1087,7 +1115,6 @@ const BP = (function () {
     const yWall = H, ySouth = H + pd;
     const x0 = -ovW, x1 = W + ovE, y0 = -ovN, y1 = ySouth + ovS;
     const rs = 'var(--roof-stroke)', rf = 'var(--roof-fill)', rp = 'var(--roof-post)';
-    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
     let s = '';
 
     // rafters (E–W) across the whole roof — direction indicator, continues over porch
@@ -1103,15 +1130,12 @@ const BP = (function () {
     // high (east) ridge/eave line + low (west) eave line, with edge labels
     s += lIn(W, y0, W, y1, `stroke="${rs}" stroke-width="2.2"`);
     s += lIn(0, y0, 0, y1, `stroke="${rs}" stroke-width="1.1" stroke-dasharray="2,3" opacity="0.75"`);
-    s += `<text x="${X(W) + 7}" y="${Y(cy)}" fill="${rs}" font-size="8" font-family="var(--font)" font-weight="bold" text-anchor="middle" paint-order="stroke fill" stroke="var(--panel)" stroke-width="4" transform="rotate(90,${X(W) + 7},${Y(cy)})">HIGH SIDE · RIDGE BEAM</text>`;
-    s += `<text x="${X(0) - 7}" y="${Y(cy)}" fill="${rs}" font-size="7.5" font-family="var(--font)" text-anchor="middle" paint-order="stroke fill" stroke="var(--panel)" stroke-width="4" transform="rotate(-90,${X(0) - 7},${Y(cy)})">LOW SIDE · EAVE + GUTTER</text>`;
 
     // slope arrows (downhill = toward the west / low side)
     const arrow = (yy) => {
       const xa = W * 0.74, xb = W * 0.26;
       let a = lIn(xa, yy, xb, yy, `stroke="${rs}" stroke-width="1.2"`);
       a += `<polygon points="${X(xb)},${Y(yy)} ${X(xb) + 9},${Y(yy) - 4} ${X(xb) + 9},${Y(yy) + 4}" fill="${rs}"/>`;
-      a += planTxt((xa + xb) / 2, yy - 12, `${r.pitch}:12 ▸ drains to low side`, { fill: rs, size: 8, italic: true });
       return a;
     };
     s += arrow(yWall * 0.42);
@@ -1126,18 +1150,221 @@ const BP = (function () {
       [[pg.x0, ySouth], [pg.x1, ySouth]].forEach(p => {
         s += rIn(p[0] - ps / 2, p[1] - ps / 2, p[0] + ps / 2, p[1] + ps / 2, post);
       });
-      const beamMid = (yWall + ySouth) / 2;
-      s += `<text x="${X(pg.x0) - 8}" y="${Y(beamMid)}" text-anchor="middle" fill="${rp}" font-size="7" font-family="var(--font)" paint-order="stroke fill" stroke="var(--panel)" stroke-width="4" transform="rotate(-90,${X(pg.x0) - 8},${Y(beamMid)})">PORCH BEAM</text>`;
-      // labels below each post (baseline was sitting on the post square)
-      const postLblY = ySouth + ps / 2 + 10;
-      s += planTxt(pg.x0, postLblY, '6×6 POST', { fill: rp, size: 7 });
-      s += planTxt(pg.x1, postLblY, '6×6 POST', { fill: rp, size: 7 });
     }
 
-    // title / notes — north of the dashed roof edge (subtitle was at y0+1, on the outline)
-    s += planTxt(cx, y0 - 10, `ROOF OVER — SHED ${r.pitch}:12 · HIGH E → LOW W · COVERS BUILDING + PORCH`, { fill: rs, size: 9, bold: true });
-    s += planTxt(cx, y0 - 20, `rafters run E–W · ${ovW}" eave/rake overhang · high (E) side flush — extend later`, { fill: rs, size: 6.5, opacity: 0.95 });
-    s += planTxt(cx, y0 - 29, 'dashed outline = roof edge above', { fill: rs, size: 6.5, opacity: 0.85 });
+    return s;
+  }
+
+  // ---- wood stove + Class-A chimney (LOWER LEVEL / basement) -----------------
+  //  Stove backs square to its wall (CFG.stove.wall: 'E' high side, or 'W').
+  //  Straight-up flue: stove (below deck) → framed floor opening → upper level
+  //  → out the shed roof. A flue near the high (E) ridge needs a short chimney.
+  //  Geometry in plan inch-coords.
+  function stoveGeom() {
+    const st = CFG.stove; if (!st) return null;
+    const isE = st.wall === 'E';
+    const cY = H - st.fromSouth;                  // stove center · y from north (along the E/W wall)
+    let body, hearth;
+    if (isE) {
+      const back = (W - t) - st.backGap;          // east (wall) face of the stove
+      const front = back - st.bodyD;              // west (room) face
+      body = { x0: front, x1: back, y0: cY - st.bodyW / 2, y1: cY + st.bodyW / 2 };
+      hearth = { x0: front - st.hearthFront, x1: W - t, y0: body.y0 - st.hearthSide, y1: body.y1 + st.hearthSide };
+    } else {                                       // 'W'
+      const back = t + st.backGap;                // west (wall) face
+      const front = back + st.bodyD;              // east (room) face
+      body = { x0: back, x1: front, y0: cY - st.bodyW / 2, y1: cY + st.bodyW / 2 };
+      hearth = { x0: t, x1: front + st.hearthFront, y0: body.y0 - st.hearthSide, y1: body.y1 + st.hearthSide };
+    }
+    const cX = (body.x0 + body.x1) / 2;           // flue / opening center (top exit, straight up)
+    const opening = st.flueOD + 2 * st.chimClr;   // framed floor / roof opening (clearance to combustibles)
+    const open = { x0: cX - opening / 2, x1: cX + opening / 2, y0: cY - opening / 2, y1: cY + opening / 2, size: opening };
+    return { st, isE, cX, cY, body, hearth, open, flueOD: st.flueOD };
+  }
+  function buildStove() {
+    const g = stoveGeom(); if (!g) return '';
+    const st = g.st, b = g.body, h = g.hearth, o = g.open, isE = g.isE;
+    const sf = 'var(--stove-fill)', ss = 'var(--stove-stroke)', hf = 'var(--hearth-fill)', hs = 'var(--hearth-stroke)', fl = 'var(--flue)';
+    const cir = (cx, cy, r, a) => `<circle cx="${X(cx)}" cy="${Y(cy)}" r="${px(r)}" ${a}/>`;
+    const front = isE ? b.x0 : b.x1;              // room-facing (loading) face
+    const dir = isE ? -1 : 1;                      // direction into the room
+    let s = '';
+
+    // hearth / floor-protection pad (non-combustible; on the basement floor below the deck)
+    s += rIn(h.x0, h.y0, h.x1, h.y1, `fill="${hf}" fill-opacity="0.5" stroke="${hs}" stroke-width="1.3" stroke-dasharray="5,3"`);
+    // ember-strip cue: thin inset showing the stove footprint within the pad
+    s += rIn(b.x0 - 1, b.y0 - 1, b.x1 + 1, b.y1 + 1, `fill="none" stroke="${hs}" stroke-width="0.6" stroke-dasharray="2,2" opacity="0.7"`);
+
+    // stove body (dashed = appliance sits on the floor BELOW this deck)
+    s += rIn(b.x0, b.y0, b.x1, b.y1, `fill="${sf}" fill-opacity="0.82" stroke="${ss}" stroke-width="1.5" stroke-dasharray="6,3"`);
+    // back top-plate line + loading door on the room face
+    s += lIn(isE ? b.x1 - 3 : b.x0 + 3, b.y0, isE ? b.x1 - 3 : b.x0 + 3, b.y1, `stroke="${ss}" stroke-width="0.7" opacity="0.6"`);
+    const dy0 = g.cY - 7, dy1 = g.cY + 7;
+    s += lIn(front, dy0, front, dy1, `stroke="${fl}" stroke-width="2.2"`);
+    s += `<path d="M ${X(front)} ${Y(dy0)} A ${px(14)} ${px(14)} 0 0 ${isE ? 1 : 0} ${X(front + dir * 11)} ${Y(g.cY)}" fill="none" stroke="${ss}" stroke-width="0.7" stroke-dasharray="2,2" opacity="0.7"/>`;
+
+    // framed floor-deck opening for the chimney (in the deck plane → solid)
+    s += rIn(o.x0, o.y0, o.x1, o.y1, `fill="var(--panel)" stroke="${fl}" stroke-width="1.6"`);
+    // (2) headers run N–S at the E & W edges; (2) doubled trimmer joists run E–W at N & S edges
+    s += lIn(o.x0, o.y0, o.x0, o.y1, `stroke="var(--joist-stroke)" stroke-width="2.6"`);
+    s += lIn(o.x1, o.y0, o.x1, o.y1, `stroke="var(--joist-stroke)" stroke-width="2.6"`);
+    s += lIn(o.x0 - 5, o.y0, o.x1 + 5, o.y0, `stroke="var(--joist-stroke)" stroke-width="2.6"`);
+    s += lIn(o.x0 - 5, o.y1, o.x1 + 5, o.y1, `stroke="var(--joist-stroke)" stroke-width="2.6"`);
+
+    // roof penetration ABOVE (dashed = above this plane): flashing + storm collar
+    const curb = o.size / 2 + 4;
+    s += rIn(g.cX - curb, g.cY - curb, g.cX + curb, g.cY + curb, `fill="none" stroke="var(--roof-stroke)" stroke-width="1" stroke-dasharray="3,3" opacity="0.85"`);
+
+    // the Class-A chimney pipe itself
+    s += cir(g.cX, g.cY, g.flueOD / 2, `fill="${fl}" fill-opacity="0.38" stroke="${fl}" stroke-width="1.5"`);
+    s += cir(g.cX, g.cY, g.flueOD / 6, `fill="none" stroke="${fl}" stroke-width="0.8" opacity="0.8"`);
+
+    return s;
+  }
+
+  // ---- plan labels + dimension chains (dims layer; hidden by default) -------
+  function buildPlanLabels() {
+    let s = '';
+
+    // sill plate piece IDs
+    s += plateLabel(G.sill.N, `N-1  (${ftin(CFG.ext.N)})`, false);
+    s += plateLabel(G.sill.S, `S-1  (${ftin(CFG.ext.S)})`, false);
+    const wTot = G.sill.W, wSplit = 120;
+    s += plateLabel({ x0: wTot.x0, y0: wTot.y0, x1: wTot.x1, y1: wTot.y0 + wSplit }, 'W-1', true);
+    s += plateLabel({ x0: wTot.x0, y0: wTot.y0 + wSplit, x1: wTot.x1, y1: wTot.y1 }, 'W-2', true);
+    const eTot = G.sill.E, eSplit = 120;
+    s += plateLabel({ x0: eTot.x0, y0: eTot.y0, x1: eTot.x1, y1: eTot.y0 + eSplit }, 'E-1', true);
+    s += plateLabel({ x0: eTot.x0, y0: eTot.y0 + eSplit, x1: eTot.x1, y1: eTot.y1 }, 'E-2', true);
+
+    // wall framing
+    s += planTxt(W / 2, H / 2 + 26, `STUD WALL · ${CFG.wall.size} @ ${CFG.wall.oc}" OC`, { fill: 'var(--wall-plate-fill)', size: 8.5, bold: true, opacity: 0.85 });
+
+    // subfloor panel numbers + note
+    (BP._subfloorPanels || []).forEach(p => {
+      s += `<text x="${X(p.cx)}" y="${Y(p.cy) + 3}" text-anchor="middle" fill="var(--subfloor-stroke)" font-size="8" font-family="var(--font)" opacity="0.85">${p.idx}</text>`;
+    });
+    s += planTxt(W / 2, H / 2 - 26, 'SUBFLOOR ¾" T&amp;G · panels ⟂ joists · joints staggered · ⅛" gaps', { fill: 'var(--subfloor-stroke)', size: 8, opacity: 0.9 });
+
+    // patio
+    if (CFG.patio) {
+      const g = patioGeom(), P = g.P, mx = (g.x0 + g.x1) / 2, my = (g.y0 + g.y1) / 2;
+      const pS = 'var(--patio-stroke)';
+      const fr = { 0.125: '⅛', 0.25: '¼', 0.375: '⅜', 0.5: '½', 0.625: '⅝', 0.75: '¾', 0.875: '⅞' };
+      const slopeTxt = fr[P.slope] || ('' + P.slope);
+      const ax = g.x1 - 14;
+      s += `<text x="${X(ax) - 6}" y="${Y(my)}" text-anchor="middle" fill="${pS}" font-size="6.5" font-family="var(--font)" transform="rotate(-90,${X(ax) - 6},${Y(my)})">SLOPE ${slopeTxt}"/FT</text>`;
+      s += planTxt(mx, g.y0 + 34, 'CONCRETE PATIO', { fill: pS, size: 11, bold: true, ls: '1' });
+      s += planTxt(mx, g.y0 + 46, `½" isolation joint at foundation · slope ${slopeTxt}"/ft away`, { fill: pS, size: 6.5, opacity: 0.95 });
+      s += planTxt(mx, g.y1 - 16, `${ftft(g.pw)} × ${ftft(P.depth)} · ${P.thickness}" SLAB on ${P.base}" GRAVEL`, { fill: pS, size: 8, opacity: 0.9 });
+    }
+
+    // roof overlay
+    const r = CFG.roof;
+    if (r) {
+      const ovW = roofOv('W'), ovE = roofOv('E');
+      const hasPorch = (r.coverPatio !== false) && CFG.patio;
+      const pg = hasPorch ? patioGeom() : null;
+      const pd = hasPorch ? CFG.patio.depth : 0;
+      const yWall = H, ySouth = H + pd;
+      const x0 = -ovW, x1 = W + ovE;
+      const y0 = -roofOv('N'), y1 = ySouth + roofOv('S');
+      const rs = 'var(--roof-stroke)', rp = 'var(--roof-post)';
+      const cx = (x0 + x1) / 2;
+      const cy = (y0 + y1) / 2;
+      s += `<text x="${X(W) + 7}" y="${Y(cy)}" fill="${rs}" font-size="8" font-family="var(--font)" font-weight="bold" text-anchor="middle" paint-order="stroke fill" stroke="var(--panel)" stroke-width="4" transform="rotate(90,${X(W) + 7},${Y(cy)})">HIGH SIDE · RIDGE BEAM</text>`;
+      s += `<text x="${X(0) - 7}" y="${Y(cy)}" fill="${rs}" font-size="7.5" font-family="var(--font)" text-anchor="middle" paint-order="stroke fill" stroke="var(--panel)" stroke-width="4" transform="rotate(-90,${X(0) - 7},${Y(cy)})">LOW SIDE · EAVE + GUTTER</text>`;
+      const pitchLbl = (yy) => planTxt(W * 0.5, yy - 12, `${r.pitch}:12 ▸ drains to low side`, { fill: rs, size: 8, italic: true });
+      s += pitchLbl(yWall * 0.42);
+      if (hasPorch) s += pitchLbl(yWall + pd * 0.5);
+      if (pg) {
+        const beamMid = (yWall + ySouth) / 2;
+        const postLblY = ySouth + 5.5 / 2 + 10;
+        s += `<text x="${X(pg.x0) - 8}" y="${Y(beamMid)}" text-anchor="middle" fill="${rp}" font-size="7" font-family="var(--font)" paint-order="stroke fill" stroke="var(--panel)" stroke-width="4" transform="rotate(-90,${X(pg.x0) - 8},${Y(beamMid)})">PORCH BEAM</text>`;
+        s += planTxt(pg.x0, postLblY, '6×6 POST', { fill: rp, size: 7 });
+        s += planTxt(pg.x1, postLblY, '6×6 POST', { fill: rp, size: 7 });
+      }
+      s += planTxt(cx, y0 - 10, `ROOF OVER — SHED ${r.pitch}:12 · HIGH E → LOW W · COVERS BUILDING + PORCH`, { fill: rs, size: 9, bold: true });
+      s += planTxt(cx, y0 - 20, `rafters run E–W · ${ovW}" eave/rake overhang · high (E) side flush — extend later`, { fill: rs, size: 6.5, opacity: 0.95 });
+      s += planTxt(cx, y0 - 29, 'dashed outline = roof edge above', { fill: rs, size: 6.5, opacity: 0.85 });
+    }
+
+    // wood stove + chimney
+    const g = stoveGeom();
+    if (g) {
+      const st = g.st, b = g.body, h = g.hearth, o = g.open, isE = g.isE;
+      const ss = 'var(--stove-stroke)', hs = 'var(--hearth-stroke)', fl = 'var(--flue)';
+      const front = isE ? b.x0 : b.x1, dir = isE ? -1 : 1;
+      const lx = isE ? (h.x0 - 30) : (h.x1 + 30), ly = g.cY, anc = isE ? 'end' : 'start';
+      s += lIn(front + dir * 2, g.cY, lx - dir * 2, ly, `stroke="${ss}" stroke-width="0.6" opacity="0.6"`);
+      s += planTxt(lx, ly - 16, 'WOOD STOVE', { fill: ss, size: 10, bold: true, ls: '1', anchor: anc });
+      s += planTxt(lx, ly - 5, `≈${ftin(st.bodyW)} × ${ftin(st.bodyD)} · basement · ${st.placeLabel || st.wall + ' wall'} (below deck)`, { fill: ss, size: 6.5, anchor: anc, opacity: 0.95 });
+      s += planTxt(lx, ly + 7, `Class-A ${ftin(st.flueOD)} flue · straight up: floor opening → upper level → roof`, { fill: fl, size: 6.5, anchor: anc, opacity: 0.95 });
+      s += planTxt(lx, ly + 17, `framed opening ${ftin(o.size)} sq (${ftin(st.chimClr)} clr) · (2) headers + doubled trimmers`, { fill: 'var(--joist-stroke)', size: 6.5, anchor: anc, opacity: 0.9 });
+      s += planTxt(lx, ly + 27, 'flashing + storm collar at roof · footprint only — verify listed clearances', { fill: 'var(--roof-stroke)', size: 6.5, anchor: anc, opacity: 0.9 });
+      s += planTxt((h.x0 + h.x1) / 2, h.y1 - 4, `HEARTH ${ftin(h.x1 - h.x0)} × ${ftin(h.y1 - h.y0)}`, { fill: hs, size: 6.5, opacity: 0.9 });
+    }
+
+    // laundry · washer + dryer
+    const lg = laundryGeom();
+    if (lg) {
+      const ld = lg.ld, isW = lg.isW, ls = 'var(--laundry-stroke)';
+      lg.units.forEach(function (u) {
+        s += planTxt((u.x0 + u.x1) / 2, u.y0 + 8, u.name, { fill: ls, size: 6.5, bold: true, ls: '0.5' });
+      });
+      s += planTxt(lg.run.x0 - 1, lg.run.y0 - 3, `${ftin(ld.fromNorth)} off N wall`, { fill: ls, size: 6, anchor: 'start', opacity: 0.85 });
+      const lx = isW ? (lg.run.x1 + 26) : (lg.run.x0 - 26), ly = lg.run.cy, anc = isW ? 'start' : 'end';
+      s += lIn(isW ? lg.run.x1 + 2 : lg.run.x0 - 2, ly, isW ? lx - 2 : lx + 2, ly, `stroke="${ls}" stroke-width="0.6" opacity="0.6"`);
+      s += planTxt(lx, ly - 11, 'LAUNDRY', { fill: ls, size: 10, bold: true, ls: '1', anchor: anc });
+      s += planTxt(lx, ly - 1, `washer + dryer · side-by-side · basement · ${ld.placeLabel} (below deck)`, { fill: ls, size: 6.5, anchor: anc, opacity: 0.95 });
+      s += planTxt(lx, ly + 9, `each ≈${ftin(ld.unitW)} × ${ftin(ld.unitD)} · ${ftin(lg.run.len)} run · footprint only — verify hookups/clearances`, { fill: ls, size: 6.5, anchor: anc, opacity: 0.9 });
+    }
+
+    return s;
+  }
+
+  // ---- laundry: washer + dryer (LOWER LEVEL / basement) ----------------------
+  //  Two appliances side-by-side, backs square to CFG.laundry.wall ('W' default),
+  //  up near the NORTH corner. Footprint only (hookups not drawn). Drawn dashed =
+  //  the units sit on the basement floor BELOW this deck. Geometry in plan inches.
+  function laundryGeom() {
+    const ld = CFG.laundry; if (!ld) return null;
+    const isW = ld.wall === 'W';
+    const back  = isW ? (t + ld.backGap) : ((W - t) - ld.backGap);   // wall (back) face
+    const front = isW ? (back + ld.unitD) : (back - ld.unitD);       // room (front) face
+    const x0 = Math.min(back, front), x1 = Math.max(back, front);
+    const y0 = t + ld.fromNorth;                                     // north edge of the run
+    const units = [];
+    let y = y0;
+    for (let i = 0; i < ld.units.length; i++) {
+      units.push({ name: ld.units[i], x0, x1, y0: y, y1: y + ld.unitW, cy: +(y + ld.unitW / 2).toFixed(3) });
+      y += ld.unitW + ld.gap;
+    }
+    const y1 = y - ld.gap;                                           // south edge of the run
+    const run = { x0, x1, y0, y1, len: y1 - y0, cy: (y0 + y1) / 2 };
+    return { ld, isW, back, front, units, run };
+  }
+  function buildLaundry() {
+    const g = laundryGeom(); if (!g) return '';
+    const isW = g.isW;
+    const lf = 'var(--laundry-fill)', ls = 'var(--laundry-stroke)';
+    const cir = (cx, cy, r, a) => `<circle cx="${X(cx)}" cy="${Y(cy)}" r="${px(r)}" ${a}/>`;
+    let s = '';
+
+    g.units.forEach(function (u) {
+      const cx = (u.x0 + u.x1) / 2;
+      // appliance body (dashed = sits on the basement floor BELOW this deck)
+      s += rIn(u.x0, u.y0, u.x1, u.y1, `fill="${lf}" fill-opacity="0.35" stroke="${ls}" stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="6,3"`);
+      // control-panel band at the back (wall) edge
+      const bandX = isW ? u.x0 + 3 : u.x1 - 3;
+      s += lIn(bandX, u.y0, bandX, u.y1, `stroke="${ls}" stroke-width="0.7" opacity="0.4"`);
+      // front-load drum/door (round) — top-down cue
+      const r = Math.max(4, Math.min(u.x1 - u.x0, u.y1 - u.y0) / 2 - 3);
+      s += cir(cx, u.cy, r, `fill="var(--panel)" fill-opacity="0.22" stroke="${ls}" stroke-opacity="0.5" stroke-width="1.1"`);
+      s += cir(cx, u.cy, r * 0.42, `fill="none" stroke="${ls}" stroke-width="0.8" opacity="0.45"`);
+    });
+
+    // overall run outline
+    s += rIn(g.run.x0, g.run.y0, g.run.x1, g.run.y1, `fill="none" stroke="${ls}" stroke-width="0.6" stroke-dasharray="2,2" opacity="0.35"`);
 
     return s;
   }
@@ -1191,6 +1418,12 @@ const BP = (function () {
     s += dimV(0, wdSp.s, 0, -18, `${ftin(wdSp.s)}`, am);
     s += dimV(wdSp.s, wdSp.e, 0, -18, `${ftin(CFG.openings.Wdoor.width)} DOOR`, am);
     s += dimV(wdSp.e, CFG.ext.W, 0, -18, `${ftin(CFG.openings.Wdoor.fromS)}`, am);
+    // patio dimensions (when layer geometry is on; labels/dims toggle together)
+    if (CFG.patio) {
+      const g = patioGeom(), P = g.P, pS = 'var(--patio-stroke)';
+      s += dimV(g.y0, g.y1, W, 34, `${ftin(P.depth)}`, pS);
+      s += dimH(g.x0, g.x1, g.y1, 30, `${ftin(g.pw)}`, pS);
+    }
     return s;
   }
 
@@ -1293,6 +1526,8 @@ const BP = (function () {
       walls:    buildWalls(),
       patio:    buildPatio(),
       roof:     buildRoof(),
+      stove:    buildStove(),
+      laundry:  buildLaundry(),
       openingsWin:  buildOpeningsWin(),
       openingsDoor: buildOpeningsDoor(),
       sill:     buildSill(),
@@ -1301,7 +1536,7 @@ const BP = (function () {
       subfloor: buildSubfloor(),
       wall:     buildWall(),
       bolts:    buildBolts(),
-      dims:     buildDims(),
+      dims:     buildPlanLabels() + buildDims(),
       section:  buildSection()
     };
   }
@@ -1387,6 +1622,39 @@ const BP = (function () {
       if (cover) ok(roofSouth >= H + CFG.patio.depth, `roof fully covers the ${ftin(CFG.patio.depth)} porch (+${ovS}" overhang)`);
     }
 
+    // INVARIANT 7: wood stove + Class-A chimney (lower level)
+    if (CFG.stove) {
+      const sg = stoveGeom(), b = sg.body, hh = sg.hearth, o = sg.open, st = CFG.stove;
+      const inX = x => x >= t - 1e-9 && x <= W - t + 1e-9;
+      const inY = y => y >= t - 1e-9 && y <= H - t + 1e-9;
+      ok(inX(b.x0) && inX(b.x1) && inY(b.y0) && inY(b.y1), 'wood stove footprint within the interior clear');
+      ok(inX(hh.x0) && inX(hh.x1) && inY(hh.y0) && inY(hh.y1), 'hearth pad within the interior clear');
+      ok(o.x0 >= L.rimT && o.x1 <= W - L.rimT && o.y0 >= L.rimT && o.y1 <= H - L.rimT, 'chimney floor opening lands on the deck (clear of the rim)');
+      const backAtWall = (st.wall === 'E') ? Math.abs(b.x1 - ((W - t) - st.backGap)) < 1e-6 : Math.abs(b.x0 - (t + st.backGap)) < 1e-6;
+      ok(backAtWall, `stove backs square to the ${st.wall} wall (${ftin(st.backGap)} gap)`);
+      const dr = openingSpan((st.wall === 'E') ? CFG.openings.Edoor : CFG.openings.Wdoor);
+      const gap = (hh.y1 <= dr.s) ? (dr.s - hh.y1) : (hh.y0 >= dr.e ? hh.y0 - dr.e : -1);
+      ok(gap >= 0, `hearth clears the ${st.wall} door (gap ${ftin(Math.max(gap, 0))})`);
+    }
+
+    // INVARIANT 8: laundry — washer + dryer (lower level)
+    if (CFG.laundry) {
+      const lg = laundryGeom(), ld = CFG.laundry, run = lg.run;
+      const inX = x => x >= t - 1e-9 && x <= W - t + 1e-9;
+      const inY = y => y >= t - 1e-9 && y <= H - t + 1e-9;
+      ok(lg.units.every(u => inX(u.x0) && inX(u.x1) && inY(u.y0) && inY(u.y1)), 'laundry footprints within the interior clear');
+      const backAtWall = (ld.wall === 'W') ? Math.abs(run.x0 - (t + ld.backGap)) < 1e-6 : Math.abs(run.x1 - ((W - t) - ld.backGap)) < 1e-6;
+      ok(backAtWall, `laundry backs square to the ${ld.wall} wall (${ftin(ld.backGap)} gap)`);
+      const dr = openingSpan((ld.wall === 'W') ? CFG.openings.Wdoor : CFG.openings.Edoor);
+      const dGap = (run.y1 <= dr.s) ? (dr.s - run.y1) : (run.y0 >= dr.e ? run.y0 - dr.e : -1);
+      ok(dGap >= 0, `laundry run clears the ${ld.wall} door (gap ${ftin(Math.max(dGap, 0))})`);
+      if (CFG.stove) {
+        const b = stoveGeom().body;
+        const overlap = run.x0 < b.x1 && run.x1 > b.x0 && run.y0 < b.y1 && run.y1 > b.y0;
+        ok(!overlap, 'laundry does not overlap the wood stove footprint');
+      }
+    }
+
     // report key derived numbers
     out.push('--- derived ---');
     out.push(`exterior        : ${ftin(W)} x ${ftin(H)}`);
@@ -1401,10 +1669,25 @@ const BP = (function () {
     buildSubfloor();
     out.push(`subfloor        : ${BP._sheets.pieces} pieces (${BP._sheets.full} full, ${BP._sheets.cut} cut) -> buy ~${BP._sheets.buy} sheets`);
     if (CFG.patio) { const g = patioGeom(); out.push(`patio           : ${ftft(g.pw)} x ${ftft(g.P.depth)} slab off S wall (${(g.pw * g.P.depth / 144).toFixed(0)} sf)`); }
+    if (CFG.stove) {
+      const sg = stoveGeom(), st = CFG.stove;
+      let chimTxt = `${ftin(st.flueOD)} Class-A flue`;
+      if (CFG.roof) {
+        const lo = CFG.roof.lowEave, ri = CFG.roof.pitch / 12 * W, hi = lo + ri, rD = 9.25, shT = 0.6;
+        const surf = lo + (hi - lo) * (sg.cX / W) + rD + shT, ridge = hi + rD + shT;
+        let top = surf + 36; if ((W - sg.cX) <= 120) top = Math.max(top, ridge + 24);
+        chimTxt = `flue top ${ftft(top)} (≈${ftin(top - surf)} above roof)`;
+      }
+      out.push(`wood stove      : ${ftin(st.bodyW)} x ${ftin(st.bodyD)} · ${st.placeLabel || st.wall + ' wall'} · hearth ${ftin(sg.hearth.x1 - sg.hearth.x0)} x ${ftin(sg.hearth.y1 - sg.hearth.y0)} · ${chimTxt}`);
+    }
+    if (CFG.laundry) {
+      const lg = laundryGeom(), ld = CFG.laundry;
+      out.push(`laundry         : ${ld.units.length} × ${ftin(ld.unitW)} x ${ftin(ld.unitD)} (${ld.units.join(' + ')}) · ${ld.placeLabel || ld.wall + ' wall'} · ${ftin(lg.run.len)} run · ${ftin(ld.fromNorth)} off N wall`);
+    }
     return { out, fail };
   }
 
-  return { CFG, G, buildAll, verify, ftin, openingSpan, boltsAlong, _bolts: {} };
+  return { CFG, G, buildAll, verify, ftin, openingSpan, boltsAlong, stoveGeom, laundryGeom, _bolts: {} };
 })();
 </script>
 <script>
@@ -1412,7 +1695,7 @@ const BP = (function () {
   function set(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
   function go(){
     var a = BP.buildAll();
-    var map = { walls:'walls', patio:'patio', roof:'roof', openingsWin:'openings-win', openingsDoor:'openings-door', sill:'sill-plates', rim:'rim-joists',
+    var map = { walls:'walls', patio:'patio', roof:'roof', stove:'stove', laundry:'laundry', openingsWin:'openings-win', openingsDoor:'openings-door', sill:'sill-plates', rim:'rim-joists',
                 joists:'field-joists', subfloor:'subfloor', wall:'wall-framing', bolts:'anchor-bolts', dims:'dims', section:'section-stack' };
     Object.keys(map).forEach(function(k){ var el=document.getElementById(map[k]); if(el) el.innerHTML=a[k]; });
 
@@ -1665,8 +1948,10 @@ const BP = (function () {
       { id: 'wall-framing', btn: 'wall-framing', label: 'Wall Framing' },
       { id: 'openings-win',  btn: 'openings-win',  label: 'Windows' },
       { id: 'openings-door', btn: 'openings-door', label: 'Doors' },
-      { id: 'dims',         btn: 'dims',         label: 'Dimensions', defaultHidden: true },
-      { id: 'roof',         btn: 'roof',         label: 'Roof Over (covers porch)' }
+      { id: 'dims',         btn: 'dims',         label: 'Labels & Dimensions', defaultHidden: true },
+      { id: 'roof',         btn: 'roof',         label: 'Roof Over (covers porch)' },
+      { id: 'stove',        btn: 'stove',        label: 'Wood Stove · Chimney' },
+      { id: 'laundry',      btn: 'laundry',      label: 'Laundry · Washer + Dryer' }
     ];
     var STEP = 600, FIRST_DELAY = 350;
     var announce = document.getElementById('layer-announce');
@@ -2065,6 +2350,22 @@ const BP = (function () {
         zTop = Math.max(w.hL, w.hR) + rafterD + shTh;  // include the roof above the high end
         if (w.wall === 'S') xMin = -ovW; else xMax = len + ovW;   // overhang on the low (W) side
       }
+      // Class-A chimney from the SW stove rises straight up through THIS wall (the S rake elevation).
+      // Compute its required top height (NFPA 211 "3-2-10" rule) and grow the canvas to fit before scaling.
+      var chim = null;
+      if (rake && w.wall === 'S' && C.stove && BP.stoveGeom) {
+        var sg = BP.stoveGeom();
+        var cXel = sg.cX;                                               // plan x from W == elevation x from left (S wall)
+        var roofTopC = (w.hL + (w.hR - w.hL) * (cXel / len)) + rafterD + shTh;  // roof surface at the chimney
+        var ridgeTopC = Math.max(w.hL, w.hR) + rafterD + shTh;         // high (E) ridge surface
+        var horizRidge = len - cXel;                                   // horizontal run to the ridge
+        var within10 = horizRidge <= 120;                              // is the ridge within 10 ft?
+        var govTop = roofTopC + 36;                                    // ≥ 3 ft above the penetration
+        if (within10) govTop = Math.max(govTop, ridgeTopC + 24);       // ≥ 2 ft above anything within 10 ft
+        var chimTop = Math.ceil(govTop);
+        chim = { x: cXel, od: sg.flueOD, roofTop: roofTopC, top: chimTop, within10: within10 };
+        zTop = Math.max(zTop, chimTop + 7);                            // headroom for the cap
+      }
       var ML = 60, MR = 32, MT = 40, MB = 46 + belowIn * S;   // extra bottom room for CMU courses on rake walls
       var Wpx = +((xMax - xMin) * S + ML + MR).toFixed(1), Hpx = +(zTop * S + MT + MB).toFixed(1);
       var ox = ML - xMin * S, oy = MT + zTop * S;       // floor baseline (y) in px
@@ -2207,6 +2508,34 @@ const BP = (function () {
         s += '<text x="' + X((hiX + loX) / 2) + '" y="' + (Y(topAt((hiX + loX) / 2) + rafterD) - 4) + '" text-anchor="middle" fill="var(--roof-stroke)" font-size="7.5" font-family="var(--font)" font-weight="bold">2×10 RAFTERS @ 16" OC</text>';
         var ohAnch = (w.wall === 'S') ? 'start' : 'end';
         s += '<text x="' + X(tailX) + '" y="' + (Y(topAt(tailX)) + 12) + '" text-anchor="' + ohAnch + '" fill="var(--roof-post)" font-size="6.5" font-family="var(--font)">' + ft(ovW) + ' eave O.H.</text>';
+      }
+
+      // ---- Class-A chimney from the SW stove: hidden up through this wall, exposed above the roof ----
+      if (chim) {
+        var cf = 'var(--flue)';
+        var cxL = chim.x - chim.od / 2, cxR = chim.x + chim.od / 2;
+        // hidden run: stub down toward the basement stove + up through the wall to the roof (dashed = behind the wall plane)
+        s += R(cxL, -belowIn, cxR, chim.roofTop, 'fill="' + cf + '" fill-opacity="0.10" stroke="' + cf + '" stroke-width="1" stroke-dasharray="5,3"');
+        // roof flashing collar at the penetration
+        s += R(cxL - 3, chim.roofTop, cxR + 3, chim.roofTop + 2.5, 'fill="' + cf + '" fill-opacity="0.50" stroke="' + cf + '" stroke-width="0.8"');
+        // exposed run above the roof (solid)
+        s += R(cxL, chim.roofTop, cxR, chim.top, 'fill="' + cf + '" fill-opacity="0.30" stroke="' + cf + '" stroke-width="1.4"');
+        // rain cap / spark arrestor
+        s += R(cxL - 2.5, chim.top, cxR + 2.5, chim.top + 3, 'fill="' + cf + '" fill-opacity="0.60" stroke="' + cf + '" stroke-width="1"');
+        // height dim (roof → top), right of the pipe
+        var hdx = X(cxR) + 13;
+        s += '<line x1="' + hdx + '" y1="' + Y(chim.roofTop) + '" x2="' + hdx + '" y2="' + Y(chim.top) + '" stroke="' + DIM + '" stroke-width="0.7"/>';
+        s += '<line x1="' + (hdx - 4) + '" y1="' + Y(chim.roofTop) + '" x2="' + (hdx + 4) + '" y2="' + Y(chim.roofTop) + '" stroke="' + DIM + '" stroke-width="0.7"/>';
+        s += '<line x1="' + (hdx - 4) + '" y1="' + Y(chim.top) + '" x2="' + (hdx + 4) + '" y2="' + Y(chim.top) + '" stroke="' + DIM + '" stroke-width="0.7"/>';
+        var hmy = (Y(chim.roofTop) + Y(chim.top)) / 2;
+        s += '<text x="' + (hdx + 6) + '" y="' + hmy + '" text-anchor="middle" fill="' + DIM + '" font-size="6.5" font-family="var(--font)" transform="rotate(-90,' + (hdx + 6) + ',' + hmy + ')">' + ftft(chim.top - chim.roofTop) + ' above roof</text>';
+        // stacked labels to the LEFT (open sky above the low west roof)
+        var lblX = X(cxL) - 6, halo = ' paint-order="stroke fill" stroke="var(--panel)" stroke-width="3" stroke-linejoin="round"';
+        s += '<text x="' + lblX + '" y="' + (Y(chim.top) + 2) + '" text-anchor="end" fill="' + cf + '" font-size="7.5" font-family="var(--font)" font-weight="bold"' + halo + '>CLASS-A CHIMNEY</text>';
+        s += '<text x="' + lblX + '" y="' + (Y(chim.top) + 11) + '" text-anchor="end" fill="' + cf + '" font-size="6" font-family="var(--font)"' + halo + '>top ' + ftft(chim.top) + ' above floor</text>';
+        s += '<text x="' + lblX + '" y="' + (Y(chim.top) + 20) + '" text-anchor="end" fill="' + cf + '" font-size="6" font-family="var(--font)"' + halo + '>3-2-10: ≥3\' above roof,</text>';
+        s += '<text x="' + lblX + '" y="' + (Y(chim.top) + 29) + '" text-anchor="end" fill="' + cf + '" font-size="6" font-family="var(--font)"' + halo + '>' + (chim.within10 ? '≥2\' over ridge (≤10\' away)' : 'clear of structures ≤10\' away') + '</text>';
+        s += '<text x="' + lblX + '" y="' + (Y(chim.top) + 38) + '" text-anchor="end" fill="' + cf + '" font-size="5.5" font-family="var(--font)" opacity="0.9"' + halo + '>flue set back ~' + ftft(C.stove.fromSouth) + ' — shown in projection</text>';
       }
 
       // ---- dimensions ---- (drop below the CMU courses on rake walls)

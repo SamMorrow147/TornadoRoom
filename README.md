@@ -34,6 +34,8 @@ Live construction blueprint and field documentation for a CMU block basement bei
 - **Wall Framing** — 2×6 studs @ 16" OC, 3-stud corner posts, double top plate
 - **Openings** — Windows + doors with swing arc
 - **Dimensions** — Full perimeter + detail dims
+- **Wood Stove** — Lower-level (basement) stove on the EAST wall (north of the E door): footprint, hearth pad, and a straight-up Class-A chimney that exits near the high ridge (framed floor opening → upper level → roof)
+- **Laundry** — Lower-level (basement) washer + dryer, side-by-side on the WEST wall near the north corner (footprint only; drawn below the floor deck)
 
 ## South patio
 
@@ -50,6 +52,8 @@ Live construction blueprint and field documentation for a CMU block basement bei
 | 09 | 2026-05-22 | Subfloor layer added (¾" T&G, staggered, cut sequence) |
 | 10 | 2026-05-23 | Door · S (36" R.O.) added, 12" from west corner. South patio layer added. |
 | 15 | 2026-05-24 | Door · W (36" R.O.) added on the west wall — left (N) edge on the wall centerline (84⅜" from S corner). Threaded through all layers + self-check. |
+| 16 | 2026-05-24 | Wood Stove layer added — small (~24"×20") stove on the basement EAST wall, a few feet north of the E door, squared to the wall. Backing the high (E) side lets a straight-up Class-A flue exit near the ridge → only ~3 ft of pipe above the roof. Hearth pad + framed floor opening (lands in a joist bay, no joist cut) → upper level → roof (flashing + storm collar). South elevation shows the near-ridge flue to NFPA 211 3-2-10. Parametric CFG.stove (wall 'E'/'W') + self-check. Footprint only — confirm listed clearances. |
+| 17 | 2026-05-25 | Laundry layer added — washer + dryer side-by-side on the basement WEST wall, up near the NORTH corner (north of the W door). Each ~27"×31"; ~55" run, 6" off the N wall. Drawn below the floor deck (dashed). Parametric CFG.laundry (wall 'W'/'E') + self-check (in interior clear, backs to wall, clears W door, no stove overlap). Footprint only — confirm hookups/drain/vent/clearances. |
 
 ---
 

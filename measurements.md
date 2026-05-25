@@ -106,6 +106,40 @@
 
 ---
 
+## Wood Stove (planned)
+| Item | Value | Notes |
+|---|---|---|
+| Location | Lower level (basement) · **EAST wall**, a few feet north of the E door | Squared (backed) to the east wall — the **high** side of the shed roof |
+| Why the E wall | Short, well-drafting chimney | A straight-up flue exits near the high ridge → only ~3 ft of pipe above the roof (vs ~5 ft from the low W side), warm interior chimney, dry near-ridge penetration |
+| Stove footprint | ~24"W × 20"D | Small/typical freestanding stove (~1.5–2 cu ft firebox) — confirm against the actual model |
+| Stove center | 120¾" north of the S corner along the E wall (≈120" off the N wall) | ≈ (x 101⅝" from W face / ~10" off the E interior face, y 120" from N). ~41" north of the E door's near edge |
+| Back air gap | 2" (nominal) | Footprint only — **actual clearance-to-combustibles must come from the stove's UL listing** |
+| Hearth / floor pad | ~38" (E–W) × 40" (N–S) | 16" ember strip in front (loading side, faces W into the room), 8" to sides; to wall at back. Listed non-combustible, required R-value. Clears the E door opening by ~1'-7" |
+| Flue / chimney | 6" flue → ~8" Class-A insulated OD | **Top exit, straight up:** floor deck → upper level → out the shed roof |
+| Framed floor opening | 12" sq (OD + 2 × 2" clearance) | At this location it lands **in a joist bay (no joist cut)** between joists at 112" & 128"; frame with (2) headers (N–S) into the two trimmer joists |
+| Roof penetration | Flashing + storm collar (no cricket needed for an 8" round pipe near the ridge) | Straight up through the upper level and out the roof, near the high E ridge |
+| Chimney height | ~3 ft of pipe above the roof | **NFPA 211 "3-2-10":** ≥3' above the penetration AND ≥2' above anything within 10'. Near the ridge the +3' rule governs → short stub |
+
+> ⚠ Field verify before building: (1) clearance-to-combustibles per the stove's listing (footprint only is shown); (2) the E-door swing / egress path stays clear of the hearth; (3) the roof penetration vs. the ridge beam & rafters (2" clearance, framed roof opening + flashing/storm collar); (4) outside combustion air + CO alarm for a basement appliance.
+
+---
+
+## Laundry (planned)
+| Item | Value | Notes |
+|---|---|---|
+| Location | Lower level (basement) · **WEST wall**, up near the **NORTH corner** | North of the W door (which starts ~120" off the N corner) — the north half of the W wall is clear |
+| Arrangement | Washer + dryer **side-by-side** | Order from the north: WASHER, then DRYER |
+| Each unit footprint | ~27" (along wall, N–S) × 31" (deep, E–W into room) | Standard front-load size — confirm against the actual models |
+| Total run | ~55" (27 + 1" gap + 27) | Along the W wall |
+| Off the N wall | 6" | Gap from the N interior wall face to the N (near) edge of the run → run spans ≈13⅝"–68⅝" from the N face |
+| Back gap | 4" | Hose/air gap behind → interior CMU wall face (footprint only) |
+| Projection into room | ~35" from the wall (back gap + depth) | Front faces ≈42⅝" off the W interior face — leaves ~71" of clear floor |
+| Hookups | **Not drawn** | Footprint only — add hot/cold supply box, standpipe/drain, dryer vent (through W wall), and a 240V outlet for an electric dryer |
+
+> ⚠ Field verify before rough-in: (1) hot/cold supply + standpipe drain (trap + air gap) locations behind the washer; (2) dryer vent path/length through the W wall (or up); (3) electric vs. gas dryer (240V circuit vs. gas line + 120V); (4) door/lid swing & front clearance; (5) floor drain / pan for a basement install; (6) that the run stays clear of the W door swing.
+
+---
+
 ## Corner Heights
 | Corner | Height | Notes |
 |---|---|---|
@@ -149,3 +183,5 @@
 | 2026-05-20 | W | Window opening width | 34 ¼" |
 | 2026-05-20 | W | Remaining wall after window | 63" |
 | 2026-05-20 | NE corner | Corner height | ~40 5/8" |
+| 2026-05-24 | Basement E wall | Wood stove location (planned) | E wall, center ~120" off N wall (a few ft N of E door) |
+| 2026-05-25 | Basement W wall | Laundry location (planned) | W wall, near N corner; washer+dryer side-by-side, ~55" run, 6" off N wall |
