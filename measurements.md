@@ -18,9 +18,9 @@
 | Interior clear (E–W) | ≈ 106" | 121¼ − 2 × 7⅝ |
 | Interior clear (N–S) | ≈ 225½" | 240¾ − 2 × 7⅝ |
 | Sill plate N-1 / S-1 | 121¼" / 121" | full exterior width, corner-to-corner |
-| Sill plate W total / E total | 229¾" / 227¾" | exterior − 2 × 5½" (butts between N/S plates) |
+| Sill plate W total / E total | 226¼" / 224¼" | exterior − 2 × 7¼" (butts between N/S plates) |
 | Field joist length | 118¼" | exterior E–W − 2 × 1½" rim |
-| Field joist clear span | 110¼" (9'2¼") | between inner edges of W & E sill plates |
+| Field joist clear span | 106¾" (8'10¾") | between inner edges of W & E sill plates |
 
 > ⚠ If the wall lengths turn out to be *interior* after all, every number in this block changes. Re-confirm the datum before cutting.
 
@@ -96,7 +96,8 @@
 | Studs | 2×6 @ 16" OC | Single bottom plate, double top plate, 3-stud corners |
 | N & S walls | Rake walls | Sloped top plate + gable studs |
 | Rafters | 2×10 @ 16" OC | **Verify for snow load / truss engineering** |
-| Eave overhang (N/S/W) | 18" | Fascia + vented soffit; gutter at low (W) eave |
+| Eave overhang (N/S) | 18" | Fascia + vented soffit |
+| Eave overhang (W) | 30" | Extended for weather protection over W door + dryer vent; fascia + vented soffit; gutter at low (W) eave |
 | Eave overhang (E, high) | 0" (flush) | To be extended later |
 | Roof over porch | Yes | Carried on a beam + 6×6 post each side of the 10×10 porch |
 | Connections | H2.5 hurricane ties | Every rafter to top plate (wind uplift) |

@@ -79,6 +79,17 @@
     .tt-opt.active { background:var(--accent); color:var(--panel); }
     .tt-opt:not(.active):hover { background:var(--hover); color:var(--ink); }
 
+    /* site page nav */
+    .site-nav { display:flex; align-items:center; gap:6px; flex-wrap:wrap; flex:0 0 auto; }
+    .site-nav a {
+      font-size:0.68rem; letter-spacing:0.8px; text-transform:uppercase;
+      padding:7px 12px; border:1px solid var(--line); border-radius:4px;
+      color:var(--ink-dim); text-decoration:none; font-family:var(--font);
+      transition:border-color .15s, color .15s, background .15s; white-space:nowrap;
+    }
+    .site-nav a:hover { border-color:var(--accent); color:var(--accent); background:var(--hover); }
+    .site-nav a.active { border-color:var(--accent); color:var(--accent); background:var(--hover); font-weight:bold; cursor:default; pointer-events:none; }
+
     .layout { display:flex; gap:0; min-height:calc(100vh - 62px); }
     .blueprint-panel { flex:1; display:flex; flex-direction:column; align-items:center; padding:24px 20px; overflow-x:auto; gap:18px; }
     .sidebar { width:310px; min-width:310px; border-left:1px solid var(--line); padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:16px; }
@@ -267,6 +278,8 @@
 
     @media (max-width: 820px) {
       header { padding:12px 16px; flex-wrap:wrap; gap:10px; }
+      .site-nav { width:100%; order:3; }
+      .site-nav a { flex:1; text-align:center; padding:8px 6px; font-size:0.62rem; }
       header h1 { font-size:1rem; letter-spacing:1px; }
       header p  { font-size:0.66rem; }
       .badge { font-size:0.62rem; padding:3px 8px; }
@@ -356,9 +369,14 @@
     </div>
     <div>
       <h1>Tornado Room — Foundation Blueprint</h1>
-      <p>CMU Basement + Patio + Framing Elevations + Roof / Rafter Detail + Wood Stove + Laundry · Datum: EXTERIOR out-to-out · Rev 17 (parametric)</p>
+      <p>CMU Basement + Patio + Framing Elevations + Roof / Rafter Detail + Wood Stove + Laundry · Datum: EXTERIOR out-to-out · Rev 20 (parametric)</p>
     </div>
   </div>
+  <nav class="site-nav" aria-label="Site pages">
+    <a href="foundation-blueprint.html" class="active" aria-current="page">Blueprint</a>
+    <a href="window-detail.html">Window Detail</a>
+    <a href="sill-plate-cutlist.html">Sill Cut List</a>
+  </nav>
 </header>
 
 <!-- MOBILE TOP BAR (hidden on desktop) -->
@@ -458,7 +476,7 @@
       <line x1="380" y1="1058" x2="380" y2="1092" stroke="var(--line)" stroke-width="0.5"/>
       <text x="20" y="1075" fill="var(--accent)" font-size="10" font-family="var(--font)" font-weight="bold">TORNADO ROOM — FOUNDATION FLOOR PLAN  |  CMU BLOCK BASEMENT + S PATIO</text>
       <text x="20" y="1087" fill="var(--ink-dim)" font-size="8" font-family="var(--font)">SCALE 2.5 px = 1 IN  |  DATUM: EXTERIOR OUT-TO-OUT  |  NORTH = UP</text>
-      <text x="390" y="1075" fill="var(--ink-dim)" font-size="8" font-family="var(--font)">DATE 2026-05-25  REV 17  PLAN + ELEVATIONS</text>
+      <text x="390" y="1075" fill="var(--ink-dim)" font-size="8" font-family="var(--font)">DATE 2026-05-25  REV 20  PLAN + ELEVATIONS</text>
       <text x="390" y="1087" fill="var(--warn)" font-size="8" font-family="var(--font)" id="tb-check">SELF-CHECK …</text>
     </svg>
     <p class="scale-label">Each small grid square = 5"  ·  large square = 25"  ·  interior clear shown in grey</p>
@@ -471,7 +489,7 @@
              style="background:var(--panel); border:1px solid var(--line); border-radius:4px; display:block;">
           <g id="section-stack"></g>
         </svg>
-        <p class="scale-label">CMU → sill seal → 2×6 sill plate → 2×8 rim + bearing joist → ¾" subfloor</p>
+        <p class="scale-label">CMU → sill seal → 2×8 sill plate → 2×8 rim + bearing joist → ¾" subfloor</p>
       </div>
       <div class="materials-col">
         <div class="materials-card">
@@ -491,9 +509,9 @@
     <div id="elevations" class="elev-grid"></div>
     <p class="scale-label">Single bottom plate · double top plate · 3-stud corner posts · openings carried up from the CMU openings below · (2) 2×8 headers · roof shown on N &amp; S (rake) walls · scale 1.8 px/in</p>
 
-    <div class="panel-title" style="margin-top:14px;">Roof Framing Detail · typical shed rafter · 4:12 · high E (flush) → low W (18" eave)</div>
+    <div class="panel-title" style="margin-top:14px;">Roof Framing Detail · typical shed rafter · 4:12 · high E (flush) → low W (30" eave)</div>
     <div id="rafter-detail"></div>
-    <p class="scale-label">2×10 rafters @ 16" OC · bird's-mouth seats · H2.5 hurricane ties (wind/uplift) · 18" west eave overhang · east end flush (extend later) · verify rafter size for your snow load</p>
+    <p class="scale-label">2×10 rafters @ 16" OC · bird's-mouth seats · H2.5 hurricane ties (wind/uplift) · 30" west eave overhang · east end flush (extend later) · verify rafter size for your snow load</p>
 
     <div class="panel-title" style="margin-top:28px;">Construction Checklist · phases in build order · check off as you go</div>
     <div class="bk-global-wrap">
@@ -534,7 +552,7 @@
       <div class="legend-row"><span class="swatch" style="background:var(--interior-fill);border:1px solid var(--cmu-stroke-in);"></span> Interior (dirt)</div>
       <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--win) 13%, transparent);border:1.5px dashed var(--win);"></span> Window opening</div>
       <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--door) 13%, transparent);border:1.5px dashed var(--door);"></span> Door opening</div>
-      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--sill-fill) 33%, transparent);border:1.5px solid var(--sill-stroke);"></span> Sill plate (2×6 PT, flat)</div>
+      <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--sill-fill) 33%, transparent);border:1.5px solid var(--sill-stroke);"></span> Sill plate (2×8 PT, flat)</div>
       <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--rim-fill) 45%, transparent);border:1.5px solid var(--rim-stroke);"></span> Rim / box sill (2×8 on edge)</div>
       <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--joist-fill) 25%, transparent);border:1.5px solid var(--joist-stroke);"></span> Field joist (2×8 SYP)</div>
       <div class="legend-row"><span class="swatch" style="background:color-mix(in srgb, var(--subfloor-fill) 35%, transparent);border:1.5px solid var(--subfloor-stroke);"></span> Subfloor panel (¾" T&amp;G)</div>
@@ -560,9 +578,6 @@
         <tr><td class="tbd">Bearing / end</td><td id="m-bearing"></td></tr>
         <tr><td class="tbd">Count</td><td id="m-joist-count"></td></tr>
       </table>
-      <p class="flag" style="margin-top:8px">• Field joist clear span is well under the IRC R502.3.1 limit for 2×8 SYP @16" OC (~13'1" at 40 psf).</p>
-      <p class="flag">• Min bearing on wood sill is 1½" (IRC R502.6) — we have plenty.</p>
-      <p class="flag">• Confirm species/grade at the yard; SYP assumed.</p>
     </div>
 
     <div class="card">
@@ -573,14 +588,6 @@
         <tr><td class="tbd">Strength axis</td><td>⟂ to joists (8' runs N–S)</td></tr>
         <tr><td class="tbd">Pieces</td><td id="m-sheets"></td></tr>
       </table>
-      <p class="flag" style="margin-top:8px">Placement strategy</p>
-      <p class="note">1 · Run the 8' length <strong>across</strong> the joists; the 4' end joints land on a joist center (8' = six 16" bays). ✓</p>
-      <p class="note">2 · <strong>Stagger</strong> end joints by 4' course-to-course (brick pattern) — never let four corners meet.</p>
-      <p class="note">3 · <strong>T&amp;G long edges</strong> support themselves between joists — no blocking needed. (Square-edge panels → add 2× blocking under the long seams.)</p>
-      <p class="note">4 · Leave a <strong>⅛" gap</strong> at all panel ends/edges for expansion.</p>
-      <p class="note">5 · <strong>Glue + screw:</strong> bead of subfloor adhesive on every joist top, then #8 × 2" screws (or ring-shank nails) ~6" OC at edges, 12" OC in field. Glue kills squeaks.</p>
-      <p class="note">6 · Start in a corner with a full sheet; begin alternate courses with a half sheet to set the stagger; field-cut the perimeter.</p>
-      <p class="note" style="margin-top:6px">Numbered panels on the plan = the cut sequence. Buy ~8 sheets (≈6.3 of coverage + cutting waste).</p>
     </div>
 
     <div class="card">
@@ -590,18 +597,9 @@
         <tr><td class="tbd">Studs</td><td style="color:var(--wall-plate-stroke);font-weight:bold">2×6 @ 16" OC</td></tr>
         <tr><td class="tbd">Plates</td><td>double top + single bottom</td></tr>
         <tr><td class="tbd">Corners</td><td>3-stud posts (×4)</td></tr>
+        <tr><td class="tbd">Openings</td><td>king + jack studs each jamb · (2) 2×8 header · rough sill + cripples at windows</td></tr>
         <tr><td class="tbd">Stud count</td><td id="m-studs"></td></tr>
       </table>
-      <p class="flag" style="margin-top:8px">Why 2×6 over 2×4 here:</p>
-      <p class="note">• Lands flush on the 5½" sill — load drops straight down stud → plate → rim → sill → CMU.</p>
-      <p class="note">• Deeper cavity ≈ R-21 vs R-13/15 — matters for a conditioned room in tornado country.</p>
-      <p class="note">• Room for bath + kitchen drain/vent runs in the walls.</p>
-      <p class="note">• Better for the tall (east) high-side wall of the shed roof and for wind.</p>
-      <p class="flag" style="margin-top:8px">Notes</p>
-      <p class="note">• Interior non-bearing partitions can be 2×4.</p>
-      <p class="note">• Bottom plate need not be PT (the PT is the sill on the CMU).</p>
-      <p class="note">• Final size depends on high-wall height + local energy/wind code — confirm.</p>
-      <p class="note" style="margin-top:6px">To switch the drawing to 2×4: set <span class="hi">studD: 3.5</span> in the CONFIG (CFG.wall).</p>
     </div>
 
     <div class="card">
@@ -625,14 +623,6 @@
         <tr><td class="tbd">Control joints</td><td>cross → four 5' panels</td></tr>
         <tr><td class="tbd">Slope</td><td>¼"/ft away from wall</td></tr>
       </table>
-      <p class="flag" style="margin-top:8px">Build notes</p>
-      <p class="note">• <strong>Isolation joint:</strong> ½" expansion material between slab and foundation — pour the patio independent of the wall so they move separately.</p>
-      <p class="note">• <strong>Reinforce:</strong> #3 rebar @ 18" OC each way (or 6×6 W1.4 WWM), kept up on chairs at mid-slab.</p>
-      <p class="note">• <strong>Drainage:</strong> slope the finished surface ¼" per foot away from the foundation (2½" fall over 10').</p>
-      <p class="note">• <strong>Edges:</strong> thicken the free edges (turn-down) to ~8"–12"; set below frost depth if it carries any load.</p>
-      <p class="note">• <strong>Concrete:</strong> ≈100 sf × 4" ≈ 1.25 cu yd; add ~10% waste → order ~1.4 cu yd (4000 psi, air-entrained).</p>
-      <p class="flag" style="margin-top:6px">• Confirm the south door swing/threshold height works with the finished slab elevation.</p>
-      <p class="flag">• Verify local frost depth & setbacks before pouring.</p>
     </div>
 
     <div class="card" style="border-color:var(--warn);">
@@ -655,20 +645,8 @@
       <p class="flag">• Hearth pad must be listed non-combustible with the stove's required R-value/thickness. Class-A floor &amp; roof penetrations need 2" clearance to combustibles (framed opening + radiation shield). Provide outside combustion air + a CO alarm for a basement stove.</p>
     </div>
 
-    <div class="card">
-      <h3>Rev Log</h3>
-      <p class="note">Rev 06 · 2026-05-22 — last hand-placed version. Rim joists sat on the wrong edge (N/S overhung the interior; W/E floated outboard of the sill).</p>
-      <p class="note" style="margin-top:6px">Rev 07 · 2026-05-22 — <span class="hi">Full rebuild.</span> One parametric model (single source of truth). Datum corrected to EXTERIOR out-to-out → interior re-derived. All four rims now sit on their sill plates flush to the exterior, over the CMU. Joist length/span recomputed (118¼" / 110¼"). Anchor bolts auto-laid from IRC rule. Added Section A–A. Live self-check.</p>
-      <p class="note" style="margin-top:6px">Rev 08 · 2026-05-22 — Added the <span class="hi">Wall Framing</span> layer (toggle): perimeter plate ring, 3-stud corner posts, 2×6 studs @ 16" OC on all four walls. Recommendation: 2×6 over 2×4 (bears flush on the 5½" sill, deeper insulation cavity, plumbing room, taller shed-roof wall). Above-grade openings TBD.</p>
-      <p class="note" style="margin-top:6px">Rev 09 · 2026-05-22 — Added the <span class="hi">Subfloor</span> layer (toggle): ¾" T&amp;G panels, strength axis ⟂ joists, end joints on joist centers, staggered brick pattern, numbered cut sequence. ~8 sheets.</p>
-      <p class="note" style="margin-top:6px">Rev 10 · 2026-05-23 — Added <span class="hi">Door · S</span> (36" R.O.) on the south wall, 12" from the west corner, left of the existing south window. Layer toggle order updated to build sequence (anchor bolts → sill → rim → joists…). Bolt avoidance updated for both south openings.</p>
-      <p class="note" style="margin-top:6px">Rev 11 · 2026-05-23 — Added the <span class="hi">South Patio</span> layer (toggle): a 10'×10' on-grade concrete slab off the south wall, centered and connected at the south door. Shows control-joint cross (four 5' panels), ½" isolation joint at the foundation, slope-to-drain arrow, and its own dimension chain. Canvas extended ~10' south. Patio added to the parametric model (CFG.patio) and self-check.</p>
-      <p class="note" style="margin-top:6px">Rev 12 · 2026-05-23 — Added <span class="hi">Wall Framing Elevations</span> for all four walls (new section below). Shed roof: <span class="hi">high E → low W</span>, 8'-0" low wall, 4:12 pitch (MN snow + shingles). N &amp; S are rake walls (sloped top plate + gable studs); E is the high flat wall, W the low flat wall. Each shows the single bottom plate, double top plate, 2×6 studs @ 16" OC, 3-stud corner posts, and opening framing (king/jack studs, (2) 2×8 headers, cripples, window sill) with the door/windows carried up from the CMU openings. Driven by CFG.roof (single source of truth).</p>
-      <p class="note" style="margin-top:6px">Rev 13 · 2026-05-23 — Added the <span class="hi">Roof Over</span> layer (toggle): the shed roof carries past the south wall to cover the 10'×10' porch, on a beam + 6×6 post each side. Plan shows the roof edge (dashed = above) with 18" eave/rake overhang on N/S/W and <span class="hi">0" (flush) on the high E side — to be extended later</span>, E–W rafter direction, high-E ridge / low-W eave, 4:12 slope arrows draining to the low side, and the porch beams + posts. Per-side overhangs via CFG.roof.overhang {N,S,E,W}.</p>
-      <p class="note" style="margin-top:6px">Rev 14 · 2026-05-23 — The <span class="hi">South &amp; North (rake) elevations now show the roof</span>: 2×10 rafters on the sloped wall, the 18" west eave overhang with fascia + soffit, and the flush (0" overhang) high-E end. Added a keyed <span class="hi">Typical Shed Rafter construction detail</span> (bird's-mouth seats, H2.5 hurricane ties, fascia/soffit/gutter, roofing build-up, 4:12 pitch, flush high end) with numbered notes. Rafter size 2×10 @ 16" OC shown — verify for snow load / get truss engineering.</p>
-      <p class="note" style="margin-top:6px">Rev 15 · 2026-05-24 — Added <span class="hi">Door · W</span> (36" R.O.) on the west wall. Placed so its <span class="hi">left (north) edge sits on the wall centerline</span> (84⅜" from the S corner; door body fills toward the south). Added to the parametric model (CFG.openings.Wdoor) and carried through every layer: openings, wall framing (west plate split + king/jack studs), anchor-bolt avoidance, the W-wall dimension chain, the West elevation, and the self-check (incl. a centerline assertion).</p>
-      <p class="note" style="margin-top:6px">Rev 16 · 2026-05-24 — Added the <span class="hi">Wood Stove</span> layer (toggle): a small (~24"×20") freestanding stove on the <span class="hi">EAST wall of the lower level (basement), a few feet north of the E door</span>, squared to the wall. Backing to the east (high) side of the shed roof lets a <span class="hi">straight-up Class-A flue exit near the ridge</span>, so the chimney needs only <span class="hi">~3 ft above the roof</span> (vs ~5 ft from the low/W side) and drafts better. Shows the stove footprint (dashed = below the floor deck), the hearth / floor-protection pad, and the chimney: a framed floor-deck opening (2" clearance, (2) headers + doubled trimmers — lands in a joist bay, no joist cut), up through the upper level, and out the roof with flashing + storm collar. The <span class="hi">South elevation</span> shows the flue rising near the high end through the roof to the NFPA 211 <span class="hi">3-2-10</span> height. Parametric (CFG.stove supports wall 'E'/'W') + self-check. Footprint only — listed clearances to combustibles must be field-confirmed.</p>
-      <p class="note" style="margin-top:6px">Rev 17 · 2026-05-25 — Added the <span class="hi">Laundry</span> layer (toggle): a <span class="hi">washer + dryer side-by-side on the WEST wall of the lower level (basement), up near the NORTH corner</span> — north of the W door (which starts ~120" off the N corner). Each unit ~27" along the wall × 31" deep; ~55" total run, 6" off the north wall. Drawn dashed (= below the floor deck, same convention as the wood stove) with each appliance's drum/door cue and a leader-lined label. Parametric (CFG.laundry supports wall 'W'/'E') + self-check (within interior clear, backs square to the wall, clears the W door, no overlap with the stove). <span class="hi">Footprint only</span> — supply box / standpipe drain / dryer vent / 240V outlet not drawn; confirm hookups, drain, vent path, and clearances in the field.</p>
+    <div class="card" style="padding:8px 12px;">
+      <p class="note" style="margin:0;opacity:0.6;font-size:10px;">Rev 20 · 2026-05-25</p>
     </div>
 
   </div>
@@ -698,7 +676,7 @@ const BP = (function () {
     t: 7.625,                   // CMU actual thickness (8" nominal block)
     ext: { N: 121.25, S: 121.0, E: 238.75, W: 240.75 },   // EXTERIOR out-to-out
     lumber: {
-      sillW: 5.5, sillT: 1.5,   // 2x6 PT laid flat (5.5 wide across wall, 1.5 thick)
+      sillW: 7.25, sillT: 1.5,  // 2x8 PT laid flat (7.25 wide across wall, 1.5 thick)
       rimT: 1.5, rimD: 7.25,    // 2x8 rim on edge (1.5 thick in plan, 7.25 deep)
       joistT: 1.5, joistD: 7.25,// 2x8 field joist on edge
       joistOC: 16,
@@ -720,7 +698,7 @@ const BP = (function () {
     // shed roof for the above-grade framing: high on the EAST, slopes down to the WEST. lowEave = top-of-plate height on the low (W) wall.
     // overhang = eave/rake projection per side (in); coverPatio extends the roof south to cover the porch on posts.
     // E (high) side = 0 → roof is flush at the east wall for now (to be extended later).
-    roof: { lowEave: 96, pitch: 4, high: 'E', low: 'W', overhang: { N: 18, S: 18, E: 0, W: 18 }, coverPatio: true }, // 8'-0" low wall, 4:12 (MN snow + shingles)
+    roof: { lowEave: 96, pitch: 4, high: 'E', low: 'W', overhang: { N: 18, S: 18, E: 0, W: 30 }, coverPatio: true }, // 8'-0" low wall, 4:12 (MN snow + shingles) · W eave extended to 30" (within IRC R802.4.5 1/3-span limit) for weather protection over W door
     // wood stove · LOWER LEVEL (basement / tornado shelter). Backs square to the EAST wall — the HIGH side
     // of the shed roof — a few feet NORTH of the east door. A straight-up flue exits near the high ridge, so
     // the chimney only needs ~3 ft above the roof (vs ~5 ft from the low/W side) and drafts better (warm, interior).
@@ -960,14 +938,19 @@ const BP = (function () {
     const sdSp = openingSpan(CFG.openings.Sdoor);
     // west door R.O. span (in wall inch coords from north; y axis)
     const wdSp = openingSpan(CFG.openings.Wdoor);
+    // east door R.O. span (in wall inch coords from north; y axis)
+    const edSp = openingSpan(CFG.openings.Edoor);
+    // north window R.O. span (in wall inch coords from west; x axis)
+    const nwSp = openingSpan(CFG.openings.Nwin);
 
-    // plate ring — S wall split at S door, W wall split at W door, others continuous
+    // plate ring — S wall split at S door, W wall split at W door, E wall split at E door, N continuous
     s += rIn(0, 0, W, wd, plate);                           // north plate (full)
     s += rIn(0, H - wd, sdSp.s, H, plate);                 // south plate — west of door
     s += rIn(sdSp.e, H - wd, W, H, plate);                 // south plate — east of door
     s += rIn(0, wd, wd, wdSp.s, plate);                   // west plate — north of door
     s += rIn(0, wdSp.e, wd, H - wd, plate);               // west plate — south of door
-    s += rIn(W - wd, wd, W, H - wd, plate);               // east plate
+    s += rIn(W - wd, wd, W, edSp.s, plate);               // east plate — north of door
+    s += rIn(W - wd, edSp.e, W, H - wd, plate);           // east plate — south of door
 
     // corner posts (3-stud corners)
     s += rIn(0, 0, wd, wd, post);
@@ -987,20 +970,39 @@ const BP = (function () {
     s += rIn(0, wdSp.s,      wd, wdSp.s + sw, stud);  // north jack/trimmer
     s += rIn(0, wdSp.e - sw, wd, wdSp.e,      stud);  // south jack/trimmer
 
-    // field studs @ OC — north wall always; south wall skips studs inside door R.O.
+    // east door framing — king studs (outside R.O.) + jack/trimmer studs (inside R.O.)
+    s += rIn(W - wd, edSp.s - sw, W, edSp.s,      post);  // north king stud
+    s += rIn(W - wd, edSp.e,      W, edSp.e + sw, post);  // south king stud
+    s += rIn(W - wd, edSp.s,      W, edSp.s + sw, stud);  // north jack/trimmer
+    s += rIn(W - wd, edSp.e - sw, W, edSp.e,      stud);  // south jack/trimmer
+
+    // north window framing — king studs (outside R.O.) + jack/trimmer studs (inside R.O.).
+    // The (2) 2×8 header bears on the jacks; the rough sill + cripples above/below show on
+    // the North Wall elevation. In plan the cut plane runs through the glazing, so only the
+    // full-height king + jack studs at the jambs read here.
+    s += rIn(nwSp.s - sw, 0, nwSp.s,      wd, post);  // west king stud
+    s += rIn(nwSp.e,      0, nwSp.e + sw, wd, post);  // east king stud
+    s += rIn(nwSp.s,      0, nwSp.s + sw, wd, stud);  // west jack/trimmer
+    s += rIn(nwSp.e - sw, 0, nwSp.e,      wd, stud);  // east jack/trimmer
+
+    // field studs @ OC — north wall skips studs inside the window R.O.; south wall skips studs inside door R.O.
     let n = 0;
     studsAlong(W).forEach(cx => {
-      s += rIn(cx - h, 0, cx + h, wd, stud);   // north always
-      n++;
+      if (cx + h <= nwSp.s - sw || cx - h >= nwSp.e + sw) {   // north: skip inside window + kings
+        s += rIn(cx - h, 0, cx + h, wd, stud);
+        n++;
+      }
       if (cx + h <= sdSp.s - sw || cx - h >= sdSp.e + sw) {   // south: skip inside door + kings
         s += rIn(cx - h, H - wd, cx + h, H, stud);
         n++;
       }
     });
-    // E wall always; W wall skips studs inside the door R.O. + king zone
+    // E wall skips studs inside the E door R.O. + king zone; W wall skips studs inside the W door R.O. + king zone
     studsAlong(H).forEach(cy => {
-      s += rIn(W - wd, cy - h, W, cy + h, stud); n++;
-      if (cy + h <= wdSp.s - sw || cy - h >= wdSp.e + sw) {
+      if (cy + h <= edSp.s - sw || cy - h >= edSp.e + sw) {   // east: skip inside door + kings
+        s += rIn(W - wd, cy - h, W, cy + h, stud); n++;
+      }
+      if (cy + h <= wdSp.s - sw || cy - h >= wdSp.e + sw) {   // west: skip inside door + kings
         s += rIn(0, cy - h, wd, cy + h, stud); n++;
       }
     });
@@ -1491,7 +1493,7 @@ const BP = (function () {
     const dr = (x, y0, y1, txt) => Ln(x, y0, x, y1, 'stroke="var(--dim)" stroke-width="0.7"')
       + Tx(x + 0.3, (y0 + y1) / 2 + 1, txt, 'fill="var(--dim)" font-size="6"');
     s += dr(t + 1.5, cmuTop, cmuBot, '8" CMU');
-    s += Tx(sillEnd / 2, sillBot + 3, '5½" sill', 'fill="var(--sill-stroke)" font-size="6" text-anchor="middle"');
+    s += Tx(sillEnd / 2, sillBot + 3, '7¼" sill', 'fill="var(--sill-stroke)" font-size="6" text-anchor="middle"');
     s += Tx(L.rimT + L.joistT + 3.5, joistTop + 4, '7¼" joist', 'fill="var(--joist-stroke)" font-size="6"');
     s += Tx(L.rimT / 2, joistTop - 1.5, 'RIM', 'fill="var(--rim-stroke)" font-size="5.5" text-anchor="middle"');
     s += Tx(L.sillW + 2.6, sub / 2 + 1.2, '¾" subfloor', 'fill="var(--subfloor-stroke)" font-size="6"');
@@ -1599,6 +1601,21 @@ const BP = (function () {
     { // W door: confirm the LEFT (north) edge sits on the wall centerline
       const sp = openingSpan(CFG.openings.Wdoor);
       ok(Math.abs(sp.s - CFG.ext.W / 2) < 1e-6, `W door left (N) edge at wall center (${ftin(CFG.ext.W / 2)})`);
+    }
+
+    // INVARIANT 4c: north window rough-opening framing (king + jack studs) lands within
+    // the wall, clear of the 3-stud corner posts at each end.
+    { const sp = openingSpan(CFG.openings.Nwin), sw = CFG.wall.studW, wd = CFG.wall.studD;
+      ok(sp.s - sw >= wd - 1e-9 && sp.e + sw <= sp.len - wd + 1e-9,
+         `N window kings/jacks clear the corner posts (${ftin(sp.s - sw)}–${ftin(sp.e + sw)} within ${ftin(wd)}–${ftin(sp.len - wd)})`);
+    }
+
+    // INVARIANT 4d: east door rough-opening framing (king + jack studs) lands within the
+    // wall, clear of the 3-stud corner posts — same plan framing as the S/W doors.
+    ok(fits(CFG.openings.Edoor), `E door (${ftin(CFG.openings.Edoor.width)}) fits within the ${ftin(CFG.ext.E)} E wall`);
+    { const sp = openingSpan(CFG.openings.Edoor), sw = CFG.wall.studW, wd = CFG.wall.studD;
+      ok(sp.s - sw >= wd - 1e-9 && sp.e + sw <= sp.len - wd + 1e-9,
+         `E door kings/jacks clear the corner posts (${ftin(sp.s - sw)}–${ftin(sp.e + sw)} within ${ftin(wd)}–${ftin(sp.len - wd)})`);
     }
 
     // INVARIANT 5: patio
@@ -1749,7 +1766,7 @@ const BP = (function () {
       }
 
       var menards='https://www.menards.com/main/hardware/fasteners-connectors/bolts/anchor-bolts/grip-fast-reg-1-2-hot-dipped-galvanized-anchor-bolt-w-nut-washers/232-9022/p-4393931518164314-c-8857.htm';
-      var mSillPT='https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/ac2-reg-2-x-6-2-prime-ground-contact-green-pressure-treated-lumber/1111066/p-1444422767258-c-13125.htm';
+      var mSillPT='https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/ac2-reg-2-x-8-2-prime-ground-contact-green-pressure-treated-lumber/1111068/p-1444422767262-c-13125.htm';
       var mLumber2x8='https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/2-x-10-2-better-construction-framing-lumber/1022032/p-1444422415848-c-13125.htm';
       var mJoistHanger='https://www.menards.com/main/hardware/fasteners-connectors/construction-hardware/structural-hangers/mitek-reg-triple-zinc-slant-nail-joist-hanger/jus26-tz/p-1444445489695-c-8843.htm';
       var mHangerNails='https://www.menards.com/main/hardware/fasteners-connectors/nails/joist-hanger-nails/grip-fast-reg-10d-x-1-1-2-hot-dipped-galvanized-joist-hanger-nails/227-1507/p-1444445205096-c-8766.htm';
@@ -1816,10 +1833,10 @@ const BP = (function () {
         menards, iAnchorBolt, pAnchorBolt);
 
       // ── Sill plates ───────────────────────────────────────────────────────────
-      html+=mi('6 pcs','2×6 PT sill plate  (flat on CMU)',
+      html+=mi('6 pcs','2×8 PT sill plate  (flat on CMU)',
         'N: '+ftft2(sillNLen)+' · S: '+ftft2(sillSLen)+' · W: 10\'−0\" + '+ftft2(sillWLen-120)+' · E: 10\'−0\" + '+ftft2(sillELen-120),
         'Pressure-treated (UC4B+) · ½" sill-seal gasket under every piece · anchor bolts through · E/W pieces lap-splice over a grouted CMU core',
-        'Buy ~'+sillTotLF+' LF of 2×6 PT (6 cut pieces total)',
+        'Buy ~'+sillTotLF+' LF of 2×8 PT (6 cut pieces total)',
         mSillPT, iSillPT, pSillPT);
 
       // ── Rim / box sill ────────────────────────────────────────────────────────
@@ -1877,7 +1894,7 @@ const BP = (function () {
       // ── Wall Framing ─────────────────────────────────────────────────────────
       html+='<li class="mat-section">Wall Framing · Roof · Eave · Patio</li>';
       html+=mi('~14','2×10 #2 rafters  (@ 16" OC)',
-        '16\' lengths · shed roof run ~12\' + 18" W eave tail',
+        '16\' lengths · shed roof run ~12\' + 30" W eave tail',
         'Set plumb/bird\'s-mouth cuts to match roof pitch · hurricane-tie every rafter at both bearing walls',
         'Buy 16\' boards — 1 per rafter bay + 2 gable tails',
         mRafter, iRafter, pRafter);
@@ -1891,10 +1908,10 @@ const BP = (function () {
         'One 20\' board covers the full west wall in a single piece — no splice',
         'Buy 1 board',
         mSubFascia, iSubFascia, pSubFascia);
-      html+=mi('2','ABTCO® 12"×12\' vented vinyl soffit  (W eave intake)',
-        'Basketweave brushed-white vented panels · 18" eave depth fits in one 12" panel per run',
-        'Lanced vents provide intake air for roof cavity · snap into J-channel along wall and sub-fascia',
-        'Buy 2 panels for the ~20\' W eave run',
+      html+=mi('3','ABTCO® 12"×12\' vented vinyl soffit  (W eave intake)',
+        'Basketweave brushed-white vented panels · 30" eave depth requires 3 courses (12" + 12" + 6" cut) with vinyl H-divider between courses',
+        'Lanced vents provide intake air for roof cavity · snap into J-channel along wall and sub-fascia · add vinyl H-channel at mid-soffit divider',
+        'Buy 3 panels for the ~20\' W eave run',
         mSoffit, iSoffit, pSoffit);
       html+=mi('2','Sell-Even® 6"×12\' aluminum smooth fascia cover  (W eave)',
         'Wraps over 1× wood fascia · white baked enamel · no painting ever',
@@ -2149,7 +2166,7 @@ const BP = (function () {
       var jc = G.joist.centers.length + 2;           // total field + 2 end joists
 
       // Menards links / images / prices — scoped to this function
-      var _mSill   = 'https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/ac2-reg-2-x-6-2-prime-ground-contact-green-pressure-treated-lumber/1111066/p-1444422767258-c-13125.htm';
+      var _mSill   = 'https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/ac2-reg-2-x-8-2-prime-ground-contact-green-pressure-treated-lumber/1111068/p-1444422767262-c-13125.htm';
       var _iSill   = 'https://cdn.menardc.com/main/items/media/99998/ProductXLarge/111-1024_P_2x6-2MAIN.jpg';
       var _pSill   = '$20.35 / 16\' board';
       var _mLumber = 'https://www.menards.com/main/building-materials/lumber-boards/dimensional-lumber/2-x-10-2-better-construction-framing-lumber/1022032/p-1444422415848-c-13125.htm';
@@ -2188,12 +2205,12 @@ const BP = (function () {
 
       // Sill plate
       if (sillPcs === 1) {
-        html += mi('1', '2×6 PT sill plate',
+        html += mi('1', '2×8 PT sill plate',
           ft(sillLen) + ' · one piece · laid flat on sill seal',
           'Pressure-treated (UC4B+) · ½" sill-seal gasket under · anchor bolts through',
           _mSill, _iSill, _pSill);
       } else {
-        html += mi('2', '2×6 PT sill plate',
+        html += mi('2', '2×8 PT sill plate',
           ftft(120) + ' + ' + ftft(split2) + ' · two pieces',
           'Splice over a grouted CMU core · both PT · ½" sill-seal gasket under each',
           _mSill, _iSill, _pSill);
@@ -2650,7 +2667,7 @@ const BP = (function () {
       var ceHost = document.getElementById('cost-estimate');
       if (!ceHost) return;
       var G = BP.G;
-      var P6 = 20.35 / 16, P8 = 12.53 / 12;   // $/ft derived in-file (2×6 PT sill SKU, 2×8 SKU)
+      var P6 = 20.35 / 16, P8 = 12.53 / 12;   // $/ft derived in-file (2×6 SPF stud-grade rate, 2×8 SKU)
 
       // ---- floor-system quantities (recomputed from the model) ----
       function spanOf(o) { return BP.openingSpan(o); }
@@ -2701,7 +2718,7 @@ const BP = (function () {
       function L(name, qty, unit, each, cost) { return { name: name, qty: qty, unit: unit, each: each, cost: cost }; }
       var floor = [
         L('½" HDG anchor bolt + nut/washers', anchorPacks, '2-ct pack', 3.29, anchorPacks * 3.29),
-        L('2×6 PT sill plate', sillBoards, "16' board", 20.35, sillBoards * 20.35),
+        L('2×8 PT sill plate', sillBoards, "16' board", 26.49, sillBoards * 26.49),
         L('2×8 rim / box sill', rimBoards, "12' board", 12.53, rimBoards * 12.53),
         L('2×8 #2 SYP field joist', jc, "10' board", +(P8 * 10).toFixed(2), jc * P8 * 10),
         L('LUS28 joist hanger', jc * 2, 'each', 1.98, jc * 2 * 1.98),
@@ -2716,7 +2733,7 @@ const BP = (function () {
         L('2×10 #2 rafter', 14, "16' board", +(12.17 / 10 * 16).toFixed(2), 14 * (12.17 / 10 * 16)),
         L('1×6×8 pine fascia', 2, 'board', 7.48, 2 * 7.48),
         L('2×6×20 sub-fascia', 1, 'board', 19.39, 19.39),
-        L('Vented vinyl soffit', 2, 'panel', 19.98, 2 * 19.98),
+        L('Vented vinyl soffit', 3, 'panel', 19.98, 3 * 19.98),
         L('Aluminum fascia cover', 2, 'piece', 22.78, 2 * 22.78),
         L('Roof panel H-clips', 2, '25-pk', 4.84, 2 * 4.84),
         L('Aluminum drip edge', 6, "12' pc", 9.98, 6 * 9.98),
@@ -2763,7 +2780,7 @@ const BP = (function () {
         + '</tbody></table>'
         + '<p class="ce-note"><strong>Anchor bolts:</strong> ' + boltTotal + ' on plan (N' + boltN + ' · S' + boltS + ' · W' + boltW + ' · E' + boltE + '), buy ' + (boltTotal + 1) + '. '
         + '<strong>Joists:</strong> ' + jc + '. <strong>Subfloor:</strong> ' + sheets + ' sheets. Prices = Menards, 2026-05-24 — confirm in store. '
-        + 'Wall-framing 2×6 is priced at the in-file PT-sill rate (≈$1.27/ft — a ceiling; SPF stud-grade runs less). Joists &amp; rafters priced from the in-file 2×8 / 2×10 $/ft at the listed buy lengths.</p>'
+        + 'Wall-framing 2×6 is priced at an approximate SPF stud-grade rate (≈$1.27/ft — a ceiling; verify local pricing). Sill plates are 2×8 PT at approx. $26.49/16ft board. Joists &amp; rafters priced from the in-file 2×8 / 2×10 $/ft at the listed buy lengths.</p>'
         + '<p class="ce-note ce-warn"><strong>NOT included</strong> (price separately): the CMU foundation (already built), windows &amp; the 3 doors, concrete + gravel + #3 rebar for the patio (~1.4 cu yd), sill-seal gasket, H2.5 hurricane ties, roof sheathing + ice/water shield + shingles, the porch beam + (2) 6×6 posts, gutter downspout/end caps, insulation, drywall &amp; finishes, and sales tax.</p>'
         + '</div>';
       ceHost.innerHTML = html;

@@ -23,6 +23,16 @@
     }
     .back-link:hover { color: #79b8ff; border-color: #79b8ff; }
 
+    .site-nav { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .site-nav a {
+      font-size:0.68rem; letter-spacing:0.8px; text-transform:uppercase;
+      padding:7px 12px; border:1px solid #1e3a5f; border-radius:3px;
+      color:#6a8fa8; text-decoration:none; font-family:'Courier New', monospace;
+      transition:border-color .15s, color .15s, background .15s; white-space:nowrap;
+    }
+    .site-nav a:hover { color:#79b8ff; border-color:#79b8ff; background:#111f2e; }
+    .site-nav a.active { color:#79b8ff; border-color:#79b8ff; background:#111f2e; font-weight:bold; cursor:default; pointer-events:none; }
+
     .page { max-width: 1100px; margin: 0 auto; padding: 30px 24px 60px; }
 
     h2 {
@@ -106,7 +116,11 @@
     <h1>Window Installation Detail</h1>
     <p>CMU Block Foundation · North Wall (34½") &amp; South Wall (34¼") · Tornado Room</p>
   </div>
-  <a href="foundation-blueprint.html" class="back-link">← Back to Blueprint</a>
+  <nav class="site-nav" aria-label="Site pages">
+    <a href="foundation-blueprint.html">Blueprint</a>
+    <a href="window-detail.html" class="active" aria-current="page">Window Detail</a>
+    <a href="sill-plate-cutlist.html">Sill Cut List</a>
+  </nav>
 </header>
 
 <div class="page">
